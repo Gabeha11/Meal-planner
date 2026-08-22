@@ -1,3954 +1,8164 @@
 <!doctype html>
 <html lang="en">
+
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#234e70">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, viewport-fit=cover"
+>
+
+<meta
+  name="theme-color"
+  content="#234e70"
+>
+
 <title>Family Meal Picker</title>
 
 <style>
+
 :root{
   --blue:#234e70;
-  --bg:#f4f7fb;
-  --card:#fff;
-  --line:#dde3ea;
+  --background:#f4f7fb;
+  --card:#ffffff;
+  --border:#dde3ea;
   --text:#172033;
   --muted:#667085;
+
   --green:#177245;
-  --greenbg:#e8f6ed;
+  --green-bg:#e8f6ed;
+
   --yellow:#946200;
-  --yellowbg:#fff5d6;
+  --yellow-bg:#fff5d6;
+
   --red:#b42318;
-  --redbg:#fdebea;
+  --red-bg:#fdebea;
 }
-*{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
+
+*{
+  box-sizing:border-box;
+}
+
+html{
+  -webkit-text-size-adjust:100%;
+}
+
 body{
   margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
-  background:var(--bg);
-  color:var(--text)
+
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Arial,
+    sans-serif;
+
+  background:var(--background);
+
+  color:var(--text);
 }
+
 header{
   position:sticky;
+
   top:0;
+
   z-index:10;
-  background:rgba(255,255,255,.97);
-  border-bottom:1px solid var(--line);
+
   padding:14px 16px;
+
+  background:rgba(255,255,255,.97);
+
+  border-bottom:1px solid var(--border);
+
+  backdrop-filter:blur(10px);
 }
-.header{
+
+.header-inner{
   max-width:1120px;
+
   margin:auto;
+
   display:flex;
-  align-items:center;
+
   justify-content:space-between;
+
+  align-items:center;
+
   gap:12px;
 }
-h1{font-size:21px;margin:0}
-h2{margin:0 0 12px}
-h3{margin:0 0 8px}
-p{color:var(--muted)}
-.sub,.small{font-size:12px;color:var(--muted)}
+
+h1{
+  margin:0;
+
+  font-size:21px;
+}
+
+h2{
+  margin:0 0 12px;
+}
+
+h3{
+  margin:0 0 8px;
+}
+
+p{
+  color:var(--muted);
+}
+
+.subtitle,
+.small{
+  color:var(--muted);
+
+  font-size:12px;
+}
+
 main{
   max-width:1120px;
+
   margin:auto;
-  padding:18px 14px calc(100px + env(safe-area-inset-bottom));
+
+  padding:
+    18px
+    14px
+    calc(100px + env(safe-area-inset-bottom));
 }
-.screen{display:none}
-.screen.active{display:block}
-.card{
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:16px;
-  padding:16px;
-  margin-bottom:14px;
+
+.screen{
+  display:none;
 }
-button{
-  border:0;
-  background:var(--blue);
-  color:#fff;
-  padding:11px 14px;
-  border-radius:10px;
-  font-weight:700;
-  cursor:pointer;
-}
-button.secondary{background:#edf1f5;color:var(--text)}
-button.danger{background:var(--red)}
-button.smallbtn{padding:7px 9px;font-size:12px}
-.actions{display:flex;gap:8px;flex-wrap:wrap}
-input,select,textarea{
-  width:100%;
-  border:1px solid var(--line);
-  border-radius:10px;
-  padding:11px;
-  font-size:16px;
-  background:#fff;
-}
-textarea{min-height:120px;resize:vertical}
-.label{
+
+.screen.active{
   display:block;
+}
+
+.card{
+  margin-bottom:14px;
+
+  padding:16px;
+
+  background:var(--card);
+
+  border:1px solid var(--border);
+
+  border-radius:16px;
+
+  box-shadow:
+    0 6px 20px
+    rgba(20,30,50,.05);
+}
+
+button{
+  padding:11px 14px;
+
+  border:0;
+
+  border-radius:10px;
+
+  background:var(--blue);
+
+  color:white;
+
+  font-weight:700;
+
+  cursor:pointer;
+
+  -webkit-tap-highlight-color:transparent;
+
+  touch-action:manipulation;
+}
+
+button.secondary{
+  background:#edf1f5;
+
+  color:var(--text);
+}
+
+button.danger{
+  background:var(--red);
+}
+
+button.small-button{
+  padding:7px 9px;
+
   font-size:12px;
-  font-weight:800;
-  color:var(--muted);
+}
+
+.actions{
+  display:flex;
+
+  flex-wrap:wrap;
+
+  gap:8px;
+}
+
+input,
+select,
+textarea{
+  width:100%;
+
+  padding:11px;
+
+  border:1px solid var(--border);
+
+  border-radius:10px;
+
+  background:white;
+
+  font-size:16px;
+}
+
+textarea{
+  min-height:130px;
+
+  resize:vertical;
+}
+
+.field-label{
+  display:block;
+
   margin:12px 0 5px;
+
+  color:var(--muted);
+
+  font-size:12px;
+
+  font-weight:800;
+
   text-transform:uppercase;
 }
+
 .filters{
   display:grid;
-  grid-template-columns:repeat(4,1fr);
+
+  grid-template-columns:
+    repeat(4,1fr);
+
   gap:8px;
+
   margin-bottom:14px;
 }
+
 .meals{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
+
+  grid-template-columns:
+    repeat(3,1fr);
+
   gap:12px;
 }
+
 .meal{
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:14px;
   padding:14px;
+
+  background:white;
+
+  border:1px solid var(--border);
+
+  border-radius:14px;
 }
-.meal-title{font-weight:800;font-size:17px}
+
+.meal-title{
+  font-size:17px;
+
+  font-weight:800;
+}
+
 .badge{
   display:inline-block;
+
+  margin:
+    7px
+    4px
+    7px
+    0;
+
+  padding:
+    5px
+    8px;
+
   border-radius:999px;
-  padding:5px 8px;
-  margin:7px 4px 7px 0;
-  font-size:12px;
-  font-weight:700;
+
   background:#eef2f7;
+
+  font-size:12px;
+
+  font-weight:700;
 }
-.good{background:var(--greenbg);color:var(--green)}
-.warn{background:var(--yellowbg);color:var(--yellow)}
-.bad{background:var(--redbg);color:var(--red)}
+
+.good{
+  background:var(--green-bg);
+
+  color:var(--green);
+}
+
+.warning{
+  background:var(--yellow-bg);
+
+  color:var(--yellow);
+}
+
+.bad{
+  background:var(--red-bg);
+
+  color:var(--red);
+}
+
 .notice{
-  padding:12px;
-  border-radius:12px;
-  background:#eef6ff;
-  color:#36536e;
-  font-size:13px;
   margin-bottom:14px;
+
+  padding:12px;
+
+  border-radius:12px;
+
+  background:#eef6ff;
+
+  color:#36536e;
+
+  font-size:13px;
 }
+
 .stats{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
+
+  grid-template-columns:
+    repeat(3,1fr);
+
   gap:8px;
 }
+
 .stat{
-  background:#f8fafc;
   padding:12px;
+
+  background:#f8fafc;
+
   border-radius:12px;
+
   text-align:center;
 }
-.stat strong{display:block;font-size:24px}
+
+.stat strong{
+  display:block;
+
+  font-size:24px;
+}
+
 .row{
   display:grid;
-  align-items:center;
+
   gap:10px;
+
+  align-items:center;
+
   padding:10px 0;
-  border-bottom:1px solid var(--line);
+
+  border-bottom:
+    1px solid var(--border);
 }
-.invrow{
-  grid-template-columns:minmax(140px,1fr) 90px 105px 190px auto;
+
+.inventory-row{
+  grid-template-columns:
+    minmax(140px,1fr)
+    90px
+    105px
+    190px
+    auto;
 }
-.shoprow{
-  grid-template-columns:minmax(170px,1fr) 85px 100px auto;
+
+.shopping-row{
+  grid-template-columns:
+    minmax(180px,1fr)
+    90px
+    105px
+    auto;
 }
-.planrow{
-  grid-template-columns:85px minmax(160px,1fr) 95px;
+
+.plan-row{
+  grid-template-columns:
+    85px
+    minmax(160px,1fr)
+    100px;
 }
+
 .segment{
   display:flex;
+
   gap:3px;
+
   padding:3px;
+
   background:#edf1f5;
+
   border-radius:9px;
 }
-.choice{
+
+.inventory-choice{
   flex:1;
-  text-align:center;
+
   padding:9px 4px;
+
   border-radius:8px;
+
   color:var(--muted);
+
   font-size:11px;
+
   font-weight:700;
+
+  text-align:center;
+
   cursor:pointer;
+
+  user-select:none;
 }
-.choice input{
+
+.inventory-choice input{
   position:absolute;
-  opacity:0;
+
   width:1px;
+
   height:1px;
+
+  opacity:0;
 }
-.choice.have{background:#fff;color:var(--green)}
-.choice.low{background:#fff;color:var(--yellow)}
-.choice.out{background:#fff;color:var(--red)}
+
+.inventory-choice.have{
+  background:white;
+
+  color:var(--green);
+}
+
+.inventory-choice.low{
+  background:white;
+
+  color:var(--yellow);
+}
+
+.inventory-choice.out{
+  background:white;
+
+  color:var(--red);
+}
+
 .notes{
-  white-space:pre-wrap;
-  background:#f8fafc;
-  border-radius:10px;
-  padding:10px;
   margin-top:8px;
-  font-size:13px;
+
+  padding:10px;
+
+  background:#f8fafc;
+
+  border-radius:10px;
+
   color:#475467;
+
+  font-size:13px;
+
+  white-space:pre-wrap;
 }
+
 .result{
   margin-top:14px;
+
   padding:15px;
-  border-radius:14px;
+
   background:#f8fafc;
-  border:1px solid var(--line);
+
+  border:
+    1px solid var(--border);
+
+  border-radius:14px;
 }
-.big{font-size:25px;font-weight:800;margin:5px 0}
-.nav{
+
+.big-meal{
+  margin:5px 0;
+
+  font-size:25px;
+
+  font-weight:800;
+}
+
+.bottom-nav{
   position:fixed;
+
   left:0;
+
   right:0;
+
   bottom:0;
-  background:#fff;
-  border-top:1px solid var(--line);
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
+
   z-index:20;
-  padding-bottom:env(safe-area-inset-bottom);
+
+  display:grid;
+
+  grid-template-columns:
+    repeat(5,1fr);
+
+  padding-bottom:
+    env(safe-area-inset-bottom);
+
+  background:white;
+
+  border-top:
+    1px solid var(--border);
 }
-.nav button{
-  border-radius:0;
-  background:#fff;
-  color:var(--muted);
+
+.bottom-nav button{
   padding:10px 2px;
+
+  border-radius:0;
+
+  background:white;
+
+  color:var(--muted);
+
   font-size:11px;
 }
-.nav button.active{
-  color:var(--blue);
+
+.bottom-nav button.active{
   background:#f5f8fb;
+
+  color:var(--blue);
 }
-.navicon{
+
+.nav-icon{
   display:block;
-  font-size:20px;
+
   margin-bottom:2px;
+
+  font-size:20px;
 }
+
 .modal{
   position:fixed;
+
   inset:0;
-  background:rgba(15,23,42,.5);
+
   z-index:50;
+
   display:none;
+
   align-items:flex-end;
+
   justify-content:center;
+
+  background:
+    rgba(15,23,42,.5);
 }
-.modal.show{display:flex}
-.sheet{
-  background:#fff;
-  width:min(780px,100%);
-  max-height:92vh;
-  overflow:auto;
-  border-radius:22px 22px 0 0;
-  padding:18px 18px calc(24px + env(safe-area-inset-bottom));
-}
-.mhead{
+
+.modal.show{
   display:flex;
+}
+
+.modal-sheet{
+  width:min(800px,100%);
+
+  max-height:92vh;
+
+  overflow:auto;
+
+  padding:
+    18px
+    18px
+    calc(24px + env(safe-area-inset-bottom));
+
+  background:white;
+
+  border-radius:
+    22px
+    22px
+    0
+    0;
+}
+
+.modal-header{
+  display:flex;
+
   justify-content:space-between;
-  gap:10px;
-  align-items:start;
-}
-.twocol{
-  display:grid;
-  grid-template-columns:1fr 1fr;
+
+  align-items:flex-start;
+
   gap:10px;
 }
-.ingrow{
+
+.two-column{
   display:grid;
-  grid-template-columns:minmax(140px,1fr) 80px 105px auto;
+
+  grid-template-columns:
+    1fr
+    1fr;
+
+  gap:10px;
+}
+
+.ingredient-row{
+  display:grid;
+
+  grid-template-columns:
+    minmax(140px,1fr)
+    80px
+    105px
+    auto;
+
   gap:8px;
+
   align-items:center;
+
   padding:8px 0;
-  border-bottom:1px solid var(--line);
+
+  border-bottom:
+    1px solid var(--border);
 }
+
+.inventory-amount{
+  color:var(--muted);
+
+  font-size:12px;
+}
+
+.shopping-recommendation{
+  margin-top:3px;
+
+  color:var(--green);
+
+  font-size:13px;
+
+  font-weight:700;
+}
+
+.shopping-override-note{
+  margin-top:3px;
+
+  color:var(--yellow);
+
+  font-size:12px;
+}
+
 @media(max-width:820px){
-  .meals{grid-template-columns:1fr}
-  .filters{grid-template-columns:1fr 1fr}
-  .invrow{grid-template-columns:1fr 75px 90px}
-  .invrow .segment,.invrow .invactions{grid-column:1/-1}
-  .shoprow{grid-template-columns:1fr 75px 90px}
-  .shoprow .shopactions{grid-column:1/-1}
-  .planrow{grid-template-columns:70px 1fr}
-  .planrow .servings{grid-column:2}
-  .ingrow{grid-template-columns:1fr 70px 90px}
-  .ingrow button{grid-column:1/-1}
+
+  .meals{
+    grid-template-columns:1fr;
+  }
+
+  .filters{
+    grid-template-columns:
+      1fr
+      1fr;
+  }
+
+  .inventory-row{
+    grid-template-columns:
+      1fr
+      75px
+      90px;
+  }
+
+  .inventory-row .segment,
+  .inventory-row .inventory-actions{
+    grid-column:
+      1 / -1;
+  }
+
+  .shopping-row{
+    grid-template-columns:
+      1fr
+      75px
+      90px;
+  }
+
+  .shopping-row .shopping-actions{
+    grid-column:
+      1 / -1;
+  }
+
+  .plan-row{
+    grid-template-columns:
+      70px
+      1fr;
+  }
+
+  .plan-row .servings-column{
+    grid-column:2;
+  }
+
+  .ingredient-row{
+    grid-template-columns:
+      1fr
+      70px
+      90px;
+  }
+
+  .ingredient-row button{
+    grid-column:
+      1 / -1;
+  }
+
 }
+
 </style>
 </head>
 
+
 <body>
 
-<header>
-<div class="header">
-  <div>
-    <h1>Family Meal Picker</h1>
-    <div class="sub">
-      Inventory • recipes • notes • portions • automatic shopping
-    </div>
-  </div>
 
-  <button class="secondary" id="headerShopping">
-    🛒 <span id="shoppingCount">0</span>
-  </button>
+<header>
+
+<div class="header-inner">
+
+<div>
+
+<h1>
+Family Meal Picker
+</h1>
+
+<div class="subtitle">
+Inventory • recipes • notes • portions • automatic shopping
 </div>
+
+</div>
+
+
+<button
+  type="button"
+  class="secondary"
+  id="headerShoppingButton"
+>
+
+🛒
+
+<span id="shoppingCount">
+0
+</span>
+
+</button>
+
+</div>
+
 </header>
+
 
 <main>
 
-<section id="home" class="screen active">
+
+<section
+  id="home"
+  class="screen active"
+>
+
 
 <div class="card">
-<h2>What should we eat?</h2>
+
+<h2>
+What should we eat?
+</h2>
+
 
 <div class="actions">
-<button id="bestButton">Use What We Have</button>
-<button class="secondary" id="surpriseButton">Surprise Me</button>
-<button class="secondary" id="autoFiveButton">Pick 5 Dinners</button>
+
+<button
+  type="button"
+  id="useInventoryButton"
+>
+Use What We Have
+</button>
+
+
+<button
+  type="button"
+  class="secondary"
+  id="surpriseButton"
+>
+Surprise Me
+</button>
+
+
+<button
+  type="button"
+  class="secondary"
+  id="pickFiveButton"
+>
+Pick 5 Dinners
+</button>
+
 </div>
 
-<div id="bestResult"></div>
+
+<div id="bestMealResult"></div>
+
 </div>
+
 
 <div class="card">
-<h3>Meals right now</h3>
+
+<h3>
+Meals right now
+</h3>
+
 
 <div class="stats">
+
 <div class="stat">
-<strong id="readyCount">0</strong>
+
+<strong id="readyCount">
+0
+</strong>
+
 Ready
+
 </div>
 
+
 <div class="stat">
-<strong id="almostCount">0</strong>
+
+<strong id="almostCount">
+0
+</strong>
+
 Almost
+
 </div>
 
+
 <div class="stat">
-<strong id="needCount">0</strong>
+
+<strong id="shoppingNeededCount">
+0
+</strong>
+
 Need Shopping
+
 </div>
+
 </div>
+
 </div>
+
 
 <div class="card">
-<h3>Best Matches</h3>
-<div id="bestMatches" class="meals"></div>
+
+<h3>
+Best Matches
+</h3>
+
+<div
+  id="bestMatches"
+  class="meals"
+></div>
+
 </div>
+
 
 </section>
 
 
-<section id="meals" class="screen">
 
-<div class="actions"
-style="justify-content:space-between;align-items:center;margin-bottom:12px">
+<section
+  id="meals"
+  class="screen"
+>
 
-<h2 style="margin:0">Recipes</h2>
 
-<button id="addRecipeButton">
+<div
+  class="actions"
+  style="
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:12px;
+  "
+>
+
+<h2 style="margin:0">
+Recipes
+</h2>
+
+
+<button
+  type="button"
+  id="addRecipeButton"
+>
 + Add Recipe
 </button>
 
 </div>
 
+
 <div class="filters">
 
-<input id="mealSearch"
-placeholder="Search meals...">
+
+<input
+  id="mealSearch"
+  placeholder="Search meals..."
+>
+
 
 <select id="categoryFilter">
-<option value="All">All Categories</option>
+
+<option value="All">
+All Categories
+</option>
+
 </select>
+
 
 <select id="availabilityFilter">
-<option value="All">Any Availability</option>
-<option value="Ready">Ready</option>
-<option value="Almost">Almost</option>
-<option value="Shopping">Needs Shopping</option>
+
+<option value="All">
+Any Availability
+</option>
+
+<option value="Ready">
+Ready
+</option>
+
+<option value="Almost">
+Almost
+</option>
+
+<option value="Shopping">
+Needs Shopping
+</option>
+
 </select>
 
+
 <select id="difficultyFilter">
-<option value="All">Any Difficulty</option>
-<option>Easy</option>
-<option>Medium</option>
+
+<option value="All">
+Any Difficulty
+</option>
+
+<option value="Easy">
+Easy
+</option>
+
+<option value="Medium">
+Medium
+</option>
+
 </select>
+
 
 </div>
 
-<div id="mealList" class="meals"></div>
+
+<div
+  id="mealList"
+  class="meals"
+></div>
+
 
 </section>
 
 
-<section id="week" class="screen">
+
+<section
+  id="week"
+  class="screen"
+>
+
 
 <div class="card">
 
-<h2>Weekly Meal Plan</h2>
+<h2>
+Weekly Meal Plan
+</h2>
+
 
 <div class="notice">
-Each planned meal starts at its recipe's normal serving size.
-Change the servings here and all ingredient quantities and
-shopping recommendations recalculate automatically.
+
+Each planned meal starts with its normal recipe serving size.
+
+Change the serving quantity for any day and the ingredient requirements and shopping recommendations will automatically recalculate.
+
 </div>
+
 
 <div class="actions">
 
-<button id="autoWeekButton">
+<button
+  type="button"
+  id="autoWeekButton"
+>
 Auto Pick 5
 </button>
 
-<button class="secondary" id="clearWeekButton">
+
+<button
+  type="button"
+  class="secondary"
+  id="clearWeekButton"
+>
 Clear Week
 </button>
 
 </div>
 
-<div id="weekList"></div>
+
+<div id="weeklyPlan"></div>
 
 </div>
 
+
 <div class="card">
-<h3>Plan Summary</h3>
+
+<h3>
+Plan Summary
+</h3>
+
 <p id="weekSummary"></p>
+
 </div>
+
 
 </section>
 
 
-<section id="inventory" class="screen">
 
-<h2>Inventory</h2>
+<section
+  id="inventory"
+  class="screen"
+>
+
+
+<h2>
+Inventory
+</h2>
+
 
 <div class="notice">
-Enter how much you currently have. The app compares your
-inventory quantity with the amount required by your recipes.
+
+Enter how much you currently have.
+
+When inventory and recipe units are compatible, the app calculates the actual shortage automatically.
+
 </div>
+
 
 <div class="card">
 
-<h3>Add Inventory Item</h3>
+<h3>
+Add Inventory Item
+</h3>
+
 
 <div class="actions">
 
-<input id="newInventory"
-placeholder="Example: Worcestershire Sauce">
-
-<button id="addInventoryButton">
-Add
-</button>
-
-</div>
-</div>
-
-<input id="inventorySearch"
-placeholder="Search inventory..."
-style="margin-bottom:12px">
-
-<div id="inventoryList" class="card"></div>
-
-</section>
+<input
+  id="newInventoryItem"
+  placeholder="Example: Worcestershire Sauce"
+>
 
 
-<section id="shopping" class="screen">
-
-<div class="card">
-
-<h2>Shopping List</h2>
-
-<div class="notice">
-The recommended amount is automatically calculated from
-what the recipes require minus what you already have.
-You can manually change the amount you want to buy.
-</div>
-
-<div id="automaticShopping"></div>
-
-</div>
-
-<div class="card">
-
-<h3>Extra Meals Added to Shopping</h3>
-
-<div id="shoppingSources"></div>
-
-</div>
-
-<div class="card">
-
-<h3>Manual Shopping Items</h3>
-
-<div class="actions">
-
-<input id="manualItem"
-placeholder="Paper towels, dog food, etc.">
-
-<button id="addManualButton">
+<button
+  type="button"
+  id="addInventoryItemButton"
+>
 Add
 </button>
 
 </div>
 
-<div id="manualShopping"></div>
+</div>
+
+
+<input
+  id="inventorySearch"
+  placeholder="Search inventory..."
+  style="margin-bottom:12px"
+>
+
+
+<div
+  id="inventoryList"
+  class="card"
+></div>
+
+
+</section>
+
+
+
+<section
+  id="shopping"
+  class="screen"
+>
+
+
+<div class="card">
+
+<h2>
+Shopping List
+</h2>
+
+
+<div class="notice">
+
+The recommended quantity is automatically calculated from:
+
+<strong>
+total recipe requirement − inventory on hand
+</strong>.
+
+You can manually change the amount you want to buy without changing the recipe or inventory.
 
 </div>
 
+
+<div id="automaticShoppingList"></div>
+
+</div>
+
+
+<div class="card">
+
+<h3>
+Extra Meals Added to Shopping
+</h3>
+
+<p class="small">
+
+These are meals you selected with
+<strong>Add Missing</strong>
+even if they are not on the weekly plan.
+
+</p>
+
+<div id="extraShoppingMeals"></div>
+
+</div>
+
+
+<div class="card">
+
+<h3>
+Manual Shopping Items
+</h3>
+
+
+<div class="actions">
+
+<input
+  id="manualShoppingInput"
+  placeholder="Paper towels, dog food, etc."
+>
+
+
+<button
+  type="button"
+  id="addManualShoppingButton"
+>
+Add
+</button>
+
+</div>
+
+
+<div id="manualShoppingList"></div>
+
+</div>
+
+
 </section>
+
 
 </main>
 
 
-<div class="nav">
 
-<button class="active" data-screen="home">
-<span class="navicon">🏠</span>
+<div class="bottom-nav">
+
+
+<button
+  type="button"
+  class="active"
+  data-screen="home"
+>
+
+<span class="nav-icon">
+🏠
+</span>
+
 Home
+
 </button>
 
-<button data-screen="meals">
-<span class="navicon">🍽️</span>
+
+<button
+  type="button"
+  data-screen="meals"
+>
+
+<span class="nav-icon">
+🍽️
+</span>
+
 Meals
+
 </button>
 
-<button data-screen="week">
-<span class="navicon">📅</span>
+
+<button
+  type="button"
+  data-screen="week"
+>
+
+<span class="nav-icon">
+📅
+</span>
+
 Week
+
 </button>
 
-<button data-screen="inventory">
-<span class="navicon">🥫</span>
+
+<button
+  type="button"
+  data-screen="inventory"
+>
+
+<span class="nav-icon">
+🥫
+</span>
+
 Inventory
+
 </button>
 
-<button data-screen="shopping">
-<span class="navicon">🛒</span>
+
+<button
+  type="button"
+  data-screen="shopping"
+>
+
+<span class="nav-icon">
+🛒
+</span>
+
 Shopping
+
 </button>
+
 
 </div>
 
 
-<div id="recipeModal" class="modal">
 
-<div class="sheet">
+<div
+  id="recipeModal"
+  class="modal"
+>
 
-<div class="mhead">
+
+<div class="modal-sheet">
+
+
+<div class="modal-header">
 
 <h2 id="recipeModalTitle">
 Edit Recipe
 </h2>
 
-<button class="secondary"
-id="closeRecipeModal">
+
+<button
+  type="button"
+  class="secondary"
+  id="closeRecipeModal"
+>
 ✕
 </button>
 
 </div>
 
-<input type="hidden"
-id="editingRecipeId">
 
-<label class="label">
+<input
+  type="hidden"
+  id="editingRecipeId"
+>
+
+
+<label class="field-label">
 Recipe Name
 </label>
 
+
 <input id="editRecipeName">
 
-<div class="twocol">
+
+<div class="two-column">
+
 
 <div>
 
-<label class="label">
+<label class="field-label">
 Category
 </label>
 
+
 <select id="editRecipeCategory">
 
-<option>Ground Beef</option>
-<option>Chicken</option>
-<option>Pork</option>
-<option>Lamb</option>
-<option>Beef</option>
-<option>Other</option>
+<option>
+Ground Beef
+</option>
+
+<option>
+Chicken
+</option>
+
+<option>
+Pork
+</option>
+
+<option>
+Lamb
+</option>
+
+<option>
+Beef
+</option>
+
+<option>
+Other
+</option>
 
 </select>
 
 </div>
 
+
 <div>
 
-<label class="label">
+<label class="field-label">
 Difficulty
 </label>
 
+
 <select id="editRecipeDifficulty">
 
-<option>Easy</option>
-<option>Medium</option>
+<option>
+Easy
+</option>
+
+<option>
+Medium
+</option>
 
 </select>
 
 </div>
 
+
 </div>
 
 
-<div class="twocol">
+
+<div class="two-column">
+
 
 <div>
 
-<label class="label">
+<label class="field-label">
 Estimated Minutes
 </label>
 
-<input id="editRecipeMinutes"
-type="number"
-min="1">
+
+<input
+  id="editRecipeMinutes"
+  type="number"
+  min="1"
+>
 
 </div>
+
 
 <div>
 
-<label class="label">
+<label class="field-label">
 Base Servings
 </label>
 
-<input id="editRecipeServings"
-type="number"
-min="1"
-step="1">
+
+<input
+  id="editRecipeServings"
+  type="number"
+  min="1"
+  step="1"
+>
 
 </div>
 
+
 </div>
 
 
-<label class="label">
+
+<label class="field-label">
 Notes / Instructions
 </label>
 
-<textarea id="editRecipeNotes"
-placeholder="Cooking steps, temperatures, substitutions, family preferences, etc."></textarea>
+
+<textarea
+  id="editRecipeNotes"
+  placeholder="Cooking instructions, temperatures, substitutions, family preferences, etc."
+></textarea>
 
 
-<label class="label">
+
+<label class="field-label">
 Ingredients
 </label>
+
 
 <div id="ingredientEditor"></div>
 
 
-<div class="actions"
-style="margin-top:10px">
+<div
+  class="actions"
+  style="margin-top:10px"
+>
 
-<button id="addIngredientButton">
+<button
+  type="button"
+  id="addIngredientButton"
+>
 + Add Ingredient
 </button>
 
 </div>
 
 
-<div class="actions"
-style="margin-top:16px">
 
-<button id="saveRecipeButton">
+<div
+  class="actions"
+  style="margin-top:16px"
+>
+
+<button
+  type="button"
+  id="saveRecipeButton"
+>
 Save Recipe
 </button>
 
-<button class="danger"
-id="deleteRecipeButton">
+
+<button
+  type="button"
+  class="danger"
+  id="deleteRecipeButton"
+>
 Delete Recipe
 </button>
 
 </div>
 
+
 </div>
+
 </div>
 
 
-<div id="renameModal" class="modal">
 
-<div class="sheet">
+<div
+  id="renameInventoryModal"
+  class="modal"
+>
 
-<div class="mhead">
+
+<div class="modal-sheet">
+
+
+<div class="modal-header">
 
 <h2>
 Rename Inventory Item
 </h2>
 
-<button class="secondary"
-id="closeRenameModal">
+
+<button
+  type="button"
+  class="secondary"
+  id="closeRenameInventoryModal"
+>
 ✕
 </button>
 
 </div>
 
-<input type="hidden"
-id="oldInventoryName">
 
-<label class="label">
+<input
+  type="hidden"
+  id="oldInventoryName"
+>
+
+
+<label class="field-label">
 New Name
 </label>
 
+
 <input id="renameInventoryInput">
 
-<div class="actions"
-style="margin-top:16px">
 
-<button id="saveRenameButton">
+<div
+  class="actions"
+  style="margin-top:16px"
+>
+
+<button
+  type="button"
+  id="saveInventoryRenameButton"
+>
 Save
 </button>
 
 </div>
 
+
 </div>
+
 </div>
+
 
 
 <script>
 
-const $=id=>document.getElementById(id);
 
-const esc=v=>String(v??"")
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
-
-const safe=v=>String(v)
-.toLowerCase()
-.replace(/[^a-z0-9]+/g,"-")
-.replace(/^-+|-+$/g,"");
-
-const uid=()=>(
-"id-"+Date.now()+"-"+
-Math.random().toString(36).slice(2,8)
-);
-
-const round=n=>
-Math.round((Number(n)||0)*100)/100;
+/* ======================================================
+   BASIC HELPERS
+====================================================== */
 
 
-const UNITS=[
-"each",
-"oz",
-"lb",
-"g",
-"kg",
-"tsp",
-"tbsp",
-"fl oz",
-"cup",
-"pint",
-"quart",
-"gallon",
-"mL",
-"L",
-"can",
-"package",
-"bag",
-"box",
-"jar",
-"bottle",
-"bunch"
-];
+function $(id){
 
-
-const UNIT_INFO={
-
-"oz":["weight",1],
-"lb":["weight",16],
-"g":["weight",0.0352739619],
-"kg":["weight",35.2739619],
-
-"tsp":["volume",1],
-"tbsp":["volume",3],
-"fl oz":["volume",6],
-"cup":["volume",48],
-"pint":["volume",96],
-"quart":["volume",192],
-"gallon":["volume",768],
-"mL":["volume",0.202884],
-"L":["volume",202.884],
-
-"each":["each",1],
-"can":["can",1],
-"package":["package",1],
-"bag":["bag",1],
-"box":["box",1],
-"jar":["jar",1],
-"bottle":["bottle",1],
-"bunch":["bunch",1]
-
-};
-
-
-function canConvert(a,b){
-
-return UNIT_INFO[a] &&
-UNIT_INFO[b] &&
-UNIT_INFO[a][0]===UNIT_INFO[b][0];
+  return document.getElementById(id);
 
 }
 
 
-function convert(q,from,to){
+function escapeHtml(value){
 
-if(!canConvert(from,to))
-return null;
+  return String(value ?? "")
 
-return (Number(q)||0) *
-UNIT_INFO[from][1] /
-UNIT_INFO[to][1];
+    .replace(/&/g,"&amp;")
 
-}
+    .replace(/</g,"&lt;")
 
+    .replace(/>/g,"&gt;")
 
-function unitOptions(selected){
+    .replace(/"/g,"&quot;")
 
-return UNITS.map(u=>
-
-`<option ${u===selected?"selected":""}>
-${u}
-</option>`
-
-).join("");
+    .replace(/'/g,"&#039;");
 
 }
 
 
-function inferIngredient(name){
+function safeId(value){
 
-const n=name.toLowerCase();
+  return String(value)
 
-if(
-/ground beef|chicken$|pork$|beef strips|beef roast|roast beef|ground pork|ground turkey|steak|pork tenderloin|pork chops|lamb|ribs|pork belly|sushi protein/.test(n)
-)
-return {qty:1,unit:"lb"};
+    .toLowerCase()
 
-if(/drumsticks/.test(n))
-return {qty:6,unit:"each"};
+    .replace(/[^a-z0-9]+/g,"-")
 
-if(/tortilla/.test(n))
-return {qty:8,unit:"each"};
-
-if(/burger buns|hoagie rolls/.test(n))
-return {qty:4,unit:"each"};
-
-if(/garlic/.test(n))
-return {qty:3,unit:"each"};
-
-if(
-/onion|bell peppers|tomato$|lime|cucumber|avocado|zucchini|cabbage|pie crust/.test(n)
-)
-return {qty:1,unit:"each"};
-
-if(
-/cheese|mozzarella|parmesan|ricotta|cream cheese/.test(n)
-)
-return {qty:1,unit:"cup"};
-
-if(/rice/.test(n))
-return {qty:1,unit:"cup"};
-
-if(/pasta|noodles/.test(n))
-return {qty:8,unit:"oz"};
-
-if(
-/sauce|cream|milk|coconut milk|dressing|pesto|mayonnaise/.test(n)
-)
-return {qty:1,unit:"cup"};
-
-if(/beans|corn|peas/.test(n))
-return {qty:1,unit:"can"};
-
-if(/oil|soy sauce|butter/.test(n))
-return {qty:2,unit:"tbsp"};
-
-if(/flour|breadcrumbs|brown sugar/.test(n))
-return {qty:.5,unit:"cup"};
-
-return {qty:1,unit:"each"};
+    .replace(/^-+|-+$/g,"");
 
 }
 
 
-const BASE=[
+function createId(){
 
-["Ground Beef","Stuffed Bell Peppers","Medium",50,
-["Ground Beef","Bell Peppers","Rice","Onion","Garlic","Tomato Sauce"]],
+  return (
+    "id-" +
+    Date.now() +
+    "-" +
+    Math.random()
+      .toString(36)
+      .slice(2,8)
+  );
 
-["Ground Beef","Chili","Easy",45,
-["Ground Beef","Beans","Onion","Garlic","Tomato Sauce","Tomato Paste"]],
-
-["Ground Beef","Spaghetti","Easy",30,
-["Ground Beef","Pasta","Tomato Sauce","Onion","Garlic"]],
-
-["Ground Beef","Burgers","Easy",25,
-["Ground Beef","Burger Buns","Cheese","Lettuce","Tomato","Onion"]],
-
-["Ground Beef","Lasagna","Medium",75,
-["Ground Beef","Lasagna Noodles","Tomato Sauce","Ricotta","Mozzarella","Onion","Garlic"]],
-
-["Ground Beef","Goulash","Easy",35,
-["Ground Beef","Pasta","Tomato Sauce","Onion","Garlic"]],
-
-["Ground Beef","Meatballs","Medium",40,
-["Ground Beef","Eggs","Breadcrumbs","Onion","Garlic"]],
-
-["Ground Beef","Shepherd's Pie","Medium",55,
-["Ground Beef","Potatoes","Onion","Carrots","Green Beans","Butter"]],
-
-["Ground Beef","Meatloaf","Medium",60,
-["Ground Beef","Eggs","Breadcrumbs","Onion","Tomato Sauce"]],
-
-["Ground Beef","Sloppy Joes","Easy",30,
-["Ground Beef","Burger Buns","Onion","Tomato Sauce"]],
-
-["Ground Beef","Enchiladas","Medium",45,
-["Ground Beef","Tortillas","Cheese","Onion","Enchilada Sauce"]],
-
-["Ground Beef","Tacos","Easy",25,
-["Ground Beef","Tortillas","Cheese","Lettuce","Tomato","Onion"]],
+}
 
 
-["Chicken","Fajita Bowls","Easy",30,
-["Chicken","Rice","Bell Peppers","Onion","Lime"]],
+function roundQuantity(value){
 
-["Chicken","Garlic Parmesan Cream Chicken","Medium",35,
-["Chicken","Garlic","Butter","Heavy Cream","Parmesan"]],
+  return Math.round(
+    (Number(value) || 0)
+    * 100
+  ) / 100;
 
-["Chicken","Chicken Parmesan","Medium",45,
-["Chicken","Breadcrumbs","Eggs","Tomato Sauce","Mozzarella","Parmesan"]],
-
-["Chicken","Chicken Pot Pie","Medium",60,
-["Chicken","Potatoes","Carrots","Peas","Onion","Pie Crust","Chicken Bouillon"]],
-
-["Chicken","Chicken Noodle Soup","Easy",40,
-["Chicken","Egg Noodles","Carrots","Celery","Onion","Garlic","Chicken Bouillon"]],
-
-["Chicken","Chicken and Dumplings","Medium",55,
-["Chicken","Flour","Milk","Butter","Chicken Bouillon"]],
-
-["Chicken","Chicken Broccoli Soup","Easy",35,
-["Chicken","Broccoli","Onion","Garlic","Chicken Bouillon","Heavy Cream"]],
-
-["Chicken","Chicken Alfredo","Easy",30,
-["Chicken","Pasta","Garlic","Butter","Heavy Cream","Parmesan"]],
-
-["Chicken","White Wings","Medium",40,
-["Chicken","Bacon","Jalapenos","Cream Cheese"]],
-
-["Chicken","Enchiladas","Medium",45,
-["Chicken","Tortillas","Cheese","Onion","Enchilada Sauce"]],
-
-["Chicken","Tortilla Soup","Easy",40,
-["Chicken","Beans","Corn","Onion","Garlic","Tomato Sauce","Chicken Bouillon","Tortilla Chips"]],
-
-["Chicken","Chicken Salad","Easy",20,
-["Chicken","Mayonnaise","Celery","Grapes"]],
-
-["Chicken","Pesto Chicken Pasta","Easy",30,
-["Chicken","Pasta","Pesto","Garlic","Parmesan"]],
-
-["Chicken","Drumsticks","Easy",45,
-["Chicken Drumsticks","Oil","Seasoning"]],
-
-["Chicken","Stir Fry","Easy",30,
-["Chicken","Rice","Broccoli","Bell Peppers","Onion","Garlic","Soy Sauce"]],
-
-["Chicken","Curry","Medium",40,
-["Chicken","Rice","Onion","Garlic","Coconut Milk","Curry Powder"]],
+}
 
 
-["Pork","Pork Belly","Medium",60,
-["Pork Belly","Garlic","Soy Sauce","Brown Sugar"]],
 
-["Pork","Ribs","Medium",150,
-["Pork Ribs","BBQ Sauce","Brown Sugar","Seasoning"]],
-
-["Pork","Boneless Ribs","Easy",55,
-["Boneless Pork Ribs","BBQ Sauce","Seasoning"]],
-
-["Pork","Meatballs","Medium",40,
-["Ground Pork","Eggs","Breadcrumbs","Onion","Garlic"]],
-
-["Pork","Ramen","Easy",30,
-["Pork","Ramen Noodles","Soy Sauce","Garlic","Onion","Eggs"]],
-
-["Pork","Tenderloin","Medium",50,
-["Pork Tenderloin","Garlic","Oil","Seasoning"]],
-
-["Pork","Pork Chops","Easy",30,
-["Pork Chops","Oil","Seasoning"]],
-
-["Pork","Enchiladas","Medium",45,
-["Pork","Tortillas","Cheese","Onion","Enchilada Sauce"]],
-
-["Pork","Curry","Medium",40,
-["Pork","Rice","Onion","Garlic","Coconut Milk","Curry Powder"]],
+/* ======================================================
+   UNIT SYSTEM
+====================================================== */
 
 
-["Lamb","Leg of Lamb","Medium",120,
-["Leg of Lamb","Garlic","Oil","Seasoning"]],
+const UNITS = [
 
-["Lamb","Lamb Chops","Medium",35,
-["Lamb Chops","Garlic","Oil","Seasoning"]],
+  "each",
 
-["Lamb","Lamb Roast","Medium",120,
-["Lamb Roast","Garlic","Onion","Oil","Seasoning"]],
+  "oz",
 
+  "lb",
 
-["Beef","Steak","Easy",25,
-["Steak","Butter","Garlic","Seasoning"]],
+  "g",
 
-["Beef","Stir Fry","Easy",30,
-["Beef Strips","Rice","Broccoli","Bell Peppers","Onion","Garlic","Soy Sauce"]],
+  "kg",
 
-["Beef","Pressure Cooker Beef","Easy",55,
-["Beef Roast","Onion","Garlic","Beef Bouillon"]],
+  "tsp",
 
-["Beef","Fajita Bowls","Easy",30,
-["Beef Strips","Rice","Bell Peppers","Onion","Lime"]],
+  "tbsp",
 
-["Beef","Beef and Noodles","Easy",35,
-["Beef Strips","Egg Noodles","Onion","Beef Bouillon"]],
+  "fl oz",
 
-["Beef","Roast","Medium",150,
-["Beef Roast","Potatoes","Onion","Garlic","Carrots","Beef Bouillon"]],
+  "cup",
 
-["Beef","French Dips","Easy",40,
-["Roast Beef","Hoagie Rolls","Onion","Beef Bouillon","Cheese"]],
+  "pint",
 
+  "quart",
 
-["Other","Salad","Easy",15,
-["Lettuce","Tomato","Cucumber","Cheese","Dressing"]],
+  "gallon",
 
-["Other","Sushi Bowls","Medium",35,
-["Rice","Cucumber","Avocado","Soy Sauce","Sushi Protein"]],
+  "mL",
 
-["Other","Zucchini Boats","Medium",45,
-["Zucchini","Ground Beef","Onion","Garlic","Tomato Sauce","Cheese"]],
+  "L",
 
-["Other","Pizza","Easy",30,
-["Pizza Dough","Tomato Sauce","Mozzarella","Pizza Toppings"]],
+  "can",
 
-["Other","Turkey Deconstructed Cabbage Rolls","Medium",50,
-["Ground Turkey","Cabbage","Rice","Onion","Tomato Sauce"]],
+  "package",
 
-["Other","Grilled Cheese","Easy",15,
-["Bread","Cheese","Butter"]]
+  "bag",
+
+  "box",
+
+  "jar",
+
+  "bottle",
+
+  "bunch"
 
 ];
 
 
-const DEFAULT_RECIPES=BASE.map(
-(r,i)=>({
+const UNIT_INFO = {
 
-id:"default-"+i,
+  "oz":{
+    group:"weight",
+    factor:1
+  },
 
-category:r[0],
+  "lb":{
+    group:"weight",
+    factor:16
+  },
 
-name:r[1],
+  "g":{
+    group:"weight",
+    factor:0.0352739619
+  },
 
-difficulty:r[2],
-
-minutes:r[3],
-
-baseServings:4,
-
-notes:"",
-
-ingredients:r[4].map(
-name=>({
-name,
-...inferIngredient(name)
-})
-)
-
-})
-);
+  "kg":{
+    group:"weight",
+    factor:35.2739619
+  },
 
 
-const STORAGE_KEY=
-"familyMealPickerDataV7";
+  "tsp":{
+    group:"volume",
+    factor:1
+  },
+
+  "tbsp":{
+    group:"volume",
+    factor:3
+  },
+
+  "fl oz":{
+    group:"volume",
+    factor:6
+  },
+
+  "cup":{
+    group:"volume",
+    factor:48
+  },
+
+  "pint":{
+    group:"volume",
+    factor:96
+  },
+
+  "quart":{
+    group:"volume",
+    factor:192
+  },
+
+  "gallon":{
+    group:"volume",
+    factor:768
+  },
+
+  "mL":{
+    group:"volume",
+    factor:0.202884
+  },
+
+  "L":{
+    group:"volume",
+    factor:202.884
+  },
 
 
-const DAYS=[
-"Monday",
-"Tuesday",
-"Wednesday",
-"Thursday",
-"Friday",
-"Saturday",
-"Sunday"
-];
+  "each":{
+    group:"each",
+    factor:1
+  },
 
+  "can":{
+    group:"can",
+    factor:1
+  },
 
-function defaultState(){
+  "package":{
+    group:"package",
+    factor:1
+  },
 
-const recipes=
-JSON.parse(
-JSON.stringify(DEFAULT_RECIPES)
-);
+  "bag":{
+    group:"bag",
+    factor:1
+  },
 
-const inventory={};
+  "box":{
+    group:"box",
+    factor:1
+  },
 
-recipes
-.flatMap(r=>r.ingredients)
-.forEach(i=>{
+  "jar":{
+    group:"jar",
+    factor:1
+  },
 
-if(!inventory[i.name]){
+  "bottle":{
+    group:"bottle",
+    factor:1
+  },
 
-inventory[i.name]={
-status:"out",
-qty:0,
-unit:i.unit
+  "bunch":{
+    group:"bunch",
+    factor:1
+  }
+
 };
+
+
+function canConvertUnits(
+  fromUnit,
+  toUnit
+){
+
+  return (
+
+    UNIT_INFO[fromUnit]
+
+    &&
+
+    UNIT_INFO[toUnit]
+
+    &&
+
+    UNIT_INFO[fromUnit].group
+      ===
+    UNIT_INFO[toUnit].group
+
+  );
 
 }
 
-});
 
-return{
+function convertQuantity(
+  quantity,
+  fromUnit,
+  toUnit
+){
 
-recipes,
+  if(
+    !canConvertUnits(
+      fromUnit,
+      toUnit
+    )
+  ){
 
-inventory,
+    return null;
 
-week:{},
+  }
 
-shoppingRecipeIds:[],
 
-manualShopping:[],
+  const baseAmount =
 
-manualChecked:{},
+    (Number(quantity) || 0)
 
-shoppingOverrides:{}
+    *
 
-};
+    UNIT_INFO[fromUnit].factor;
+
+
+  return (
+
+    baseAmount
+
+    /
+
+    UNIT_INFO[toUnit].factor
+
+  );
 
 }
 
 
-function migrateOld(){
+function unitOptions(
+  selectedUnit
+){
 
-for(
-const key of [
-"familyMealPickerDataV6",
-"familyMealPickerDataV5",
-"familyMealPickerDataV4"
+  return UNITS
+
+    .map(
+
+      unit =>
+
+      `
+        <option
+          value="${escapeHtml(unit)}"
+          ${unit === selectedUnit ? "selected" : ""}
+        >
+          ${escapeHtml(unit)}
+        </option>
+      `
+
+    )
+
+    .join("");
+
+}
+
+
+
+/* ======================================================
+   INGREDIENT DEFAULT QUANTITY ESTIMATES
+====================================================== */
+
+
+function inferIngredient(
+  ingredientName
+){
+
+  const name =
+    ingredientName
+      .toLowerCase();
+
+
+  if(
+    /ground beef|chicken$|pork$|beef strips|beef roast|roast beef|ground pork|ground turkey|steak|pork tenderloin|pork chops|lamb|ribs|pork belly|sushi protein/
+      .test(name)
+  ){
+
+    return {
+      qty:1,
+      unit:"lb"
+    };
+
+  }
+
+
+  if(
+    /drumsticks/
+      .test(name)
+  ){
+
+    return {
+      qty:6,
+      unit:"each"
+    };
+
+  }
+
+
+  if(
+    /tortilla/
+      .test(name)
+  ){
+
+    return {
+      qty:8,
+      unit:"each"
+    };
+
+  }
+
+
+  if(
+    /burger buns|hoagie rolls/
+      .test(name)
+  ){
+
+    return {
+      qty:4,
+      unit:"each"
+    };
+
+  }
+
+
+  if(
+    /garlic/
+      .test(name)
+  ){
+
+    return {
+      qty:3,
+      unit:"each"
+    };
+
+  }
+
+
+  if(
+    /onion|bell peppers|tomato$|lime|cucumber|avocado|zucchini|cabbage|pie crust/
+      .test(name)
+  ){
+
+    return {
+      qty:1,
+      unit:"each"
+    };
+
+  }
+
+
+  if(
+    /cheese|mozzarella|parmesan|ricotta|cream cheese/
+      .test(name)
+  ){
+
+    return {
+      qty:1,
+      unit:"cup"
+    };
+
+  }
+
+
+  if(
+    /rice/
+      .test(name)
+  ){
+
+    return {
+      qty:1,
+      unit:"cup"
+    };
+
+  }
+
+
+  if(
+    /pasta|noodles/
+      .test(name)
+  ){
+
+    return {
+      qty:8,
+      unit:"oz"
+    };
+
+  }
+
+
+  if(
+    /sauce|cream|milk|coconut milk|dressing|pesto|mayonnaise/
+      .test(name)
+  ){
+
+    return {
+      qty:1,
+      unit:"cup"
+    };
+
+  }
+
+
+  if(
+    /beans|corn|peas/
+      .test(name)
+  ){
+
+    return {
+      qty:1,
+      unit:"can"
+    };
+
+  }
+
+
+  if(
+    /oil|soy sauce|butter/
+      .test(name)
+  ){
+
+    return {
+      qty:2,
+      unit:"tbsp"
+    };
+
+  }
+
+
+  if(
+    /flour|breadcrumbs|brown sugar/
+      .test(name)
+  ){
+
+    return {
+      qty:0.5,
+      unit:"cup"
+    };
+
+  }
+
+
+  return {
+    qty:1,
+    unit:"each"
+  };
+
+}
+
+
+
+/* ======================================================
+   DEFAULT RECIPE LIST
+====================================================== */
+
+
+const BASE_RECIPES = [
+
+[
+"Ground Beef",
+"Stuffed Bell Peppers",
+"Medium",
+50,
+[
+"Ground Beef",
+"Bell Peppers",
+"Rice",
+"Onion",
+"Garlic",
+"Tomato Sauce"
 ]
-){
+],
 
-try{
+[
+"Ground Beef",
+"Chili",
+"Easy",
+45,
+[
+"Ground Beef",
+"Beans",
+"Onion",
+"Garlic",
+"Tomato Sauce",
+"Tomato Paste"
+]
+],
 
-const raw=
-localStorage.getItem(key);
+[
+"Ground Beef",
+"Spaghetti",
+"Easy",
+30,
+[
+"Ground Beef",
+"Pasta",
+"Tomato Sauce",
+"Onion",
+"Garlic"
+]
+],
 
-if(!raw)
-continue;
+[
+"Ground Beef",
+"Burgers",
+"Easy",
+25,
+[
+"Ground Beef",
+"Burger Buns",
+"Cheese",
+"Lettuce",
+"Tomato",
+"Onion"
+]
+],
 
-const old=
-JSON.parse(raw);
+[
+"Ground Beef",
+"Lasagna",
+"Medium",
+75,
+[
+"Ground Beef",
+"Lasagna Noodles",
+"Tomato Sauce",
+"Ricotta",
+"Mozzarella",
+"Onion",
+"Garlic"
+]
+],
 
-const s=
-defaultState();
+[
+"Ground Beef",
+"Goulash",
+"Easy",
+35,
+[
+"Ground Beef",
+"Pasta",
+"Tomato Sauce",
+"Onion",
+"Garlic"
+]
+],
+
+[
+"Ground Beef",
+"Meatballs",
+"Medium",
+40,
+[
+"Ground Beef",
+"Eggs",
+"Breadcrumbs",
+"Onion",
+"Garlic"
+]
+],
+
+[
+"Ground Beef",
+"Shepherd's Pie",
+"Medium",
+55,
+[
+"Ground Beef",
+"Potatoes",
+"Onion",
+"Carrots",
+"Green Beans",
+"Butter"
+]
+],
+
+[
+"Ground Beef",
+"Meatloaf",
+"Medium",
+60,
+[
+"Ground Beef",
+"Eggs",
+"Breadcrumbs",
+"Onion",
+"Tomato Sauce"
+]
+],
+
+[
+"Ground Beef",
+"Sloppy Joes",
+"Easy",
+30,
+[
+"Ground Beef",
+"Burger Buns",
+"Onion",
+"Tomato Sauce"
+]
+],
+
+[
+"Ground Beef",
+"Enchiladas",
+"Medium",
+45,
+[
+"Ground Beef",
+"Tortillas",
+"Cheese",
+"Onion",
+"Enchilada Sauce"
+]
+],
+
+[
+"Ground Beef",
+"Tacos",
+"Easy",
+25,
+[
+"Ground Beef",
+"Tortillas",
+"Cheese",
+"Lettuce",
+"Tomato",
+"Onion"
+]
+],
 
 
-if(Array.isArray(old.recipes)){
+[
+"Chicken",
+"Fajita Bowls",
+"Easy",
+30,
+[
+"Chicken",
+"Rice",
+"Bell Peppers",
+"Onion",
+"Lime"
+]
+],
 
-s.recipes=
-old.recipes.map(r=>({
+[
+"Chicken",
+"Garlic Parmesan Cream Chicken",
+"Medium",
+35,
+[
+"Chicken",
+"Garlic",
+"Butter",
+"Heavy Cream",
+"Parmesan"
+]
+],
 
-id:r.id||uid(),
+[
+"Chicken",
+"Chicken Parmesan",
+"Medium",
+45,
+[
+"Chicken",
+"Breadcrumbs",
+"Eggs",
+"Tomato Sauce",
+"Mozzarella",
+"Parmesan"
+]
+],
 
-name:r.name||"Recipe",
+[
+"Chicken",
+"Chicken Pot Pie",
+"Medium",
+60,
+[
+"Chicken",
+"Potatoes",
+"Carrots",
+"Peas",
+"Onion",
+"Pie Crust",
+"Chicken Bouillon"
+]
+],
 
-category:r.category||"Other",
+[
+"Chicken",
+"Chicken Noodle Soup",
+"Easy",
+40,
+[
+"Chicken",
+"Egg Noodles",
+"Carrots",
+"Celery",
+"Onion",
+"Garlic",
+"Chicken Bouillon"
+]
+],
 
-difficulty:
-r.difficulty||"Easy",
+[
+"Chicken",
+"Chicken and Dumplings",
+"Medium",
+55,
+[
+"Chicken",
+"Flour",
+"Milk",
+"Butter",
+"Chicken Bouillon"
+]
+],
 
-minutes:
-Number(r.minutes)||30,
+[
+"Chicken",
+"Chicken Broccoli Soup",
+"Easy",
+35,
+[
+"Chicken",
+"Broccoli",
+"Onion",
+"Garlic",
+"Chicken Bouillon",
+"Heavy Cream"
+]
+],
 
-baseServings:
-Number(r.baseServings)||4,
+[
+"Chicken",
+"Chicken Alfredo",
+"Easy",
+30,
+[
+"Chicken",
+"Pasta",
+"Garlic",
+"Butter",
+"Heavy Cream",
+"Parmesan"
+]
+],
 
-notes:
-r.notes||"",
+[
+"Chicken",
+"White Wings",
+"Medium",
+40,
+[
+"Chicken",
+"Bacon",
+"Jalapenos",
+"Cream Cheese"
+]
+],
 
-ingredients:
-(r.ingredients||[])
-.map(i=>
+[
+"Chicken",
+"Enchiladas",
+"Medium",
+45,
+[
+"Chicken",
+"Tortillas",
+"Cheese",
+"Onion",
+"Enchilada Sauce"
+]
+],
 
-typeof i==="string"
+[
+"Chicken",
+"Tortilla Soup",
+"Easy",
+40,
+[
+"Chicken",
+"Beans",
+"Corn",
+"Onion",
+"Garlic",
+"Tomato Sauce",
+"Chicken Bouillon",
+"Tortilla Chips"
+]
+],
 
-?{
-name:i,
-...inferIngredient(i)
-}
+[
+"Chicken",
+"Chicken Salad",
+"Easy",
+20,
+[
+"Chicken",
+"Mayonnaise",
+"Celery",
+"Grapes"
+]
+],
 
-:{
-name:i.name||"Ingredient",
-qty:Number(i.qty)||1,
-unit:i.unit||"each"
-}
+[
+"Chicken",
+"Pesto Chicken Pasta",
+"Easy",
+30,
+[
+"Chicken",
+"Pasta",
+"Pesto",
+"Garlic",
+"Parmesan"
+]
+],
 
-)
+[
+"Chicken",
+"Drumsticks",
+"Easy",
+45,
+[
+"Chicken Drumsticks",
+"Oil",
+"Seasoning"
+]
+],
 
-}));
+[
+"Chicken",
+"Stir Fry",
+"Easy",
+30,
+[
+"Chicken",
+"Rice",
+"Broccoli",
+"Bell Peppers",
+"Onion",
+"Garlic",
+"Soy Sauce"
+]
+],
 
-}
-
-
-s.inventory={};
-
-
-s.recipes
-.flatMap(r=>r.ingredients)
-.forEach(i=>{
-
-if(!s.inventory[i.name]){
-
-s.inventory[i.name]={
-status:"out",
-qty:0,
-unit:i.unit
-};
-
-}
-
-});
-
-
-Object.entries(
-old.inventory||{}
-)
-.forEach(([name,val])=>{
-
-s.inventory[name]=
-
-typeof val==="string"
-
-?{
-status:val,
-qty:val==="have"?1:0,
-unit:
-s.inventory[name]?.unit||
-"each"
-}
-
-:{
-status:
-val.status||"out",
-
-qty:
-Number(val.qty)||0,
-
-unit:
-val.unit||
-s.inventory[name]?.unit||
-"each"
-};
-
-});
-
-
-s.week=
-old.week||{};
+[
+"Chicken",
+"Curry",
+"Medium",
+40,
+[
+"Chicken",
+"Rice",
+"Onion",
+"Garlic",
+"Coconut Milk",
+"Curry Powder"
+]
+],
 
 
-Object.keys(s.week)
-.forEach(day=>{
+[
+"Pork",
+"Pork Belly",
+"Medium",
+60,
+[
+"Pork Belly",
+"Garlic",
+"Soy Sauce",
+"Brown Sugar"
+]
+],
 
-if(
-typeof s.week[day]==="string"
-){
+[
+"Pork",
+"Ribs",
+"Medium",
+150,
+[
+"Pork Ribs",
+"BBQ Sauce",
+"Brown Sugar",
+"Seasoning"
+]
+],
 
-const r=
-s.recipes.find(
-x=>x.id===s.week[day]
+[
+"Pork",
+"Boneless Ribs",
+"Easy",
+55,
+[
+"Boneless Pork Ribs",
+"BBQ Sauce",
+"Seasoning"
+]
+],
+
+[
+"Pork",
+"Meatballs",
+"Medium",
+40,
+[
+"Ground Pork",
+"Eggs",
+"Breadcrumbs",
+"Onion",
+"Garlic"
+]
+],
+
+[
+"Pork",
+"Ramen",
+"Easy",
+30,
+[
+"Pork",
+"Ramen Noodles",
+"Soy Sauce",
+"Garlic",
+"Onion",
+"Eggs"
+]
+],
+
+[
+"Pork",
+"Tenderloin",
+"Medium",
+50,
+[
+"Pork Tenderloin",
+"Garlic",
+"Oil",
+"Seasoning"
+]
+],
+
+[
+"Pork",
+"Pork Chops",
+"Easy",
+30,
+[
+"Pork Chops",
+"Oil",
+"Seasoning"
+]
+],
+
+[
+"Pork",
+"Enchiladas",
+"Medium",
+45,
+[
+"Pork",
+"Tortillas",
+"Cheese",
+"Onion",
+"Enchilada Sauce"
+]
+],
+
+[
+"Pork",
+"Curry",
+"Medium",
+40,
+[
+"Pork",
+"Rice",
+"Onion",
+"Garlic",
+"Coconut Milk",
+"Curry Powder"
+]
+],
+
+
+[
+"Lamb",
+"Leg of Lamb",
+"Medium",
+120,
+[
+"Leg of Lamb",
+"Garlic",
+"Oil",
+"Seasoning"
+]
+],
+
+[
+"Lamb",
+"Lamb Chops",
+"Medium",
+35,
+[
+"Lamb Chops",
+"Garlic",
+"Oil",
+"Seasoning"
+]
+],
+
+[
+"Lamb",
+"Lamb Roast",
+"Medium",
+120,
+[
+"Lamb Roast",
+"Garlic",
+"Onion",
+"Oil",
+"Seasoning"
+]
+],
+
+
+[
+"Beef",
+"Steak",
+"Easy",
+25,
+[
+"Steak",
+"Butter",
+"Garlic",
+"Seasoning"
+]
+],
+
+[
+"Beef",
+"Stir Fry",
+"Easy",
+30,
+[
+"Beef Strips",
+"Rice",
+"Broccoli",
+"Bell Peppers",
+"Onion",
+"Garlic",
+"Soy Sauce"
+]
+],
+
+[
+"Beef",
+"Pressure Cooker Beef",
+"Easy",
+55,
+[
+"Beef Roast",
+"Onion",
+"Garlic",
+"Beef Bouillon"
+]
+],
+
+[
+"Beef",
+"Fajita Bowls",
+"Easy",
+30,
+[
+"Beef Strips",
+"Rice",
+"Bell Peppers",
+"Onion",
+"Lime"
+]
+],
+
+[
+"Beef",
+"Beef and Noodles",
+"Easy",
+35,
+[
+"Beef Strips",
+"Egg Noodles",
+"Onion",
+"Beef Bouillon"
+]
+],
+
+[
+"Beef",
+"Roast",
+"Medium",
+150,
+[
+"Beef Roast",
+"Potatoes",
+"Onion",
+"Garlic",
+"Carrots",
+"Beef Bouillon"
+]
+],
+
+[
+"Beef",
+"French Dips",
+"Easy",
+40,
+[
+"Roast Beef",
+"Hoagie Rolls",
+"Onion",
+"Beef Bouillon",
+"Cheese"
+]
+],
+
+
+[
+"Other",
+"Salad",
+"Easy",
+15,
+[
+"Lettuce",
+"Tomato",
+"Cucumber",
+"Cheese",
+"Dressing"
+]
+],
+
+[
+"Other",
+"Sushi Bowls",
+"Medium",
+35,
+[
+"Rice",
+"Cucumber",
+"Avocado",
+"Soy Sauce",
+"Sushi Protein"
+]
+],
+
+[
+"Other",
+"Zucchini Boats",
+"Medium",
+45,
+[
+"Zucchini",
+"Ground Beef",
+"Onion",
+"Garlic",
+"Tomato Sauce",
+"Cheese"
+]
+],
+
+[
+"Other",
+"Pizza",
+"Easy",
+30,
+[
+"Pizza Dough",
+"Tomato Sauce",
+"Mozzarella",
+"Pizza Toppings"
+]
+],
+
+[
+"Other",
+"Turkey Deconstructed Cabbage Rolls",
+"Medium",
+50,
+[
+"Ground Turkey",
+"Cabbage",
+"Rice",
+"Onion",
+"Tomato Sauce"
+]
+],
+
+[
+"Other",
+"Grilled Cheese",
+"Easy",
+15,
+[
+"Bread",
+"Cheese",
+"Butter"
+]
+]
+
+];
+
+
+
+const DEFAULT_RECIPES =
+
+BASE_RECIPES.map(
+
+  (recipe,index) => ({
+
+    id:
+      "default-" + index,
+
+    category:
+      recipe[0],
+
+    name:
+      recipe[1],
+
+    difficulty:
+      recipe[2],
+
+    minutes:
+      recipe[3],
+
+    baseServings:
+      4,
+
+    notes:
+      "",
+
+    ingredients:
+
+      recipe[4].map(
+
+        ingredientName => ({
+
+          name:
+            ingredientName,
+
+          ...inferIngredient(
+            ingredientName
+          )
+
+        })
+
+      )
+
+  })
+
 );
 
-s.week[day]={
-recipeId:s.week[day],
-servings:
-r?.baseServings||4
-};
+
+
+/* ======================================================
+   SAVED DATA
+====================================================== */
+
+
+const STORAGE_KEY =
+  "familyMealPickerDataV8";
+
+
+const DAYS = [
+
+  "Monday",
+
+  "Tuesday",
+
+  "Wednesday",
+
+  "Thursday",
+
+  "Friday",
+
+  "Saturday",
+
+  "Sunday"
+
+];
+
+
+
+function createDefaultState(){
+
+  const recipes =
+
+    JSON.parse(
+
+      JSON.stringify(
+        DEFAULT_RECIPES
+      )
+
+    );
+
+
+  const inventory = {};
+
+
+  recipes
+
+    .flatMap(
+      recipe =>
+      recipe.ingredients
+    )
+
+    .forEach(
+      ingredient => {
+
+        if(
+          !inventory[
+            ingredient.name
+          ]
+        ){
+
+          inventory[
+            ingredient.name
+          ] = {
+
+            status:
+              "out",
+
+            qty:
+              0,
+
+            unit:
+              ingredient.unit
+
+          };
+
+        }
+
+      }
+    );
+
+
+  return {
+
+    recipes,
+
+    inventory,
+
+    week:{},
+
+    shoppingRecipeIds:[],
+
+    manualShopping:[],
+
+    manualChecked:{},
+
+    shoppingOverrides:{}
+
+  };
 
 }
 
-});
 
 
-s.shoppingRecipeIds=
-old.shoppingRecipeIds||[];
+/* ======================================================
+   DATA NORMALIZATION
+====================================================== */
 
 
-s.manualShopping=
-(old.manualShopping||[])
-.map(x=>
+function normalizeRecipe(
+  recipe,
+  index
+){
 
-typeof x==="string"
+  if(
+    !recipe ||
+    typeof recipe !== "object"
+  ){
 
-?{
-name:x,
-qty:1,
-unit:"each"
+    return null;
+
+  }
+
+
+  const ingredients =
+
+    Array.isArray(
+      recipe.ingredients
+    )
+
+    ? recipe.ingredients
+
+      .map(
+        ingredient => {
+
+          if(
+            typeof ingredient ===
+            "string"
+          ){
+
+            return {
+
+              name:
+                ingredient,
+
+              ...inferIngredient(
+                ingredient
+              )
+
+            };
+
+          }
+
+
+          if(
+            ingredient &&
+            typeof ingredient ===
+            "object"
+          ){
+
+            const name =
+              String(
+                ingredient.name ||
+                "Ingredient"
+              );
+
+
+            return {
+
+              name,
+
+              qty:
+                Number(
+                  ingredient.qty
+                ) || 1,
+
+              unit:
+                ingredient.unit ||
+                inferIngredient(name).unit
+
+            };
+
+          }
+
+
+          return null;
+
+        }
+      )
+
+      .filter(Boolean)
+
+    : [];
+
+
+  return {
+
+    id:
+      recipe.id ||
+      createId(),
+
+    category:
+      recipe.category ||
+      "Other",
+
+    name:
+      recipe.name ||
+      `Recipe ${index + 1}`,
+
+    difficulty:
+      recipe.difficulty ||
+      "Easy",
+
+    minutes:
+      Number(
+        recipe.minutes
+      ) || 30,
+
+    baseServings:
+      Math.max(
+        1,
+        Number(
+          recipe.baseServings
+        ) || 4
+      ),
+
+    notes:
+      recipe.notes ||
+      "",
+
+    ingredients
+
+  };
+
 }
 
-:x
-
-);
 
 
-s.manualChecked=
-old.manualChecked||{};
+function normalizeState(
+  rawState
+){
+
+  const defaults =
+    createDefaultState();
 
 
-s.shoppingOverrides=
-old.shoppingOverrides||{};
+  if(
+    !rawState ||
+    typeof rawState !== "object"
+  ){
+
+    return defaults;
+
+  }
 
 
-return s;
+  let recipes = [];
+
+
+  if(
+    Array.isArray(
+      rawState.recipes
+    )
+  ){
+
+    recipes =
+
+      rawState.recipes
+
+      .map(
+        normalizeRecipe
+      )
+
+      .filter(Boolean);
+
+  }
+
+
+  /*
+    IMPORTANT FIX:
+
+    An empty saved recipe array is no longer
+    accepted as a valid recipe database.
+
+    This restores the original recipes if a
+    previous broken version saved [].
+  */
+
+  if(
+    recipes.length === 0
+  ){
+
+    recipes =
+
+      JSON.parse(
+
+        JSON.stringify(
+          DEFAULT_RECIPES
+        )
+
+      );
+
+  }
+
+
+  const inventory = {};
+
+
+  /*
+    Build inventory entries from every recipe first.
+  */
+
+  recipes
+
+    .flatMap(
+      recipe =>
+      recipe.ingredients
+    )
+
+    .forEach(
+      ingredient => {
+
+        if(
+          !inventory[
+            ingredient.name
+          ]
+        ){
+
+          inventory[
+            ingredient.name
+          ] = {
+
+            status:
+              "out",
+
+            qty:
+              0,
+
+            unit:
+              ingredient.unit ||
+              "each"
+
+          };
+
+        }
+
+      }
+    );
+
+
+  /*
+    Merge old inventory on top.
+  */
+
+  if(
+    rawState.inventory &&
+    typeof rawState.inventory ===
+    "object"
+  ){
+
+    Object.entries(
+      rawState.inventory
+    )
+
+    .forEach(
+      ([name,value]) => {
+
+        if(
+          typeof value ===
+          "string"
+        ){
+
+          inventory[name] = {
+
+            status:
+              value,
+
+            qty:
+              value === "have"
+              ? 1
+              : 0,
+
+            unit:
+              inventory[name]?.unit ||
+              "each"
+
+          };
+
+        }
+
+        else if(
+          value &&
+          typeof value ===
+          "object"
+        ){
+
+          inventory[name] = {
+
+            status:
+              value.status ||
+              "out",
+
+            qty:
+              Number(
+                value.qty
+              ) || 0,
+
+            unit:
+              value.unit ||
+              inventory[name]?.unit ||
+              "each"
+
+          };
+
+        }
+
+      }
+    );
+
+  }
+
+
+  const week =
+    {};
+
+
+  if(
+    rawState.week &&
+    typeof rawState.week ===
+    "object"
+  ){
+
+    Object.entries(
+      rawState.week
+    )
+
+    .forEach(
+      ([day,value]) => {
+
+        if(
+          typeof value ===
+          "string"
+        ){
+
+          const recipe =
+            recipes.find(
+              recipe =>
+              recipe.id === value
+            );
+
+
+          if(recipe){
+
+            week[day] = {
+
+              recipeId:
+                value,
+
+              servings:
+                recipe.baseServings
+
+            };
+
+          }
+
+        }
+
+        else if(
+          value &&
+          typeof value ===
+          "object"
+        ){
+
+          const recipeId =
+            value.recipeId;
+
+
+          const recipe =
+            recipes.find(
+              recipe =>
+              recipe.id ===
+              recipeId
+            );
+
+
+          if(recipe){
+
+            week[day] = {
+
+              recipeId,
+
+              servings:
+                Math.max(
+                  1,
+                  Number(
+                    value.servings
+                  ) ||
+                  recipe.baseServings
+                )
+
+            };
+
+          }
+
+        }
+
+      }
+    );
+
+  }
+
+
+  const manualShopping =
+
+    Array.isArray(
+      rawState.manualShopping
+    )
+
+    ? rawState.manualShopping
+
+      .map(
+        item => {
+
+          if(
+            typeof item ===
+            "string"
+          ){
+
+            return {
+
+              name:
+                item,
+
+              qty:
+                1,
+
+              unit:
+                "each"
+
+            };
+
+          }
+
+
+          if(
+            item &&
+            typeof item ===
+            "object"
+          ){
+
+            return {
+
+              name:
+                item.name ||
+                "Item",
+
+              qty:
+                Number(
+                  item.qty
+                ) || 1,
+
+              unit:
+                item.unit ||
+                "each"
+
+            };
+
+          }
+
+
+          return null;
+
+        }
+      )
+
+      .filter(Boolean)
+
+    : [];
+
+
+  return {
+
+    recipes,
+
+    inventory,
+
+    week,
+
+    shoppingRecipeIds:
+
+      Array.isArray(
+        rawState.shoppingRecipeIds
+      )
+
+      ? rawState.shoppingRecipeIds
+
+        .filter(
+          id =>
+          recipes.some(
+            recipe =>
+            recipe.id === id
+          )
+        )
+
+      : [],
+
+    manualShopping,
+
+    manualChecked:
+      rawState.manualChecked ||
+      {},
+
+    shoppingOverrides:
+      rawState.shoppingOverrides ||
+      {}
+
+  };
 
 }
-catch(e){}
+
+
+
+/* ======================================================
+   MIGRATION
+====================================================== */
+
+
+function migrateOlderVersions(){
+
+  const oldKeys = [
+
+    "familyMealPickerDataV7",
+
+    "familyMealPickerDataV6",
+
+    "familyMealPickerDataV5",
+
+    "familyMealPickerDataV4",
+
+    "familyMealPickerDataV3"
+
+  ];
+
+
+  let bestState = null;
+
+
+  for(
+    const key
+    of oldKeys
+  ){
+
+    try{
+
+      const raw =
+        localStorage.getItem(key);
+
+
+      if(!raw)
+        continue;
+
+
+      const parsed =
+        JSON.parse(raw);
+
+
+      const normalized =
+        normalizeState(parsed);
+
+
+      /*
+        Prefer the first old state that has recipes.
+
+        normalizeState restores defaults if the
+        old recipe array was accidentally emptied.
+      */
+
+      if(
+        normalized.recipes.length > 0
+      ){
+
+        bestState =
+          normalized;
+
+        break;
+
+      }
+
+    }
+
+    catch(error){
+
+      console.warn(
+        "Could not migrate",
+        key,
+        error
+      );
+
+    }
+
+  }
+
+
+  return bestState;
 
 }
 
-return null;
-
-}
 
 
 function loadState(){
 
-try{
+  try{
 
-const raw=
-localStorage.getItem(
-STORAGE_KEY
-);
+    const current =
+      localStorage.getItem(
+        STORAGE_KEY
+      );
 
-if(raw)
-return JSON.parse(raw);
+
+    if(current){
+
+      const parsed =
+        JSON.parse(current);
+
+
+      return normalizeState(
+        parsed
+      );
+
+    }
+
+  }
+
+  catch(error){
+
+    console.warn(
+      "Could not load V8 data",
+      error
+    );
+
+  }
+
+
+  return (
+    migrateOlderVersions()
+    ||
+    createDefaultState()
+  );
 
 }
-catch(e){}
 
-return migrateOld()||
-defaultState();
+
+
+let state =
+  loadState();
+
+
+
+function saveState(){
+
+  try{
+
+    localStorage.setItem(
+
+      STORAGE_KEY,
+
+      JSON.stringify(
+        state
+      )
+
+    );
+
+  }
+
+  catch(error){
+
+    console.error(
+      "Could not save data",
+      error
+    );
+
+  }
+
+
+  renderEverything();
 
 }
 
 
-let state=
-loadState();
 
-
-function save(){
-
-localStorage.setItem(
-STORAGE_KEY,
-JSON.stringify(state)
-);
-
-renderAll();
-
-}
+/* ======================================================
+   DATA HELPERS
+====================================================== */
 
 
 function recipeById(id){
 
-return state.recipes.find(
-r=>r.id===id
-);
+  return state.recipes.find(
+    recipe =>
+    recipe.id === id
+  );
 
 }
 
 
-function inv(name){
 
-if(!state.inventory[name]){
-
-state.inventory[name]={
-status:"out",
-qty:0,
-unit:"each"
-};
-
-}
-
-return state.inventory[name];
-
-}
-
-
-function requiredForRecipe(
-recipe,
-servings
+function inventoryItem(
+  name
 ){
 
-const multiplier=
+  if(
+    !state.inventory[name]
+  ){
 
-Math.max(
-0.1,
-Number(servings)||
-recipe.baseServings
-)
-/
-(recipe.baseServings||4);
+    state.inventory[name] = {
+
+      status:
+        "out",
+
+      qty:
+        0,
+
+      unit:
+        "each"
+
+    };
+
+  }
 
 
-return recipe.ingredients.map(
-ingredient=>({
-
-name:
-ingredient.name,
-
-qty:
-round(
-(Number(ingredient.qty)||0)
-*
-multiplier
-),
-
-unit:
-ingredient.unit||"each"
-
-})
-);
+  return state.inventory[name];
 
 }
 
 
-function shortage(
-name,
-requiredQty,
-requiredUnit
+
+/* ======================================================
+   RECIPE REQUIREMENTS
+====================================================== */
+
+
+function requiredIngredients(
+  recipe,
+  servings
 ){
 
-const item=
-inv(name);
+  const baseServings =
+
+    Math.max(
+      1,
+      Number(
+        recipe.baseServings
+      ) || 4
+    );
 
 
-if(item.status==="out")
-return requiredQty;
+  const requestedServings =
+
+    Math.max(
+      0.1,
+      Number(servings) ||
+      baseServings
+    );
 
 
-const have=
-convert(
-item.qty,
-item.unit,
-requiredUnit
-);
+  const multiplier =
+
+    requestedServings
+    /
+    baseServings;
 
 
-if(have===null){
+  return recipe.ingredients
 
-return item.status==="have"
-?0
-:requiredQty;
+    .map(
+      ingredient => ({
+
+        name:
+          ingredient.name,
+
+        qty:
+          roundQuantity(
+
+            (
+              Number(
+                ingredient.qty
+              ) || 0
+            )
+
+            *
+
+            multiplier
+
+          ),
+
+        unit:
+          ingredient.unit ||
+          "each"
+
+      })
+    );
 
 }
 
 
-return Math.max(
-0,
-round(
-requiredQty-have
-)
-);
 
-}
+/* ======================================================
+   SHORTAGE CALCULATION
+====================================================== */
 
 
-function missingForRecipe(
-recipe,
-servings
+function calculateShortage(
+  ingredientName,
+  requiredQty,
+  requiredUnit
 ){
 
-return requiredForRecipe(
-recipe,
-servings||
-recipe.baseServings
-)
-.filter(
-req=>
-shortage(
-req.name,
-req.qty,
-req.unit
-)>0
-);
+  const item =
+    inventoryItem(
+      ingredientName
+    );
+
+
+  /*
+    If explicitly marked OUT, treat the
+    full required quantity as missing.
+  */
+
+  if(
+    item.status ===
+    "out"
+  ){
+
+    return roundQuantity(
+      requiredQty
+    );
+
+  }
+
+
+  const inventoryAmount =
+
+    convertQuantity(
+
+      item.qty,
+
+      item.unit,
+
+      requiredUnit
+
+    );
+
+
+  /*
+    Units cannot be mathematically compared.
+
+    If item is marked HAVE, assume available.
+    Otherwise treat the full amount as needed.
+  */
+
+  if(
+    inventoryAmount ===
+    null
+  ){
+
+    return (
+      item.status ===
+      "have"
+    )
+
+    ? 0
+
+    : roundQuantity(
+        requiredQty
+      );
+
+  }
+
+
+  return Math.max(
+
+    0,
+
+    roundQuantity(
+
+      requiredQty
+      -
+      inventoryAmount
+
+    )
+
+  );
 
 }
 
 
-function availability(recipe){
 
-const count=
-missingForRecipe(
-recipe,
-recipe.baseServings
-).length;
+function missingIngredientsForRecipe(
+  recipe,
+  servings
+){
 
+  return requiredIngredients(
+    recipe,
+    servings
+  )
 
-if(count===0)
-return "Ready";
+  .map(
+    requirement => ({
 
-if(count<=2)
-return "Almost";
+      ...requirement,
 
-return "Shopping";
+      shortage:
+
+        calculateShortage(
+
+          requirement.name,
+
+          requirement.qty,
+
+          requirement.unit
+
+        )
+
+    })
+  )
+
+  .filter(
+    requirement =>
+    requirement.shortage > 0
+  );
 
 }
 
 
-function score(recipe){
 
-return
-missingForRecipe(
-recipe,
-recipe.baseServings
-).length*10
-+
-(Number(recipe.minutes)||30)/100
-+
-(recipe.difficulty==="Easy"
-?-.5
-:0);
+/* ======================================================
+   MEAL AVAILABILITY
+====================================================== */
+
+
+function recipeAvailability(
+  recipe
+){
+
+  const count =
+
+    missingIngredientsForRecipe(
+
+      recipe,
+
+      recipe.baseServings
+
+    ).length;
+
+
+  if(
+    count === 0
+  ){
+
+    return "Ready";
+
+  }
+
+
+  if(
+    count <= 2
+  ){
+
+    return "Almost";
+
+  }
+
+
+  return "Shopping";
 
 }
+
+
+
+/* ======================================================
+   FIXED SCORE FUNCTION
+====================================================== */
+
+
+function recipeScore(
+  recipe
+){
+
+  /*
+    IMPORTANT:
+
+    The return expression is intentionally
+    wrapped in parentheses so JavaScript does
+    not perform automatic semicolon insertion.
+  */
+
+  return (
+
+    missingIngredientsForRecipe(
+
+      recipe,
+
+      recipe.baseServings
+
+    ).length
+    *
+    10
+
+    +
+
+    (
+      Number(
+        recipe.minutes
+      ) || 30
+    )
+    /
+    100
+
+    +
+
+    (
+      recipe.difficulty ===
+      "Easy"
+
+      ? -0.5
+
+      : 0
+    )
+
+  );
+
+}
+
+
+
+/* ======================================================
+   WEEKLY PLAN
+====================================================== */
 
 
 function plannedEntries(){
 
-return Object.values(
-state.week
-)
-.filter(Boolean)
-.map(v=>
+  return Object.values(
+    state.week
+  )
 
-typeof v==="string"
+  .filter(Boolean)
 
-?{
-recipeId:v,
-servings:
-recipeById(v)?.baseServings||
-4
+  .map(
+    value => {
+
+      if(
+        typeof value ===
+        "string"
+      ){
+
+        const recipe =
+          recipeById(
+            value
+          );
+
+
+        return {
+
+          recipeId:
+            value,
+
+          servings:
+            recipe?.baseServings ||
+            4
+
+        };
+
+      }
+
+
+      return value;
+
+    }
+  );
+
 }
 
-:v
 
-);
 
-}
+/* ======================================================
+   SHOPPING MEAL SOURCES
+====================================================== */
 
 
 function shoppingEntries(){
 
-const entries=[
-...plannedEntries()
-];
+  const entries =
+    [...plannedEntries()];
 
 
-state.shoppingRecipeIds
-.forEach(id=>{
+  state.shoppingRecipeIds
 
-const r=
-recipeById(id);
+    .forEach(
+      recipeId => {
 
-if(
-r &&
-!entries.some(
-e=>e.recipeId===id
-)
+        const recipe =
+          recipeById(
+            recipeId
+          );
+
+
+        if(!recipe)
+          return;
+
+
+        const alreadyIncluded =
+
+          entries.some(
+            entry =>
+            entry.recipeId ===
+            recipeId
+          );
+
+
+        if(
+          !alreadyIncluded
+        ){
+
+          entries.push({
+
+            recipeId,
+
+            servings:
+              recipe.baseServings
+
+          });
+
+        }
+
+      }
+    );
+
+
+  return entries;
+
+}
+
+
+
+/* ======================================================
+   AUTOMATIC SHOPPING REQUIREMENTS
+====================================================== */
+
+
+function automaticShoppingRequirements(){
+
+  const groups =
+    {};
+
+
+  shoppingEntries()
+
+    .forEach(
+      entry => {
+
+        const recipe =
+          recipeById(
+            entry.recipeId
+          );
+
+
+        if(!recipe)
+          return;
+
+
+        requiredIngredients(
+
+          recipe,
+
+          entry.servings
+
+        )
+
+        .forEach(
+          requirement => {
+
+            const key =
+
+              requirement.name
+              +
+              "|"
+              +
+              requirement.unit;
+
+
+            if(
+              !groups[key]
+            ){
+
+              groups[key] = {
+
+                key,
+
+                name:
+                  requirement.name,
+
+                unit:
+                  requirement.unit,
+
+                totalRequired:
+                  0,
+
+                recipes:
+                  []
+
+              };
+
+            }
+
+
+            groups[key]
+              .totalRequired =
+
+              roundQuantity(
+
+                groups[key]
+                  .totalRequired
+
+                +
+
+                requirement.qty
+
+              );
+
+
+            groups[key]
+              .recipes
+              .push(
+                recipe.name
+              );
+
+          }
+        );
+
+      }
+    );
+
+
+  return Object.values(
+    groups
+  )
+
+  .map(
+    group => ({
+
+      ...group,
+
+      shortage:
+
+        calculateShortage(
+
+          group.name,
+
+          group.totalRequired,
+
+          group.unit
+
+        )
+
+    })
+  )
+
+  .filter(
+    group =>
+    group.shortage > 0
+  )
+
+  .sort(
+    (a,b) =>
+    a.name.localeCompare(
+      b.name
+    )
+  );
+
+}
+
+
+
+/* ======================================================
+   NAVIGATION
+====================================================== */
+
+
+function showScreen(
+  screenName
 ){
 
-entries.push({
+  document
 
-recipeId:id,
+    .querySelectorAll(
+      ".screen"
+    )
 
-servings:
-r.baseServings
+    .forEach(
+      screen => {
 
-});
+        screen.classList
+          .remove("active");
 
-}
-
-});
-
-
-return entries;
-
-}
+      }
+    );
 
 
-function automaticRequirements(){
-
-const groups={};
-
-
-shoppingEntries()
-.forEach(entry=>{
-
-const recipe=
-recipeById(
-entry.recipeId
-);
-
-if(!recipe)
-return;
+  const screen =
+    $(screenName);
 
 
-requiredForRecipe(
-recipe,
-entry.servings
-)
-.forEach(req=>{
+  if(screen){
 
-const key=
-req.name+"|"+req.unit;
+    screen.classList
+      .add("active");
+
+  }
 
 
-if(!groups[key]){
+  document
 
-groups[key]={
+    .querySelectorAll(
+      ".bottom-nav button"
+    )
 
-key,
+    .forEach(
+      button => {
 
-name:req.name,
+        button.classList
+          .remove("active");
 
-unit:req.unit,
-
-qty:0,
-
-recipes:[]
-
-};
-
-}
+      }
+    );
 
 
-groups[key].qty=
-round(
-groups[key].qty+
-req.qty
-);
+  document
+
+    .querySelector(
+      `.bottom-nav button[data-screen="${screenName}"]`
+    )
+
+    ?.classList
+    .add("active");
 
 
-groups[key].recipes
-.push(recipe.name);
-
-});
-
-});
+  renderEverything();
 
 
-return Object.values(groups)
-.map(item=>({
+  window.scrollTo({
 
-...item,
+    top:0,
 
-short:
-shortage(
-item.name,
-item.qty,
-item.unit
-)
+    behavior:"smooth"
 
-}))
-.filter(item=>item.short>0)
-.sort(
-(a,b)=>
-a.name.localeCompare(b.name)
-);
+  });
 
 }
 
 
-function showScreen(name){
 
-document
-.querySelectorAll(".screen")
-.forEach(
-s=>s.classList.remove("active")
-);
-
-$(name)
-.classList.add("active");
+/* ======================================================
+   RECIPE CARDS
+====================================================== */
 
 
-document
-.querySelectorAll(".nav button")
-.forEach(
-b=>b.classList.remove("active")
-);
+function recipeCard(
+  recipe
+){
+
+  const missing =
+
+    missingIngredientsForRecipe(
+
+      recipe,
+
+      recipe.baseServings
+
+    );
 
 
-document
-.querySelector(
-`.nav button[data-screen="${name}"]`
-)
-?.classList.add("active");
+  const status =
+    recipeAvailability(
+      recipe
+    );
 
 
-renderAll();
+  const statusClass =
 
-window.scrollTo({
-top:0,
-behavior:"smooth"
-});
+    status === "Ready"
+
+    ? "good"
+
+    :
+
+    status === "Almost"
+
+    ? "warning"
+
+    : "bad";
+
+
+  return `
+
+    <div class="meal">
+
+      <div class="meal-title">
+
+        ${escapeHtml(recipe.name)}
+
+      </div>
+
+
+      <div class="small">
+
+        ${escapeHtml(recipe.category)}
+
+      </div>
+
+
+      <span class="badge">
+
+        ${escapeHtml(recipe.difficulty)}
+
+      </span>
+
+
+      <span class="badge">
+
+        ~${recipe.minutes} min
+
+      </span>
+
+
+      <span class="badge">
+
+        ${recipe.baseServings}
+        servings
+
+      </span>
+
+
+      <span class="badge ${statusClass}">
+
+        ${
+          status === "Ready"
+
+          ? "Ready to Make"
+
+          : "Short " +
+            missing.length
+        }
+
+      </span>
+
+
+      <p class="small">
+
+        ${
+          missing.length
+
+          ? "<b>Need more:</b> " +
+
+            missing
+
+            .map(
+              item =>
+              escapeHtml(
+                item.name
+              )
+            )
+
+            .join(", ")
+
+          : "You have enough for the base recipe."
+        }
+
+      </p>
+
+
+      ${
+        recipe.notes
+
+        ? `
+
+          <div class="notes">
+
+            ${escapeHtml(
+              recipe.notes
+            )}
+
+          </div>
+
+        `
+
+        : ""
+      }
+
+
+      <div class="actions">
+
+
+        <button
+          type="button"
+          data-action="plan-recipe"
+          data-id="${recipe.id}"
+        >
+          Plan It
+        </button>
+
+
+        <button
+          type="button"
+          class="secondary"
+          data-action="shop-recipe"
+          data-id="${recipe.id}"
+        >
+          Add Missing
+        </button>
+
+
+        <button
+          type="button"
+          class="secondary"
+          data-action="edit-recipe"
+          data-id="${recipe.id}"
+        >
+          Edit
+        </button>
+
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+
+
+/* ======================================================
+   HOME
+====================================================== */
+
+
+function renderStatistics(){
+
+  let ready =
+    0;
+
+  let almost =
+    0;
+
+  let shopping =
+    0;
+
+
+  state.recipes
+
+    .forEach(
+      recipe => {
+
+        const status =
+          recipeAvailability(
+            recipe
+          );
+
+
+        if(
+          status ===
+          "Ready"
+        ){
+
+          ready++;
+
+        }
+
+        else if(
+          status ===
+          "Almost"
+        ){
+
+          almost++;
+
+        }
+
+        else{
+
+          shopping++;
+
+        }
+
+      }
+    );
+
+
+  $("readyCount")
+    .textContent =
+    ready;
+
+
+  $("almostCount")
+    .textContent =
+    almost;
+
+
+  $("shoppingNeededCount")
+    .textContent =
+    shopping;
 
 }
 
-
-function mealCard(recipe){
-
-const missing=
-missingForRecipe(
-recipe,
-recipe.baseServings
-);
-
-const status=
-availability(recipe);
-
-const cls=
-
-status==="Ready"
-?"good"
-:
-status==="Almost"
-?"warn"
-:"bad";
-
-
-return `
-
-<div class="meal">
-
-<div class="meal-title">
-${esc(recipe.name)}
-</div>
-
-<div class="small">
-${esc(recipe.category)}
-</div>
-
-<span class="badge">
-${esc(recipe.difficulty)}
-</span>
-
-<span class="badge">
-~${recipe.minutes} min
-</span>
-
-<span class="badge">
-${recipe.baseServings} servings
-</span>
-
-<span class="badge ${cls}">
-${
-status==="Ready"
-?"Ready to Make"
-:"Short "+missing.length
-}
-</span>
-
-<p class="small">
-
-${
-missing.length
-
-? "<b>Need more:</b> "+
-missing
-.map(x=>esc(x.name))
-.join(", ")
-
-: "You have enough for the base recipe."
-}
-
-</p>
-
-${
-recipe.notes
-
-? `<div class="notes">
-${esc(recipe.notes)}
-</div>`
-
-:""
-}
-
-<div class="actions">
-
-<button
-data-action="plan-recipe"
-data-id="${recipe.id}">
-Plan It
-</button>
-
-<button
-class="secondary"
-data-action="shop-recipe"
-data-id="${recipe.id}">
-Add Missing
-</button>
-
-<button
-class="secondary"
-data-action="edit-recipe"
-data-id="${recipe.id}">
-Edit
-</button>
-
-</div>
-
-</div>
-
-`;
-
-}
-
-
-function renderStats(){
-
-let ready=0;
-let almost=0;
-let need=0;
-
-
-state.recipes
-.forEach(recipe=>{
-
-const status=
-availability(recipe);
-
-if(status==="Ready")
-ready++;
-
-else if(status==="Almost")
-almost++;
-
-else
-need++;
-
-});
-
-
-$("readyCount").textContent=
-ready;
-
-$("almostCount").textContent=
-almost;
-
-$("needCount").textContent=
-need;
-
-}
 
 
 function renderBestMatches(){
 
-$("bestMatches").innerHTML=
+  const bestRecipes =
 
-[...state.recipes]
+    [...state.recipes]
 
-.sort(
-(a,b)=>
-score(a)-score(b)
-)
+    .sort(
+      (a,b) =>
+      recipeScore(a)
+      -
+      recipeScore(b)
+    )
 
-.slice(0,6)
-
-.map(mealCard)
-
-.join("");
-
-}
-
-
-function pickBest(){
-
-if(!state.recipes.length)
-return;
+    .slice(
+      0,
+      6
+    );
 
 
-const recipe=
+  $("bestMatches")
+    .innerHTML =
 
-[...state.recipes]
+    bestRecipes
 
-.sort(
-(a,b)=>
-score(a)-score(b)
-)[0];
+    .map(
+      recipeCard
+    )
 
-
-$("bestResult").innerHTML=
-
-`
-
-<div class="result">
-
-<div class="big">
-${esc(recipe.name)}
-</div>
-
-<div>
-${esc(recipe.category)}
-•
-${recipe.difficulty}
-•
-${recipe.baseServings}
-servings
-</div>
-
-${
-recipe.notes
-
-? `<div class="notes">
-${esc(recipe.notes)}
-</div>`
-
-:""
-}
-
-<div class="actions"
-style="margin-top:10px">
-
-<button
-data-action="plan-recipe"
-data-id="${recipe.id}">
-Add to Week
-</button>
-
-<button
-class="secondary"
-data-action="edit-recipe"
-data-id="${recipe.id}">
-View / Edit
-</button>
-
-</div>
-
-</div>
-
-`;
+    .join("");
 
 }
 
 
-function surprise(){
 
-const good=
+function chooseBestMeal(){
 
-state.recipes.filter(
-r=>
-missingForRecipe(
-r,
-r.baseServings
-).length<=2
-);
+  if(
+    state.recipes.length ===
+    0
+  ){
 
+    $("bestMealResult")
+      .innerHTML =
 
-const pool=
-good.length
-?good
-:state.recipes;
+      `<p>
+        No recipes available.
+      </p>`;
 
+    return;
 
-if(!pool.length)
-return;
+  }
 
 
-$("bestResult").innerHTML=
+  const recipe =
 
-mealCard(
-pool[
-Math.floor(
-Math.random()*pool.length
-)
-]
-);
+    [...state.recipes]
+
+    .sort(
+      (a,b) =>
+      recipeScore(a)
+      -
+      recipeScore(b)
+    )[0];
+
+
+  $("bestMealResult")
+    .innerHTML = `
+
+      <div class="result">
+
+        <div class="big-meal">
+
+          ${escapeHtml(
+            recipe.name
+          )}
+
+        </div>
+
+
+        <div>
+
+          ${escapeHtml(
+            recipe.category
+          )}
+
+          •
+
+          ${escapeHtml(
+            recipe.difficulty
+          )}
+
+          •
+
+          ${recipe.baseServings}
+          servings
+
+        </div>
+
+
+        ${
+          recipe.notes
+
+          ? `
+
+            <div class="notes">
+
+              ${escapeHtml(
+                recipe.notes
+              )}
+
+            </div>
+
+          `
+
+          : ""
+        }
+
+
+        <div
+          class="actions"
+          style="margin-top:10px"
+        >
+
+          <button
+            type="button"
+            data-action="plan-recipe"
+            data-id="${recipe.id}"
+          >
+            Add to Week
+          </button>
+
+
+          <button
+            type="button"
+            class="secondary"
+            data-action="edit-recipe"
+            data-id="${recipe.id}"
+          >
+            View / Edit
+          </button>
+
+        </div>
+
+      </div>
+
+    `;
 
 }
+
+
+
+function surpriseMe(){
+
+  const almostReady =
+
+    state.recipes
+
+    .filter(
+      recipe =>
+
+      missingIngredientsForRecipe(
+
+        recipe,
+
+        recipe.baseServings
+
+      ).length <= 2
+    );
+
+
+  const pool =
+
+    almostReady.length
+
+    ? almostReady
+
+    : state.recipes;
+
+
+  if(
+    pool.length ===
+    0
+  ){
+
+    return;
+
+  }
+
+
+  const recipe =
+
+    pool[
+      Math.floor(
+        Math.random()
+        *
+        pool.length
+      )
+    ];
+
+
+  $("bestMealResult")
+    .innerHTML =
+
+    recipeCard(
+      recipe
+    );
+
+}
+
+
+
+/* ======================================================
+   RECIPE FILTERS
+====================================================== */
 
 
 function populateCategoryFilter(){
 
-const current=
-$("categoryFilter").value||
-"All";
+  const select =
+    $("categoryFilter");
 
 
-const categories=
-
-[
-...new Set(
-state.recipes.map(
-r=>r.category
-)
-)
-]
-.sort();
+  const current =
+    select.value ||
+    "All";
 
 
-$("categoryFilter").innerHTML=
+  const categories =
 
-`<option value="All">
-All Categories
-</option>`
+    [
+      ...new Set(
+        state.recipes
+          .map(
+            recipe =>
+            recipe.category
+          )
+      )
+    ]
 
-+
-
-categories.map(
-category=>
-
-`<option value="${esc(category)}">
-${esc(category)}
-</option>`
-
-).join("");
+    .sort();
 
 
-if(
-[
-...$("categoryFilter").options
-]
-.some(
-option=>
-option.value===current
-)
-){
+  select.innerHTML =
 
-$("categoryFilter").value=
-current;
+    `<option value="All">
+      All Categories
+    </option>`
 
-}
+    +
 
-}
+    categories
 
+    .map(
+      category =>
 
-function renderMeals(){
+      `
+        <option value="${escapeHtml(category)}">
+          ${escapeHtml(category)}
+        </option>
+      `
 
-const q=
-$("mealSearch")
-.value
-.toLowerCase();
+    )
+
+    .join("");
 
 
-const category=
-$("categoryFilter").value;
+  const optionStillExists =
+
+    Array.from(
+      select.options
+    )
+
+    .some(
+      option =>
+      option.value ===
+      current
+    );
 
 
-const availabilityFilter=
-$("availabilityFilter").value;
+  if(
+    optionStillExists
+  ){
 
+    select.value =
+      current;
 
-const difficulty=
-$("difficultyFilter").value;
-
-
-const list=
-
-state.recipes
-.filter(recipe=>{
-
-const searchable=
-
-(
-recipe.name+
-" "+
-recipe.category+
-" "+
-recipe.ingredients
-.map(i=>i.name)
-.join(" ")+
-" "+
-(recipe.notes||"")
-)
-.toLowerCase();
-
-
-return
-
-(!q||
-searchable.includes(q))
-
-&&
-
-(
-category==="All"||
-recipe.category===category
-)
-
-&&
-
-(
-availabilityFilter==="All"||
-availability(recipe)===
-availabilityFilter
-)
-
-&&
-
-(
-difficulty==="All"||
-recipe.difficulty===
-difficulty
-);
-
-})
-.sort(
-(a,b)=>
-score(a)-score(b)
-);
-
-
-$("mealList").innerHTML=
-
-list.length
-
-?list
-.map(mealCard)
-.join("")
-
-:`<div class="card">
-No meals match those filters.
-</div>`;
+  }
 
 }
 
 
-let tempIngredients=[];
+
+function renderRecipeList(){
+
+  const search =
+
+    $("mealSearch")
+      .value
+      .trim()
+      .toLowerCase();
+
+
+  const category =
+
+    $("categoryFilter")
+      .value;
+
+
+  const availabilityFilter =
+
+    $("availabilityFilter")
+      .value;
+
+
+  const difficulty =
+
+    $("difficultyFilter")
+      .value;
+
+
+  const recipes =
+
+    state.recipes
+
+    .filter(
+      recipe => {
+
+        const searchable =
+
+          (
+
+            recipe.name
+
+            + " "
+
+            + recipe.category
+
+            + " "
+
+            + recipe.ingredients
+              .map(
+                ingredient =>
+                ingredient.name
+              )
+              .join(" ")
+
+            + " "
+
+            + (
+              recipe.notes ||
+              ""
+            )
+
+          )
+
+          .toLowerCase();
+
+
+        if(
+          search &&
+          !searchable.includes(
+            search
+          )
+        ){
+
+          return false;
+
+        }
+
+
+        if(
+          category !== "All" &&
+          recipe.category !==
+          category
+        ){
+
+          return false;
+
+        }
+
+
+        if(
+          availabilityFilter !==
+          "All"
+
+          &&
+
+          recipeAvailability(
+            recipe
+          ) !==
+          availabilityFilter
+        ){
+
+          return false;
+
+        }
+
+
+        if(
+          difficulty !== "All"
+
+          &&
+
+          recipe.difficulty !==
+          difficulty
+        ){
+
+          return false;
+
+        }
+
+
+        return true;
+
+      }
+    )
+
+    .sort(
+      (a,b) =>
+      recipeScore(a)
+      -
+      recipeScore(b)
+    );
+
+
+  $("mealList")
+    .innerHTML =
+
+    recipes.length
+
+    ? recipes
+        .map(
+          recipeCard
+        )
+        .join("")
+
+    : `
+
+      <div class="card">
+
+        No meals match those filters.
+
+      </div>
+
+    `;
+
+}
+
+
+
+/* ======================================================
+   RECIPE EDITOR
+====================================================== */
+
+
+let temporaryIngredients =
+  [];
 
 
 function renderIngredientEditor(){
 
-$("ingredientEditor").innerHTML=
+  if(
+    temporaryIngredients.length ===
+    0
+  ){
 
-tempIngredients.length
+    $("ingredientEditor")
+      .innerHTML =
 
-?tempIngredients
-.map(
-(ingredient,index)=>
+      `<p class="small">
+        No ingredients yet.
+      </p>`;
 
-`
+    return;
 
-<div class="ingrow">
+  }
 
-<input
-value="${esc(ingredient.name)}"
-data-temp-index="${index}"
-data-temp-field="name"
-placeholder="Ingredient">
 
-<input
-type="number"
-min="0"
-step="0.01"
-value="${ingredient.qty}"
-data-temp-index="${index}"
-data-temp-field="qty">
+  $("ingredientEditor")
+    .innerHTML =
 
-<select
-data-temp-index="${index}"
-data-temp-field="unit">
+    temporaryIngredients
 
-${unitOptions(
-ingredient.unit
-)}
+    .map(
+      (
+        ingredient,
+        index
+      ) => `
 
-</select>
+        <div class="ingredient-row">
 
-<button
-class="secondary smallbtn"
-data-action="remove-temp"
-data-index="${index}">
-Remove
-</button>
+          <input
+            value="${escapeHtml(
+              ingredient.name
+            )}"
+            data-temp-index="${index}"
+            data-temp-field="name"
+            placeholder="Ingredient"
+          >
 
-</div>
 
-`
+          <input
+            type="number"
+            min="0"
+            step="0.01"
+            value="${ingredient.qty}"
+            data-temp-index="${index}"
+            data-temp-field="qty"
+          >
 
-)
-.join("")
 
-:`<p class="small">
-No ingredients yet.
-</p>`;
+          <select
+            data-temp-index="${index}"
+            data-temp-field="unit"
+          >
+
+            ${unitOptions(
+              ingredient.unit
+            )}
+
+          </select>
+
+
+          <button
+            type="button"
+            class="secondary small-button"
+            data-action="remove-temp-ingredient"
+            data-index="${index}"
+          >
+            Remove
+          </button>
+
+        </div>
+
+      `
+    )
+
+    .join("");
 
 }
+
 
 
 function openNewRecipe(){
 
-$("editingRecipeId").value="";
+  $("editingRecipeId")
+    .value =
+    "";
 
-$("recipeModalTitle").textContent=
-"Add Recipe";
 
-$("editRecipeName").value="";
+  $("recipeModalTitle")
+    .textContent =
+    "Add Recipe";
 
-$("editRecipeCategory").value=
-"Other";
 
-$("editRecipeDifficulty").value=
-"Easy";
+  $("editRecipeName")
+    .value =
+    "";
 
-$("editRecipeMinutes").value=
-30;
 
-$("editRecipeServings").value=
-4;
+  $("editRecipeCategory")
+    .value =
+    "Other";
 
-$("editRecipeNotes").value="";
 
-tempIngredients=[];
+  $("editRecipeDifficulty")
+    .value =
+    "Easy";
 
-$("deleteRecipeButton").style.display=
-"none";
 
-renderIngredientEditor();
+  $("editRecipeMinutes")
+    .value =
+    30;
 
-$("recipeModal")
-.classList.add("show");
+
+  $("editRecipeServings")
+    .value =
+    4;
+
+
+  $("editRecipeNotes")
+    .value =
+    "";
+
+
+  temporaryIngredients =
+    [];
+
+
+  $("deleteRecipeButton")
+    .style.display =
+    "none";
+
+
+  renderIngredientEditor();
+
+
+  $("recipeModal")
+    .classList
+    .add("show");
 
 }
+
 
 
 function openRecipeEditor(id){
 
-const recipe=
-recipeById(id);
-
-if(!recipe)
-return;
+  const recipe =
+    recipeById(id);
 
 
-$("editingRecipeId").value=
-recipe.id;
-
-$("recipeModalTitle").textContent=
-"Edit Recipe";
-
-$("editRecipeName").value=
-recipe.name;
-
-$("editRecipeCategory").value=
-recipe.category;
-
-$("editRecipeDifficulty").value=
-recipe.difficulty;
-
-$("editRecipeMinutes").value=
-recipe.minutes;
-
-$("editRecipeServings").value=
-recipe.baseServings||4;
-
-$("editRecipeNotes").value=
-recipe.notes||"";
+  if(!recipe)
+    return;
 
 
-tempIngredients=
-recipe.ingredients.map(
-i=>({...i})
-);
+  $("editingRecipeId")
+    .value =
+    recipe.id;
 
 
-$("deleteRecipeButton").style.display=
-"inline-block";
+  $("recipeModalTitle")
+    .textContent =
+    "Edit Recipe";
 
 
-renderIngredientEditor();
+  $("editRecipeName")
+    .value =
+    recipe.name;
 
 
-$("recipeModal")
-.classList.add("show");
+  $("editRecipeCategory")
+    .value =
+    recipe.category;
+
+
+  $("editRecipeDifficulty")
+    .value =
+    recipe.difficulty;
+
+
+  $("editRecipeMinutes")
+    .value =
+    recipe.minutes;
+
+
+  $("editRecipeServings")
+    .value =
+    recipe.baseServings;
+
+
+  $("editRecipeNotes")
+    .value =
+    recipe.notes ||
+    "";
+
+
+  temporaryIngredients =
+
+    recipe.ingredients
+
+    .map(
+      ingredient => ({
+        ...ingredient
+      })
+    );
+
+
+  $("deleteRecipeButton")
+    .style.display =
+    "inline-block";
+
+
+  renderIngredientEditor();
+
+
+  $("recipeModal")
+    .classList
+    .add("show");
 
 }
+
 
 
 function saveRecipe(){
 
-const name=
-$("editRecipeName")
-.value
-.trim();
+  const name =
+
+    $("editRecipeName")
+      .value
+      .trim();
 
 
-if(!name){
+  if(!name){
 
-alert(
-"Enter a recipe name."
-);
+    alert(
+      "Enter a recipe name."
+    );
 
-return;
+    return;
+
+  }
+
+
+  const id =
+
+    $("editingRecipeId")
+      .value
+
+    ||
+
+    createId();
+
+
+  const ingredients =
+
+    temporaryIngredients
+
+    .filter(
+      ingredient =>
+      String(
+        ingredient.name ||
+        ""
+      ).trim()
+    )
+
+    .map(
+      ingredient => ({
+
+        name:
+          String(
+            ingredient.name
+          ).trim(),
+
+        qty:
+          Math.max(
+            0,
+            Number(
+              ingredient.qty
+            ) || 0
+          ),
+
+        unit:
+          ingredient.unit ||
+          "each"
+
+      })
+    );
+
+
+  /*
+    Automatically create inventory entries
+    for any new recipe ingredients.
+  */
+
+  ingredients
+
+    .forEach(
+      ingredient => {
+
+        if(
+          !state.inventory[
+            ingredient.name
+          ]
+        ){
+
+          state.inventory[
+            ingredient.name
+          ] = {
+
+            status:
+              "out",
+
+            qty:
+              0,
+
+            unit:
+              ingredient.unit
+
+          };
+
+        }
+
+      }
+    );
+
+
+  const recipe = {
+
+    id,
+
+    name,
+
+    category:
+      $("editRecipeCategory")
+        .value,
+
+    difficulty:
+      $("editRecipeDifficulty")
+        .value,
+
+    minutes:
+      Math.max(
+        1,
+        Number(
+          $("editRecipeMinutes")
+            .value
+        ) || 30
+      ),
+
+    baseServings:
+      Math.max(
+        1,
+        Number(
+          $("editRecipeServings")
+            .value
+        ) || 4
+      ),
+
+    notes:
+      $("editRecipeNotes")
+        .value,
+
+    ingredients
+
+  };
+
+
+  const existingIndex =
+
+    state.recipes
+
+    .findIndex(
+      existing =>
+      existing.id === id
+    );
+
+
+  if(
+    existingIndex >= 0
+  ){
+
+    state.recipes[
+      existingIndex
+    ] =
+      recipe;
+
+  }
+
+  else{
+
+    /*
+      FIX:
+
+      New recipes are pushed directly into
+      the active recipe database before
+      saving/rendering.
+    */
+
+    state.recipes.push(
+      recipe
+    );
+
+  }
+
+
+  saveState();
+
+
+  $("recipeModal")
+    .classList
+    .remove("show");
+
+
+  /*
+    Move to recipes so the newly created
+    recipe is immediately visible.
+  */
+
+  showScreen(
+    "meals"
+  );
 
 }
 
-
-const id=
-$("editingRecipeId").value||
-uid();
-
-
-const ingredients=
-
-tempIngredients
-
-.filter(
-i=>i.name.trim()
-)
-
-.map(i=>({
-
-name:i.name.trim(),
-
-qty:
-Math.max(
-0,
-Number(i.qty)||0
-),
-
-unit:
-i.unit||"each"
-
-}));
-
-
-ingredients
-.forEach(i=>{
-
-if(!state.inventory[i.name]){
-
-state.inventory[i.name]={
-status:"out",
-qty:0,
-unit:i.unit
-};
-
-}
-
-});
-
-
-const recipe={
-
-id,
-
-name,
-
-category:
-$("editRecipeCategory").value,
-
-difficulty:
-$("editRecipeDifficulty").value,
-
-minutes:
-Number(
-$("editRecipeMinutes").value
-)||30,
-
-baseServings:
-Math.max(
-1,
-Number(
-$("editRecipeServings").value
-)||4
-),
-
-notes:
-$("editRecipeNotes").value,
-
-ingredients
-
-};
-
-
-const index=
-state.recipes.findIndex(
-r=>r.id===id
-);
-
-
-if(index>=0)
-state.recipes[index]=recipe;
-
-else
-state.recipes.push(recipe);
-
-
-save();
-
-
-$("recipeModal")
-.classList.remove("show");
-
-}
 
 
 function deleteRecipe(){
 
-const id=
-$("editingRecipeId").value;
+  const id =
 
-if(!id)
-return;
-
-
-const recipe=
-recipeById(id);
+    $("editingRecipeId")
+      .value;
 
 
-if(
-!confirm(
-`Delete "${recipe?.name||"this recipe"}"?`
-)
-)
-return;
+  if(!id)
+    return;
 
 
-state.recipes=
-state.recipes.filter(
-r=>r.id!==id
-);
+  const recipe =
+    recipeById(id);
 
 
-Object.keys(
-state.week
-)
-.forEach(day=>{
+  const confirmed =
 
-if(
-(
-state.week[day]?.recipeId||
-state.week[day]
-)===id
-)
-delete state.week[day];
+    confirm(
 
-});
+      `Delete "${
+        recipe?.name ||
+        "this recipe"
+      }"?`
+
+    );
 
 
-state.shoppingRecipeIds=
+  if(
+    !confirmed
+  ){
 
-state.shoppingRecipeIds
-.filter(
-x=>x!==id
-);
+    return;
 
-
-save();
+  }
 
 
-$("recipeModal")
-.classList.remove("show");
+  state.recipes =
+
+    state.recipes
+
+    .filter(
+      recipe =>
+      recipe.id !== id
+    );
+
+
+  Object.keys(
+    state.week
+  )
+
+  .forEach(
+    day => {
+
+      const value =
+        state.week[day];
+
+
+      const recipeId =
+
+        typeof value ===
+        "string"
+
+        ? value
+
+        : value?.recipeId;
+
+
+      if(
+        recipeId === id
+      ){
+
+        delete state.week[
+          day
+        ];
+
+      }
+
+    }
+  );
+
+
+  state.shoppingRecipeIds =
+
+    state.shoppingRecipeIds
+
+    .filter(
+      recipeId =>
+      recipeId !== id
+    );
+
+
+  /*
+    Prevent an accidentally empty recipe
+    database from breaking the application.
+  */
+
+  if(
+    state.recipes.length ===
+    0
+  ){
+
+    const restore =
+
+      confirm(
+
+        "That was the last recipe. Restore the original recipe list?"
+
+      );
+
+
+    if(restore){
+
+      state.recipes =
+
+        JSON.parse(
+
+          JSON.stringify(
+            DEFAULT_RECIPES
+          )
+
+        );
+
+    }
+
+  }
+
+
+  saveState();
+
+
+  $("recipeModal")
+    .classList
+    .remove("show");
 
 }
+
+
+
+/* ======================================================
+   INVENTORY
+====================================================== */
 
 
 function inventoryChoice(
-name,
-status,
-label
+  name,
+  status,
+  label
 ){
 
-const active=
-inv(name).status===status;
+  const item =
+    inventoryItem(name);
 
 
-const id=
-"inv-"+
-safe(name)+
-"-"+
-status;
+  const active =
+    item.status === status;
 
 
-return `
+  const id =
 
-<label
-class="choice ${active?status:""}"
-for="${id}">
+    "inventory-"
 
-<input
-id="${id}"
-type="radio"
-name="inv-${safe(name)}"
-value="${status}"
-data-inventory-name="${esc(name)}"
-${active?"checked":""}>
+    +
 
-${label}
+    safeId(name)
 
-</label>
+    +
 
-`;
+    "-"
+
+    +
+
+    status;
+
+
+  return `
+
+    <label
+      class="inventory-choice ${
+        active
+        ? status
+        : ""
+      }"
+      for="${id}"
+    >
+
+      <input
+        id="${id}"
+        type="radio"
+        name="inventory-${safeId(name)}"
+        value="${status}"
+        data-inventory-name="${escapeHtml(name)}"
+        ${active ? "checked" : ""}
+      >
+
+      ${label}
+
+    </label>
+
+  `;
 
 }
+
 
 
 function renderInventory(){
 
-const q=
-$("inventorySearch")
-.value
-.toLowerCase();
+  const search =
+
+    $("inventorySearch")
+      .value
+      .trim()
+      .toLowerCase();
 
 
-const items=
+  const names =
 
-Object.keys(
-state.inventory
-)
+    Object.keys(
+      state.inventory
+    )
 
-.filter(
-name=>
-name.toLowerCase()
-.includes(q)
-)
+    .filter(
+      name =>
+      name
+        .toLowerCase()
+        .includes(search)
+    )
 
-.sort();
-
-
-$("inventoryList").innerHTML=
-
-items.length
-
-?items.map(name=>{
-
-const item=
-inv(name);
+    .sort(
+      (a,b) =>
+      a.localeCompare(b)
+    );
 
 
-return `
+  if(
+    names.length ===
+    0
+  ){
 
-<div class="row invrow">
+    $("inventoryList")
+      .innerHTML =
 
-<strong>
-${esc(name)}
-</strong>
+      `<p>
+        No inventory items found.
+      </p>`;
 
-<input
-type="number"
-min="0"
-step="0.01"
-value="${item.qty}"
-data-action="inv-qty"
-data-name="${esc(name)}">
+    return;
 
-<select
-data-action="inv-unit"
-data-name="${esc(name)}">
+  }
 
-${unitOptions(item.unit)}
 
-</select>
+  $("inventoryList")
+    .innerHTML =
 
-<div class="segment">
+    names
 
-${inventoryChoice(
-name,
-"have",
-"Have"
-)}
+    .map(
+      name => {
 
-${inventoryChoice(
-name,
-"low",
-"Low"
-)}
+        const item =
+          inventoryItem(
+            name
+          );
 
-${inventoryChoice(
-name,
-"out",
-"Out"
-)}
 
-</div>
+        return `
 
-<div class="actions invactions">
+          <div class="row inventory-row">
 
-<button
-class="secondary smallbtn"
-data-action="rename-inv"
-data-name="${esc(name)}">
-Rename
-</button>
+            <div>
 
-<button
-class="secondary smallbtn"
-data-action="delete-inv"
-data-name="${esc(name)}">
-Delete
-</button>
+              <strong>
+                ${escapeHtml(name)}
+              </strong>
 
-</div>
+            </div>
 
-</div>
 
-`;
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              value="${item.qty}"
+              data-action="inventory-quantity"
+              data-name="${escapeHtml(name)}"
+            >
 
-}).join("")
 
-:`<p>
-No inventory items found.
-</p>`;
+            <select
+              data-action="inventory-unit"
+              data-name="${escapeHtml(name)}"
+            >
+
+              ${unitOptions(
+                item.unit
+              )}
+
+            </select>
+
+
+            <div class="segment">
+
+              ${inventoryChoice(
+                name,
+                "have",
+                "Have"
+              )}
+
+              ${inventoryChoice(
+                name,
+                "low",
+                "Low"
+              )}
+
+              ${inventoryChoice(
+                name,
+                "out",
+                "Out"
+              )}
+
+            </div>
+
+
+            <div class="actions inventory-actions">
+
+              <button
+                type="button"
+                class="secondary small-button"
+                data-action="rename-inventory"
+                data-name="${escapeHtml(name)}"
+              >
+                Rename
+              </button>
+
+
+              <button
+                type="button"
+                class="secondary small-button"
+                data-action="delete-inventory"
+                data-name="${escapeHtml(name)}"
+              >
+                Delete
+              </button>
+
+            </div>
+
+          </div>
+
+        `;
+
+      }
+    )
+
+    .join("");
 
 }
+
 
 
 function addInventoryItem(){
 
-const name=
-$("newInventory")
-.value
-.trim();
+  const name =
+
+    $("newInventoryItem")
+      .value
+      .trim();
 
 
-if(!name)
-return;
+  if(!name)
+    return;
 
 
-if(state.inventory[name]){
+  const existingName =
 
-alert(
-"That inventory item already exists."
-);
+    Object.keys(
+      state.inventory
+    )
 
-return;
+    .find(
+      existing =>
+      existing
+        .toLowerCase()
+        ===
+      name.toLowerCase()
+    );
+
+
+  if(existingName){
+
+    alert(
+      "That inventory item already exists."
+    );
+
+    return;
+
+  }
+
+
+  state.inventory[name] = {
+
+    status:
+      "out",
+
+    qty:
+      0,
+
+    unit:
+      "each"
+
+  };
+
+
+  $("newInventoryItem")
+    .value =
+    "";
+
+
+  saveState();
 
 }
 
 
-state.inventory[name]={
 
-status:"out",
-
-qty:0,
-
-unit:"each"
-
-};
-
-
-$("newInventory").value="";
-
-
-save();
-
-}
-
-
-function openRename(name){
-
-$("oldInventoryName").value=
-name;
-
-$("renameInventoryInput").value=
-name;
-
-$("renameModal")
-.classList.add("show");
-
-}
-
-
-function saveRename(){
-
-const oldName=
-$("oldInventoryName").value;
-
-
-const newName=
-$("renameInventoryInput")
-.value
-.trim();
-
-
-if(!newName)
-return;
-
-
-if(
-oldName!==newName &&
-state.inventory[newName]
+function openInventoryRename(
+  name
 ){
 
-alert(
-"That name already exists."
-);
-
-return;
-
-}
+  $("oldInventoryName")
+    .value =
+    name;
 
 
-if(oldName!==newName){
-
-state.inventory[newName]=
-state.inventory[oldName];
-
-delete state.inventory[oldName];
+  $("renameInventoryInput")
+    .value =
+    name;
 
 
-state.recipes
-.forEach(recipe=>
-
-recipe.ingredients
-.forEach(ingredient=>{
-
-if(
-ingredient.name===oldName
-)
-ingredient.name=newName;
-
-})
-
-);
+  $("renameInventoryModal")
+    .classList
+    .add("show");
 
 }
 
 
-save();
+
+function renameInventoryItem(){
+
+  const oldName =
+
+    $("oldInventoryName")
+      .value;
 
 
-$("renameModal")
-.classList.remove("show");
+  const newName =
+
+    $("renameInventoryInput")
+      .value
+      .trim();
+
+
+  if(
+    !oldName ||
+    !newName
+  ){
+
+    return;
+
+  }
+
+
+  if(
+    oldName === newName
+  ){
+
+    $("renameInventoryModal")
+      .classList
+      .remove("show");
+
+    return;
+
+  }
+
+
+  const duplicate =
+
+    Object.keys(
+      state.inventory
+    )
+
+    .some(
+      name =>
+      name.toLowerCase()
+      ===
+      newName.toLowerCase()
+    );
+
+
+  if(duplicate){
+
+    alert(
+      "An inventory item with that name already exists."
+    );
+
+    return;
+
+  }
+
+
+  state.inventory[
+    newName
+  ] =
+
+    state.inventory[
+      oldName
+    ];
+
+
+  delete state.inventory[
+    oldName
+  ];
+
+
+  /*
+    Rename inside all recipes too.
+  */
+
+  state.recipes
+
+    .forEach(
+      recipe => {
+
+        recipe.ingredients
+
+          .forEach(
+            ingredient => {
+
+              if(
+                ingredient.name ===
+                oldName
+              ){
+
+                ingredient.name =
+                  newName;
+
+              }
+
+            }
+          );
+
+      }
+    );
+
+
+  saveState();
+
+
+  $("renameInventoryModal")
+    .classList
+    .remove("show");
 
 }
 
 
-function deleteInventory(name){
 
-const used=
+function deleteInventoryItem(
+  name
+){
 
-state.recipes.filter(
-recipe=>
-recipe.ingredients.some(
-ingredient=>
-ingredient.name===name
-)
-);
+  const usedBy =
 
+    state.recipes
 
-if(
-!confirm(
+    .filter(
+      recipe =>
+      recipe.ingredients
 
-`Delete "${name}"?`
-
-+
-
-(
-used.length
-
-?`\n\nIt is used by ${used.length} recipe(s) and will also be removed from those recipes.`
-
-:""
-)
-
-)
-)
-return;
+        .some(
+          ingredient =>
+          ingredient.name ===
+          name
+        )
+    );
 
 
-delete state.inventory[name];
+  let message =
+
+    `Delete "${name}" from inventory?`;
 
 
-state.recipes
-.forEach(recipe=>
+  if(
+    usedBy.length
+  ){
 
-recipe.ingredients=
+    message +=
 
-recipe.ingredients.filter(
-ingredient=>
-ingredient.name!==name
-)
+      `\n\nIt is used by ${usedBy.length} recipe(s). It will also be removed from those recipes.`;
 
-);
+  }
 
 
-save();
+  if(
+    !confirm(message)
+  ){
+
+    return;
+
+  }
+
+
+  delete state.inventory[
+    name
+  ];
+
+
+  state.recipes
+
+    .forEach(
+      recipe => {
+
+        recipe.ingredients =
+
+          recipe.ingredients
+
+          .filter(
+            ingredient =>
+            ingredient.name !==
+            name
+          );
+
+      }
+    );
+
+
+  saveState();
 
 }
 
 
-function renderWeek(){
 
-$("weekList").innerHTML=
-
-DAYS.map(day=>{
-
-const current=
-state.week[day];
+/* ======================================================
+   WEEKLY PLAN
+====================================================== */
 
 
-const recipeId=
+function renderWeeklyPlan(){
 
-typeof current==="string"
+  $("weeklyPlan")
+    .innerHTML =
 
-?current
+    DAYS
 
-:current?.recipeId||"";
+    .map(
+      day => {
 
-
-const recipe=
-recipeById(recipeId);
-
-
-const servings=
-
-typeof current==="object"
-
-?(
-current.servings||
-recipe?.baseServings||
-4
-)
-
-:(
-recipe?.baseServings||
-4
-);
+        const current =
+          state.week[
+            day
+          ];
 
 
-const options=
+        const currentRecipeId =
 
-`<option value="">
--- No meal selected --
-</option>`
+          typeof current ===
+          "string"
 
-+
+          ? current
 
-state.recipes.map(
-r=>
-
-`<option
-value="${r.id}"
-${recipeId===r.id?"selected":""}>
-${esc(r.name)}
-(${esc(r.category)})
-</option>`
-
-).join("");
+          : current?.recipeId ||
+            "";
 
 
-return `
+        const currentRecipe =
 
-<div class="row planrow">
-
-<b>
-${day}
-</b>
-
-<select
-data-action="set-day"
-data-day="${day}">
-
-${options}
-
-</select>
-
-<div class="servings">
-
-<input
-type="number"
-min="1"
-step="1"
-value="${servings}"
-data-action="day-servings"
-data-day="${day}"
-${recipeId?"":"disabled"}
-title="Servings">
-
-</div>
-
-</div>
-
-`;
-
-}).join("");
+          recipeById(
+            currentRecipeId
+          );
 
 
-const needed=
-automaticRequirements();
+        const servings =
+
+          typeof current ===
+          "object"
+
+          ? Math.max(
+              1,
+              Number(
+                current.servings
+              ) ||
+              currentRecipe?.baseServings ||
+              4
+            )
+
+          : currentRecipe?.baseServings ||
+            4;
 
 
-$("weekSummary").textContent=
+        const options =
 
-`${plannedEntries().length} meals planned. `
+          `<option value="">
+            -- No meal selected --
+          </option>`
 
-+
+          +
 
-`${needed.length} ingredient${needed.length===1?"":"s"} currently need to be purchased.`;
+          state.recipes
+
+          .map(
+            recipe =>
+
+            `
+              <option
+                value="${recipe.id}"
+                ${
+                  currentRecipeId ===
+                  recipe.id
+
+                  ? "selected"
+
+                  : ""
+                }
+              >
+                ${escapeHtml(recipe.name)}
+                (${escapeHtml(recipe.category)})
+              </option>
+            `
+
+          )
+
+          .join("");
+
+
+        return `
+
+          <div class="row plan-row">
+
+            <strong>
+              ${day}
+            </strong>
+
+
+            <select
+              data-action="set-day-meal"
+              data-day="${day}"
+            >
+
+              ${options}
+
+            </select>
+
+
+            <div class="servings-column">
+
+              <input
+                type="number"
+                min="1"
+                step="1"
+                value="${servings}"
+                data-action="day-servings"
+                data-day="${day}"
+                ${currentRecipeId ? "" : "disabled"}
+                title="Servings"
+              >
+
+            </div>
+
+          </div>
+
+        `;
+
+      }
+    )
+
+    .join("");
+
+
+  const shopping =
+    automaticShoppingRequirements();
+
+
+  $("weekSummary")
+    .textContent =
+
+    `${plannedEntries().length} meals planned. `
+
+    +
+
+    `${shopping.length} ingredient${shopping.length === 1 ? "" : "s"} currently need to be purchased.`;
 
 }
 
 
-function setDay(day,id){
 
-if(!id){
+function setDayMeal(
+  day,
+  recipeId
+){
 
-delete state.week[day];
+  if(
+    !recipeId
+  ){
 
-}
-else{
+    delete state.week[
+      day
+    ];
 
-const recipe=
-recipeById(id);
+  }
 
+  else{
 
-state.week[day]={
-
-recipeId:id,
-
-servings:
-recipe?.baseServings||
-4
-
-};
-
-}
+    const recipe =
+      recipeById(
+        recipeId
+      );
 
 
-save();
-
-}
-
-
-function planRecipe(id){
-
-const day=
-
-DAYS.find(
-day=>!state.week[day]
-)
-||
-"Monday";
+    if(!recipe)
+      return;
 
 
-const recipe=
-recipeById(id);
+    state.week[
+      day
+    ] = {
+
+      recipeId,
+
+      servings:
+        recipe.baseServings
+
+    };
+
+  }
 
 
-state.week[day]={
-
-recipeId:id,
-
-servings:
-recipe?.baseServings||
-4
-
-};
-
-
-save();
-
-showScreen("week");
+  saveState();
 
 }
 
 
-function autoPlan(){
 
-const sorted=
+function planRecipe(
+  recipeId
+){
 
-[...state.recipes]
-.sort(
-(a,b)=>
-score(a)-score(b)
-);
-
-
-const chosen=[];
-
-const categoryCounts={};
+  const recipe =
+    recipeById(
+      recipeId
+    );
 
 
-for(const recipe of sorted){
-
-if(chosen.length>=5)
-break;
+  if(!recipe)
+    return;
 
 
-const count=
-categoryCounts[
-recipe.category
-]||0;
+  const emptyDay =
+
+    DAYS.find(
+      day =>
+      !state.week[
+        day
+      ]
+    )
+
+    ||
+
+    "Monday";
 
 
-if(count>=2)
-continue;
+  state.week[
+    emptyDay
+  ] = {
+
+    recipeId,
+
+    servings:
+      recipe.baseServings
+
+  };
 
 
-chosen.push(recipe);
+  saveState();
 
 
-categoryCounts[
-recipe.category
-]=count+1;
-
-}
-
-
-[
-"Monday",
-"Tuesday",
-"Wednesday",
-"Thursday",
-"Friday"
-]
-.forEach(
-(day,index)=>{
-
-if(chosen[index]){
-
-state.week[day]={
-
-recipeId:
-chosen[index].id,
-
-servings:
-chosen[index].baseServings||
-4
-
-};
-
-}
-
-});
-
-
-save();
-
-showScreen("week");
+  showScreen(
+    "week"
+  );
 
 }
 
 
-function addRecipeShopping(id){
 
-if(
-!state.shoppingRecipeIds
-.includes(id)
-)
-state.shoppingRecipeIds
-.push(id);
+function automaticallyPlanFive(){
 
+  const sorted =
 
-save();
+    [...state.recipes]
 
-showScreen("shopping");
-
-}
+    .sort(
+      (a,b) =>
+      recipeScore(a)
+      -
+      recipeScore(b)
+    );
 
 
-function renderAutomaticShopping(){
-
-const requirements=
-automaticRequirements();
+  const chosen =
+    [];
 
 
-$("automaticShopping").innerHTML=
-
-requirements.length
-
-?requirements.map(req=>{
-
-const override=
-state.shoppingOverrides[
-req.key
-];
+  const categoryCounts =
+    {};
 
 
-const buyQty=
+  for(
+    const recipe
+    of sorted
+  ){
 
-override?.qty
-??
-req.short;
+    if(
+      chosen.length >= 5
+    ){
 
+      break;
 
-const buyUnit=
-
-override?.unit
-??
-req.unit;
-
-
-return `
-
-<div class="row shoprow">
-
-<div>
-
-<strong>
-${esc(req.name)}
-</strong>
-
-<div class="small">
-
-Recipe requirement:
-${round(req.qty)}
-${esc(req.unit)}
-
-<br>
-
-Recommended to buy:
-<strong>
-${round(req.short)}
-${esc(req.unit)}
-</strong>
-
-<br>
-
-Needed for:
-${[
-...new Set(req.recipes)
-]
-.map(esc)
-.join(", ")}
-
-</div>
-
-</div>
+    }
 
 
-<input
-type="number"
-min="0"
-step="0.01"
-value="${round(buyQty)}"
-data-action="shop-qty"
-data-key="${esc(req.key)}"
-title="Quantity to buy">
+    const count =
+
+      categoryCounts[
+        recipe.category
+      ] || 0;
 
 
-<select
-data-action="shop-unit"
-data-key="${esc(req.key)}">
+    if(
+      count >= 2
+    ){
 
-${unitOptions(buyUnit)}
+      continue;
 
-</select>
-
-
-<div class="actions shopactions">
-
-<button
-class="smallbtn"
-data-action="purchased"
-data-name="${esc(req.name)}"
-data-qty="${buyQty}"
-data-unit="${esc(buyUnit)}">
-
-Bought / Add to Inventory
-
-</button>
+    }
 
 
-<button
-class="secondary smallbtn"
-data-action="reset-shop"
-data-key="${esc(req.key)}">
+    chosen.push(
+      recipe
+    );
 
-Use Recommended
 
-</button>
+    categoryCounts[
+      recipe.category
+    ] =
+      count + 1;
 
-</div>
+  }
 
-</div>
 
-`;
+  [
 
-}).join("")
+    "Monday",
 
-:`<p>
-You currently have enough for all tracked meals.
-</p>`;
+    "Tuesday",
+
+    "Wednesday",
+
+    "Thursday",
+
+    "Friday"
+
+  ]
+
+  .forEach(
+    (day,index) => {
+
+      const recipe =
+        chosen[index];
+
+
+      if(recipe){
+
+        state.week[
+          day
+        ] = {
+
+          recipeId:
+            recipe.id,
+
+          servings:
+            recipe.baseServings
+
+        };
+
+      }
+
+    }
+  );
+
+
+  saveState();
+
+
+  showScreen(
+    "week"
+  );
 
 }
 
 
-function renderShoppingSources(){
 
-const list=
-
-state.shoppingRecipeIds
-.map(recipeById)
-.filter(Boolean);
+/* ======================================================
+   ADD RECIPE TO SHOPPING
+====================================================== */
 
 
-$("shoppingSources").innerHTML=
+function addRecipeToShopping(
+  recipeId
+){
 
-list.length
+  const recipe =
+    recipeById(
+      recipeId
+    );
 
-?list.map(recipe=>
 
-`
+  if(!recipe)
+    return;
 
-<div class="row"
-style="grid-template-columns:1fr auto">
 
-<div>
+  if(
+    !state.shoppingRecipeIds
+      .includes(
+        recipeId
+      )
+  ){
 
-<strong>
-${esc(recipe.name)}
-</strong>
+    state.shoppingRecipeIds
+      .push(
+        recipeId
+      );
 
-<div class="small">
-${esc(recipe.category)}
-</div>
+  }
 
-</div>
 
-<button
-class="secondary smallbtn"
-data-action="remove-shop-recipe"
-data-id="${recipe.id}">
+  saveState();
 
-Remove
 
-</button>
-
-</div>
-
-`
-
-).join("")
-
-:`<p class="small">
-No extra meals added.
-</p>`;
+  showScreen(
+    "shopping"
+  );
 
 }
+
+
+
+/* ======================================================
+   AUTOMATIC SHOPPING LIST
+====================================================== */
+
+
+function renderAutomaticShoppingList(){
+
+  const requirements =
+    automaticShoppingRequirements();
+
+
+  if(
+    requirements.length ===
+    0
+  ){
+
+    $("automaticShoppingList")
+      .innerHTML =
+
+      `<p>
+        You currently have enough for all tracked meals.
+      </p>`;
+
+    return;
+
+  }
+
+
+  $("automaticShoppingList")
+    .innerHTML =
+
+    requirements
+
+    .map(
+      requirement => {
+
+        const inventory =
+          inventoryItem(
+            requirement.name
+          );
+
+
+        const override =
+
+          state.shoppingOverrides[
+            requirement.key
+          ];
+
+
+        const quantityToBuy =
+
+          override?.qty
+          ??
+          requirement.shortage;
+
+
+        const buyUnit =
+
+          override?.unit
+          ??
+          requirement.unit;
+
+
+        const uniqueRecipeNames =
+
+          [
+            ...new Set(
+              requirement.recipes
+            )
+          ];
+
+
+        return `
+
+          <div class="row shopping-row">
+
+            <div>
+
+              <strong>
+                ${escapeHtml(requirement.name)}
+              </strong>
+
+
+              <div class="inventory-amount">
+
+                Required:
+                ${roundQuantity(requirement.totalRequired)}
+                ${escapeHtml(requirement.unit)}
+
+              </div>
+
+
+              <div class="inventory-amount">
+
+                Inventory:
+                ${roundQuantity(inventory.qty)}
+                ${escapeHtml(inventory.unit)}
+
+              </div>
+
+
+              <div class="shopping-recommendation">
+
+                Recommended:
+                ${roundQuantity(requirement.shortage)}
+                ${escapeHtml(requirement.unit)}
+
+              </div>
+
+
+              ${
+                override
+
+                ? `
+
+                  <div class="shopping-override-note">
+
+                    Manual shopping amount selected
+
+                  </div>
+
+                `
+
+                : ""
+              }
+
+
+              <div class="small">
+
+                Needed for:
+
+                ${uniqueRecipeNames
+
+                  .map(
+                    escapeHtml
+                  )
+
+                  .join(", ")}
+
+              </div>
+
+            </div>
+
+
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              value="${roundQuantity(quantityToBuy)}"
+              data-action="shopping-quantity"
+              data-key="${escapeHtml(requirement.key)}"
+              title="Quantity to buy"
+            >
+
+
+            <select
+              data-action="shopping-unit"
+              data-key="${escapeHtml(requirement.key)}"
+            >
+
+              ${unitOptions(
+                buyUnit
+              )}
+
+            </select>
+
+
+            <div class="actions shopping-actions">
+
+              <button
+                type="button"
+                class="small-button"
+                data-action="mark-purchased"
+                data-name="${escapeHtml(requirement.name)}"
+                data-key="${escapeHtml(requirement.key)}"
+              >
+                Bought / Add to Inventory
+              </button>
+
+
+              <button
+                type="button"
+                class="secondary small-button"
+                data-action="reset-shopping-amount"
+                data-key="${escapeHtml(requirement.key)}"
+              >
+                Use Recommended
+              </button>
+
+            </div>
+
+          </div>
+
+        `;
+
+      }
+    )
+
+    .join("");
+
+}
+
+
+
+/* ======================================================
+   EXTRA SHOPPING MEALS
+====================================================== */
+
+
+function renderExtraShoppingMeals(){
+
+  const recipes =
+
+    state.shoppingRecipeIds
+
+    .map(
+      recipeById
+    )
+
+    .filter(Boolean);
+
+
+  if(
+    recipes.length ===
+    0
+  ){
+
+    $("extraShoppingMeals")
+      .innerHTML =
+
+      `<p class="small">
+        No extra meals added.
+      </p>`;
+
+    return;
+
+  }
+
+
+  $("extraShoppingMeals")
+    .innerHTML =
+
+    recipes
+
+    .map(
+      recipe => `
+
+        <div
+          class="row"
+          style="
+            grid-template-columns:
+            1fr auto;
+          "
+        >
+
+          <div>
+
+            <strong>
+
+              ${escapeHtml(recipe.name)}
+
+            </strong>
+
+
+            <div class="small">
+
+              ${escapeHtml(recipe.category)}
+
+            </div>
+
+          </div>
+
+
+          <button
+            type="button"
+            class="secondary small-button"
+            data-action="remove-extra-shopping-recipe"
+            data-id="${recipe.id}"
+          >
+            Remove
+          </button>
+
+        </div>
+
+      `
+    )
+
+    .join("");
+
+}
+
+
+
+/* ======================================================
+   PURCHASE ITEMS
+====================================================== */
 
 
 function markPurchased(
-name,
-qty,
-unit
+  requirementKey
 ){
 
-const item=
-inv(name);
+  const requirement =
+
+    automaticShoppingRequirements()
+
+    .find(
+      item =>
+      item.key ===
+      requirementKey
+    );
 
 
-const amount=
-Number(qty)||0;
+  if(!requirement)
+    return;
 
 
-if(
-canConvert(
-unit,
-item.unit
-)
-){
+  const override =
 
-item.qty=
-round(
-item.qty+
-convert(
-amount,
-unit,
-item.unit
-)
-);
-
-}
-else{
-
-item.qty=
-round(amount);
-
-item.unit=
-unit;
-
-}
+    state.shoppingOverrides[
+      requirement.key
+    ];
 
 
-item.status=
-"have";
+  const purchasedQty =
+
+    Number(
+      override?.qty
+      ??
+      requirement.shortage
+    ) || 0;
 
 
-save();
+  const purchasedUnit =
 
-}
-
-
-function addManual(){
-
-const name=
-$("manualItem")
-.value
-.trim();
+    override?.unit
+    ??
+    requirement.unit;
 
 
-if(!name)
-return;
+  const item =
+
+    inventoryItem(
+      requirement.name
+    );
 
 
-if(
-!state.manualShopping
-.some(
-x=>
-x.name.toLowerCase()===
-name.toLowerCase()
-)
-){
+  const converted =
 
-state.manualShopping.push({
+    convertQuantity(
 
-name,
+      purchasedQty,
 
-qty:1,
+      purchasedUnit,
 
-unit:"each"
+      item.unit
 
-});
-
-}
+    );
 
 
-$("manualItem").value="";
+  if(
+    converted !==
+    null
+  ){
+
+    item.qty =
+
+      roundQuantity(
+
+        Number(item.qty || 0)
+
+        +
+
+        converted
+
+      );
+
+  }
+
+  else{
+
+    /*
+      If units cannot be converted,
+      use the purchased unit as the
+      inventory unit.
+    */
+
+    item.qty =
+      roundQuantity(
+        purchasedQty
+      );
 
 
-save();
+    item.unit =
+      purchasedUnit;
 
-}
+  }
 
 
-function renderManual(){
+  item.status =
+    "have";
 
-$("manualShopping").innerHTML=
 
-state.manualShopping.length
+  delete state.shoppingOverrides[
+    requirement.key
+  ];
 
-?state.manualShopping.map(
-(item,index)=>
 
-`
-
-<div class="row shoprow">
-
-<input
-value="${esc(item.name)}"
-data-action="manual-name"
-data-index="${index}">
-
-<input
-type="number"
-min="0"
-step="0.01"
-value="${item.qty}"
-data-action="manual-qty"
-data-index="${index}">
-
-<select
-data-action="manual-unit"
-data-index="${index}">
-
-${unitOptions(item.unit)}
-
-</select>
-
-<div class="actions shopactions">
-
-<label>
-
-<input
-type="checkbox"
-style="width:auto"
-data-action="manual-check"
-data-index="${index}"
-${state.manualChecked[index]?"checked":""}>
-
-Done
-
-</label>
-
-<button
-class="secondary smallbtn"
-data-action="remove-manual"
-data-index="${index}">
-
-Remove
-
-</button>
-
-</div>
-
-</div>
-
-`
-
-).join("")
-
-:`<p class="small">
-No manual shopping items.
-</p>`;
+  saveState();
 
 }
+
+
+
+/* ======================================================
+   MANUAL SHOPPING
+====================================================== */
+
+
+function addManualShoppingItem(){
+
+  const name =
+
+    $("manualShoppingInput")
+      .value
+      .trim();
+
+
+  if(!name)
+    return;
+
+
+  const duplicate =
+
+    state.manualShopping
+
+    .some(
+      item =>
+      item.name
+        .toLowerCase()
+      ===
+      name.toLowerCase()
+    );
+
+
+  if(
+    !duplicate
+  ){
+
+    state.manualShopping.push({
+
+      name,
+
+      qty:
+        1,
+
+      unit:
+        "each"
+
+    });
+
+  }
+
+
+  $("manualShoppingInput")
+    .value =
+    "";
+
+
+  saveState();
+
+}
+
+
+
+function renderManualShoppingList(){
+
+  if(
+    state.manualShopping.length ===
+    0
+  ){
+
+    $("manualShoppingList")
+      .innerHTML =
+
+      `<p class="small">
+        No manual shopping items.
+      </p>`;
+
+    return;
+
+  }
+
+
+  $("manualShoppingList")
+    .innerHTML =
+
+    state.manualShopping
+
+    .map(
+      (
+        item,
+        index
+      ) => `
+
+        <div class="row shopping-row">
+
+          <input
+            value="${escapeHtml(item.name)}"
+            data-action="manual-name"
+            data-index="${index}"
+          >
+
+
+          <input
+            type="number"
+            min="0"
+            step="0.01"
+            value="${item.qty}"
+            data-action="manual-quantity"
+            data-index="${index}"
+          >
+
+
+          <select
+            data-action="manual-unit"
+            data-index="${index}"
+          >
+
+            ${unitOptions(
+              item.unit
+            )}
+
+          </select>
+
+
+          <div class="actions shopping-actions">
+
+            <label>
+
+              <input
+                type="checkbox"
+                style="width:auto"
+                data-action="manual-checked"
+                data-index="${index}"
+                ${
+                  state.manualChecked[index]
+                  ? "checked"
+                  : ""
+                }
+              >
+
+              Done
+
+            </label>
+
+
+            <button
+              type="button"
+              class="secondary small-button"
+              data-action="remove-manual-item"
+              data-index="${index}"
+            >
+              Remove
+            </button>
+
+          </div>
+
+        </div>
+
+      `
+    )
+
+    .join("");
+
+}
+
+
+
+/* ======================================================
+   SHOPPING COUNT
+====================================================== */
 
 
 function updateShoppingCount(){
 
-$("shoppingCount").textContent=
+  const automaticCount =
 
-automaticRequirements().length
+    automaticShoppingRequirements()
+      .length;
 
-+
 
-state.manualShopping
-.filter(
-(_,index)=>
-!state.manualChecked[index]
-)
-.length;
+  const manualCount =
+
+    state.manualShopping
+
+    .filter(
+      (
+        item,
+        index
+      ) =>
+      !state.manualChecked[
+        index
+      ]
+    )
+
+    .length;
+
+
+  $("shoppingCount")
+    .textContent =
+
+    automaticCount
+    +
+    manualCount;
 
 }
+
+
+
+/* ======================================================
+   CLICK EVENTS
+====================================================== */
 
 
 document.addEventListener(
-"click",
-event=>{
 
-const button=
-event.target.closest("button");
+  "click",
 
-if(!button)
-return;
+  event => {
 
 
-if(button.dataset.screen){
+    const button =
 
-showScreen(
-button.dataset.screen
+      event.target.closest(
+        "button"
+      );
+
+
+    if(!button)
+      return;
+
+
+    /*
+      Bottom navigation.
+    */
+
+    if(
+      button.dataset.screen
+    ){
+
+      showScreen(
+        button.dataset.screen
+      );
+
+      return;
+
+    }
+
+
+    const action =
+      button.dataset.action;
+
+
+    if(
+      action ===
+      "plan-recipe"
+    ){
+
+      planRecipe(
+        button.dataset.id
+      );
+
+      return;
+
+    }
+
+
+    if(
+      action ===
+      "shop-recipe"
+    ){
+
+      addRecipeToShopping(
+        button.dataset.id
+      );
+
+      return;
+
+    }
+
+
+    if(
+      action ===
+      "edit-recipe"
+    ){
+
+      openRecipeEditor(
+        button.dataset.id
+      );
+
+      return;
+
+    }
+
+
+    if(
+      action ===
+      "remove-temp-ingredient"
+    ){
+
+      temporaryIngredients.splice(
+
+        Number(
+          button.dataset.index
+        ),
+
+        1
+
+      );
+
+
+      renderIngredientEditor();
+
+      return;
+
+    }
+
+
+    if(
+      action ===
+      "rename-inventory"
+    ){
+
+      openInventoryRename(
+        button.dataset.name
+      );
+
+      return;
+
+    }
+
+
+    if(
+      action ===
+      "delete-inventory"
+    ){
+
+      deleteInventoryItem(
+        button.dataset.name
+      );
+
+      return;
+
+    }
+
+
+    if(
+      action ===
+      "remove-extra-shopping-recipe"
+    ){
+
+      state.shoppingRecipeIds =
+
+        state.shoppingRecipeIds
+
+        .filter(
+          recipeId =>
+          recipeId !==
+          button.dataset.id
+        );
+
+
+      saveState();
+
+      return;
+
+    }
+
+
+    if(
+      action ===
+      "mark-purchased"
+    ){
+
+      markPurchased(
+        button.dataset.key
+      );
+
+      return;
+
+    }
+
+
+    if(
+      action ===
+      "reset-shopping-amount"
+    ){
+
+      delete state.shoppingOverrides[
+        button.dataset.key
+      ];
+
+
+      saveState();
+
+      return;
+
+    }
+
+
+    if(
+      action ===
+      "remove-manual-item"
+    ){
+
+      const index =
+
+        Number(
+          button.dataset.index
+        );
+
+
+      state.manualShopping.splice(
+        index,
+        1
+      );
+
+
+      /*
+        Rebuild checked indexes so deleting
+        one row cannot mark the wrong item.
+      */
+
+      state.manualChecked =
+        {};
+
+
+      saveState();
+
+      return;
+
+    }
+
+  }
+
 );
 
-return;
-
-}
 
 
-const action=
-button.dataset.action;
-
-
-if(action==="plan-recipe")
-planRecipe(
-button.dataset.id
-);
-
-
-else if(action==="shop-recipe")
-addRecipeShopping(
-button.dataset.id
-);
-
-
-else if(action==="edit-recipe")
-openRecipeEditor(
-button.dataset.id
-);
-
-
-else if(action==="remove-temp"){
-
-tempIngredients.splice(
-Number(button.dataset.index),
-1
-);
-
-renderIngredientEditor();
-
-}
-
-
-else if(action==="rename-inv")
-openRename(
-button.dataset.name
-);
-
-
-else if(action==="delete-inv")
-deleteInventory(
-button.dataset.name
-);
-
-
-else if(
-action==="remove-shop-recipe"
-){
-
-state.shoppingRecipeIds=
-
-state.shoppingRecipeIds
-.filter(
-id=>
-id!==button.dataset.id
-);
-
-save();
-
-}
-
-
-else if(action==="purchased")
-markPurchased(
-button.dataset.name,
-button.dataset.qty,
-button.dataset.unit
-);
-
-
-else if(action==="reset-shop"){
-
-delete state.shoppingOverrides[
-button.dataset.key
-];
-
-save();
-
-}
-
-
-else if(action==="remove-manual"){
-
-state.manualShopping.splice(
-Number(button.dataset.index),
-1
-);
-
-state.manualChecked={};
-
-save();
-
-}
-
-});
+/* ======================================================
+   CHANGE EVENTS
+====================================================== */
 
 
 document.addEventListener(
-"change",
-event=>{
 
-const target=
-event.target;
+  "change",
 
-
-if(
-target.matches(
-"input[data-inventory-name]"
-)
-){
-
-inv(
-target.dataset.inventoryName
-).status=
-target.value;
-
-save();
-
-return;
-
-}
+  event => {
 
 
-const action=
-target.dataset.action;
+    const target =
+      event.target;
 
 
-if(action==="set-day"){
+    /*
+      Inventory Have / Low / Out.
+    */
 
-setDay(
-target.dataset.day,
-target.value
+    if(
+      target.matches(
+        "input[data-inventory-name]"
+      )
+    ){
+
+      const item =
+
+        inventoryItem(
+          target.dataset.inventoryName
+        );
+
+
+      item.status =
+        target.value;
+
+
+      saveState();
+
+      return;
+
+    }
+
+
+    const action =
+      target.dataset.action;
+
+
+    if(
+      action ===
+      "set-day-meal"
+    ){
+
+      setDayMeal(
+
+        target.dataset.day,
+
+        target.value
+
+      );
+
+      return;
+
+    }
+
+
+    if(
+      action ===
+      "day-servings"
+    ){
+
+      const day =
+        target.dataset.day;
+
+
+      const current =
+        state.week[
+          day
+        ];
+
+
+      if(
+        current &&
+        typeof current ===
+        "object"
+      ){
+
+        current.servings =
+
+          Math.max(
+
+            1,
+
+            Number(
+              target.value
+            ) || 1
+
+          );
+
+
+        saveState();
+
+      }
+
+
+      return;
+
+    }
+
+
+    if(
+      action ===
+      "inventory-quantity"
+    ){
+
+      const item =
+
+        inventoryItem(
+          target.dataset.name
+        );
+
+
+      item.qty =
+
+        Math.max(
+
+          0,
+
+          Number(
+            target.value
+          ) || 0
+
+        );
+
+
+      /*
+        If quantity becomes zero, mark Out.
+
+        If positive and previously Out,
+        automatically mark Have.
+      */
+
+      if(
+        item.qty <= 0
+      ){
+
+        item.status =
+          "out";
+
+      }
+
+      else if(
+        item.status ===
+        "out"
+      ){
+
+        item.status =
+          "have";
+
+      }
+
+
+      saveState();
+
+      return;
+
+    }
+
+
+    if(
+      action ===
+      "inventory-unit"
+    ){
+
+      inventoryItem(
+        target.dataset.name
+      ).unit =
+        target.value;
+
+
+      saveState();
+
+      return;
+
+    }
+
+
+    if(
+      action ===
+      "shopping-quantity"
+    ){
+
+      const key =
+        target.dataset.key;
+
+
+      const existing =
+
+        state.shoppingOverrides[
+          key
+        ] || {};
+
+
+      state.shoppingOverrides[
+        key
+      ] = {
+
+        ...existing,
+
+        qty:
+
+          Math.max(
+
+            0,
+
+            Number(
+              target.value
+            ) || 0
+
+          )
+
+      };
+
+
+      saveState();
+
+      return;
+
+    }
+
+
+    if(
+      action ===
+      "shopping-unit"
+    ){
+
+      const key =
+        target.dataset.key;
+
+
+      const existing =
+
+        state.shoppingOverrides[
+          key
+        ] || {};
+
+
+      state.shoppingOverrides[
+        key
+      ] = {
+
+        ...existing,
+
+        unit:
+          target.value
+
+      };
+
+
+      saveState();
+
+      return;
+
+    }
+
+
+    if(
+      action ===
+      "manual-name"
+    ){
+
+      const index =
+
+        Number(
+          target.dataset.index
+        );
+
+
+      if(
+        state.manualShopping[
+          index
+        ]
+      ){
+
+        state.manualShopping[
+          index
+        ].name =
+          target.value;
+
+      }
+
+
+      saveState();
+
+      return;
+
+    }
+
+
+    if(
+      action ===
+      "manual-quantity"
+    ){
+
+      const index =
+
+        Number(
+          target.dataset.index
+        );
+
+
+      if(
+        state.manualShopping[
+          index
+        ]
+      ){
+
+        state.manualShopping[
+          index
+        ].qty =
+
+          Math.max(
+
+            0,
+
+            Number(
+              target.value
+            ) || 0
+
+          );
+
+      }
+
+
+      saveState();
+
+      return;
+
+    }
+
+
+    if(
+      action ===
+      "manual-unit"
+    ){
+
+      const index =
+
+        Number(
+          target.dataset.index
+        );
+
+
+      if(
+        state.manualShopping[
+          index
+        ]
+      ){
+
+        state.manualShopping[
+          index
+        ].unit =
+          target.value;
+
+      }
+
+
+      saveState();
+
+      return;
+
+    }
+
+
+    if(
+      action ===
+      "manual-checked"
+    ){
+
+      state.manualChecked[
+
+        Number(
+          target.dataset.index
+        )
+
+      ] =
+        target.checked;
+
+
+      saveState();
+
+      return;
+
+    }
+
+
+    /*
+      Recipe editor ingredient fields.
+    */
+
+    if(
+      target.dataset.tempIndex
+      !==
+      undefined
+    ){
+
+      const index =
+
+        Number(
+          target.dataset.tempIndex
+        );
+
+
+      const field =
+        target.dataset.tempField;
+
+
+      if(
+        !temporaryIngredients[
+          index
+        ]
+      ){
+
+        return;
+
+      }
+
+
+      if(
+        field ===
+        "qty"
+      ){
+
+        temporaryIngredients[
+          index
+        ].qty =
+
+          Math.max(
+
+            0,
+
+            Number(
+              target.value
+            ) || 0
+
+          );
+
+      }
+
+      else{
+
+        temporaryIngredients[
+          index
+        ][field] =
+          target.value;
+
+      }
+
+    }
+
+  }
+
 );
 
-return;
 
-}
 
+/* ======================================================
+   STATIC BUTTONS
+====================================================== */
 
-if(action==="day-servings"){
 
-const current=
-state.week[
-target.dataset.day
-];
-
-
-if(
-current &&
-typeof current==="object"
-){
-
-current.servings=
-Math.max(
-1,
-Number(target.value)||1
-);
-
-save();
-
-}
-
-return;
-
-}
-
-
-if(action==="inv-qty"){
-
-inv(
-target.dataset.name
-).qty=
-
-Math.max(
-0,
-Number(target.value)||0
-);
-
-save();
-
-return;
-
-}
-
-
-if(action==="inv-unit"){
-
-inv(
-target.dataset.name
-).unit=
-target.value;
-
-save();
-
-return;
-
-}
-
-
-if(action==="shop-qty"){
-
-state.shoppingOverrides[
-target.dataset.key
-]=
-state.shoppingOverrides[
-target.dataset.key
-]||{};
-
-
-state.shoppingOverrides[
-target.dataset.key
-].qty=
-
-Math.max(
-0,
-Number(target.value)||0
-);
-
-
-save();
-
-return;
-
-}
-
-
-if(action==="shop-unit"){
-
-state.shoppingOverrides[
-target.dataset.key
-]=
-state.shoppingOverrides[
-target.dataset.key
-]||{};
-
-
-state.shoppingOverrides[
-target.dataset.key
-].unit=
-target.value;
-
-
-save();
-
-return;
-
-}
-
-
-if(action==="manual-name"){
-
-state.manualShopping[
-Number(target.dataset.index)
-].name=
-target.value;
-
-save();
-
-return;
-
-}
-
-
-if(action==="manual-qty"){
-
-state.manualShopping[
-Number(target.dataset.index)
-].qty=
-
-Math.max(
-0,
-Number(target.value)||0
-);
-
-save();
-
-return;
-
-}
-
-
-if(action==="manual-unit"){
-
-state.manualShopping[
-Number(target.dataset.index)
-].unit=
-target.value;
-
-save();
-
-return;
-
-}
-
-
-if(action==="manual-check"){
-
-state.manualChecked[
-Number(target.dataset.index)
-]=
-target.checked;
-
-save();
-
-return;
-
-}
-
-
-if(
-target.dataset.tempIndex!==
-undefined
-){
-
-const index=
-Number(
-target.dataset.tempIndex
-);
-
-
-const field=
-target.dataset.tempField;
-
-
-tempIngredients[index][field]=
-
-field==="qty"
-
-?Math.max(
-0,
-Number(target.value)||0
-)
-
-:target.value;
-
-}
-
-});
-
-
-$("headerShopping").onclick=
-()=>showScreen("shopping");
-
-
-$("bestButton").onclick=
-pickBest;
-
-
-$("surpriseButton").onclick=
-surprise;
-
-
-$("autoFiveButton").onclick=
-autoPlan;
-
-
-$("autoWeekButton").onclick=
-autoPlan;
-
-
-$("clearWeekButton").onclick=
-()=>{
-
-state.week={};
-
-save();
-
-};
-
-
-$("addRecipeButton").onclick=
-openNewRecipe;
-
-
-$("closeRecipeModal").onclick=
-()=>{
-
-$("recipeModal")
-.classList.remove("show");
-
-};
-
-
-$("addIngredientButton").onclick=
-()=>{
-
-tempIngredients.push({
-
-name:"",
-
-qty:1,
-
-unit:"each"
-
-});
-
-renderIngredientEditor();
-
-};
-
-
-$("saveRecipeButton").onclick=
-saveRecipe;
-
-
-$("deleteRecipeButton").onclick=
-deleteRecipe;
-
-
-$("addInventoryButton").onclick=
-addInventoryItem;
-
-
-$("closeRenameModal").onclick=
-()=>{
-
-$("renameModal")
-.classList.remove("show");
-
-};
-
-
-$("saveRenameButton").onclick=
-saveRename;
-
-
-$("addManualButton").onclick=
-addManual;
-
-
-$("mealSearch").oninput=
-renderMeals;
-
-
-$("categoryFilter").onchange=
-renderMeals;
-
-
-$("availabilityFilter").onchange=
-renderMeals;
-
-
-$("difficultyFilter").onchange=
-renderMeals;
-
-
-$("inventorySearch").oninput=
-renderInventory;
-
-
-$("newInventory")
+$("headerShoppingButton")
 .addEventListener(
-"keydown",
-event=>{
 
-if(event.key==="Enter")
-addInventoryItem();
+  "click",
 
-});
+  () =>
+  showScreen(
+    "shopping"
+  )
+
+);
 
 
-$("manualItem")
+$("useInventoryButton")
 .addEventListener(
-"keydown",
-event=>{
 
-if(event.key==="Enter")
-addManual();
+  "click",
 
-});
+  chooseBestMeal
+
+);
 
 
-function renderAll(){
+$("surpriseButton")
+.addEventListener(
 
-populateCategoryFilter();
+  "click",
 
-renderStats();
+  surpriseMe
 
-renderBestMatches();
+);
 
-renderMeals();
 
-renderInventory();
+$("pickFiveButton")
+.addEventListener(
 
-renderWeek();
+  "click",
 
-renderAutomaticShopping();
+  automaticallyPlanFive
 
-renderShoppingSources();
+);
 
-renderManual();
 
-updateShoppingCount();
+$("autoWeekButton")
+.addEventListener(
+
+  "click",
+
+  automaticallyPlanFive
+
+);
+
+
+$("clearWeekButton")
+.addEventListener(
+
+  "click",
+
+  () => {
+
+    state.week =
+      {};
+
+    saveState();
+
+  }
+
+);
+
+
+$("addRecipeButton")
+.addEventListener(
+
+  "click",
+
+  openNewRecipe
+
+);
+
+
+$("closeRecipeModal")
+.addEventListener(
+
+  "click",
+
+  () =>
+
+  $("recipeModal")
+  .classList
+  .remove("show")
+
+);
+
+
+$("addIngredientButton")
+.addEventListener(
+
+  "click",
+
+  () => {
+
+    temporaryIngredients.push({
+
+      name:"",
+
+      qty:1,
+
+      unit:"each"
+
+    });
+
+
+    renderIngredientEditor();
+
+  }
+
+);
+
+
+$("saveRecipeButton")
+.addEventListener(
+
+  "click",
+
+  saveRecipe
+
+);
+
+
+$("deleteRecipeButton")
+.addEventListener(
+
+  "click",
+
+  deleteRecipe
+
+);
+
+
+$("addInventoryItemButton")
+.addEventListener(
+
+  "click",
+
+  addInventoryItem
+
+);
+
+
+$("closeRenameInventoryModal")
+.addEventListener(
+
+  "click",
+
+  () =>
+
+  $("renameInventoryModal")
+  .classList
+  .remove("show")
+
+);
+
+
+$("saveInventoryRenameButton")
+.addEventListener(
+
+  "click",
+
+  renameInventoryItem
+
+);
+
+
+$("addManualShoppingButton")
+.addEventListener(
+
+  "click",
+
+  addManualShoppingItem
+
+);
+
+
+
+/* ======================================================
+   FILTER EVENTS
+====================================================== */
+
+
+$("mealSearch")
+.addEventListener(
+
+  "input",
+
+  renderRecipeList
+
+);
+
+
+$("categoryFilter")
+.addEventListener(
+
+  "change",
+
+  renderRecipeList
+
+);
+
+
+$("availabilityFilter")
+.addEventListener(
+
+  "change",
+
+  renderRecipeList
+
+);
+
+
+$("difficultyFilter")
+.addEventListener(
+
+  "change",
+
+  renderRecipeList
+
+);
+
+
+$("inventorySearch")
+.addEventListener(
+
+  "input",
+
+  renderInventory
+
+);
+
+
+
+/* ======================================================
+   ENTER KEY SUPPORT
+====================================================== */
+
+
+$("newInventoryItem")
+.addEventListener(
+
+  "keydown",
+
+  event => {
+
+    if(
+      event.key ===
+      "Enter"
+    ){
+
+      addInventoryItem();
+
+    }
+
+  }
+
+);
+
+
+$("manualShoppingInput")
+.addEventListener(
+
+  "keydown",
+
+  event => {
+
+    if(
+      event.key ===
+      "Enter"
+    ){
+
+      addManualShoppingItem();
+
+    }
+
+  }
+
+);
+
+
+
+/* ======================================================
+   MASTER RENDER
+====================================================== */
+
+
+function renderEverything(){
+
+  populateCategoryFilter();
+
+  renderStatistics();
+
+  renderBestMatches();
+
+  renderRecipeList();
+
+  renderInventory();
+
+  renderWeeklyPlan();
+
+  renderAutomaticShoppingList();
+
+  renderExtraShoppingMeals();
+
+  renderManualShoppingList();
+
+  updateShoppingCount();
 
 }
 
 
-renderAll();
 
-pickBest();
+/* ======================================================
+   INITIALIZE
+====================================================== */
+
+
+renderEverything();
+
+chooseBestMeal();
+
 
 </script>
 
+
 </body>
+
 </html>
