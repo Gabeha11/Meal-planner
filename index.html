@@ -456,11 +456,6 @@ label {
     gap: 10px;
 }
 
-.ready-score {
-    font-size: 26px;
-    font-weight: 900;
-}
-
 .section-title {
     display: flex;
     justify-content: space-between;
@@ -479,6 +474,16 @@ label {
     background: #f9fafb;
     border-radius: 10px;
     padding: 14px;
+}
+
+.delete-section {
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+
+.delete-section .btn-red {
+    width: 100%;
 }
 
 hr {
@@ -546,10 +551,6 @@ hr {
 
 <main>
 
-<!-- ========================================================= -->
-<!-- TONIGHT -->
-<!-- ========================================================= -->
-
 <section id="tonight" class="page active">
 
     <div id="tonightHero"></div>
@@ -581,11 +582,6 @@ hr {
     </div>
 
 </section>
-
-
-<!-- ========================================================= -->
-<!-- MEALS -->
-<!-- ========================================================= -->
 
 <section id="meals" class="page">
 
@@ -619,11 +615,6 @@ hr {
     <div id="recipeGrid" class="recipe-grid"></div>
 
 </section>
-
-
-<!-- ========================================================= -->
-<!-- INVENTORY -->
-<!-- ========================================================= -->
 
 <section id="inventory" class="page">
 
@@ -675,11 +666,6 @@ hr {
 
 </section>
 
-
-<!-- ========================================================= -->
-<!-- SHOPPING -->
-<!-- ========================================================= -->
-
 <section id="shopping" class="page">
 
     <div class="card">
@@ -708,17 +694,10 @@ hr {
     </div>
 
     <div class="card">
-
         <div id="shoppingList"></div>
-
     </div>
 
 </section>
-
-
-<!-- ========================================================= -->
-<!-- PLAN -->
-<!-- ========================================================= -->
 
 <section id="plan" class="page">
 
@@ -747,10 +726,7 @@ hr {
 
 </main>
 
-
-<!-- ========================================================= -->
 <!-- RECIPE EDITOR -->
-<!-- ========================================================= -->
 
 <div id="recipeModal" class="modal">
 
@@ -848,14 +824,23 @@ hr {
 
     </div>
 
-</div>
+    <div id="deleteRecipeSection" class="delete-section" style="display:none;">
+
+        <button
+            id="deleteRecipeButton"
+            class="btn btn-red btn-large"
+            onclick="deleteRecipeFromEditor()"
+        >
+            Delete Recipe
+        </button>
+
+    </div>
 
 </div>
 
+</div>
 
-<!-- ========================================================= -->
 <!-- RECIPE VIEW -->
-<!-- ========================================================= -->
 
 <div id="viewRecipeModal" class="modal">
 
@@ -875,10 +860,7 @@ hr {
 
 </div>
 
-
-<!-- ========================================================= -->
 <!-- WHAT CAN WE MAKE -->
-<!-- ========================================================= -->
 
 <div id="canMakeModal" class="modal">
 
@@ -898,10 +880,7 @@ hr {
 
 </div>
 
-
-<!-- ========================================================= -->
 <!-- COOK MODE -->
-<!-- ========================================================= -->
 
 <div id="cookModal" class="modal">
 
@@ -921,12 +900,7 @@ hr {
 
 </div>
 
-
 <script>
-
-/* ============================================================
-   UTILITIES
-============================================================ */
 
 function uid() {
     return Date.now().toString(36) + Math.random().toString(36).substr(2, 6);
@@ -950,11 +924,8 @@ function roundQty(num) {
 }
 
 function escapeHtml(text) {
-
     const div = document.createElement("div");
-
     div.textContent = text ?? "";
-
     return div.innerHTML;
 }
 
@@ -967,17 +938,12 @@ function closeModal(id) {
 }
 
 window.onclick = function(event) {
-
     if (event.target.classList.contains("modal")) {
         event.target.classList.remove("open");
     }
-
 };
 
-
-/* ============================================================
-   DEFAULT DATA
-============================================================ */
+/* DEFAULT RECIPES */
 
 const defaultRecipes = [
 
@@ -1211,7 +1177,6 @@ const defaultRecipes = [
 
 ];
 
-
 const defaultInventory = [
     { id: uid(), name: "Butter", qty: 8, unit: "tbsp", location: "Refrigerator" },
     { id: uid(), name: "Garlic", qty: 6, unit: "clove", location: "Pantry" },
@@ -1219,11 +1184,6 @@ const defaultInventory = [
     { id: uid(), name: "Black pepper", qty: 10, unit: "tsp", location: "Pantry" },
     { id: uid(), name: "Olive oil", qty: 20, unit: "tbsp", location: "Pantry" }
 ];
-
-
-/* ============================================================
-   STATE
-============================================================ */
 
 function loadState() {
 
@@ -1277,23 +1237,14 @@ function loadState() {
     };
 }
 
-
 let state = loadState();
 
-
 function saveState() {
-
     localStorage.setItem(
         "familyMealPlannerV3",
         JSON.stringify(state)
     );
-
 }
-
-
-/* ============================================================
-   NAVIGATION
-============================================================ */
 
 function showPage(pageId, clickedButton) {
 
@@ -1312,13 +1263,7 @@ function showPage(pageId, clickedButton) {
     }
 
     renderAll();
-
 }
-
-
-/* ============================================================
-   INVENTORY HELPERS
-============================================================ */
 
 function findInventoryItem(name, unit) {
 
@@ -1329,20 +1274,14 @@ function findInventoryItem(name, unit) {
         normalizeName(item.name) === normalized &&
         normalizeName(item.unit) === normalizedUnit
     );
-
 }
-
 
 function getInventoryQuantity(name, unit) {
 
     const item = findInventoryItem(name, unit);
 
-    return item
-        ? Number(item.qty) || 0
-        : 0;
-
+    return item ? Number(item.qty) || 0 : 0;
 }
-
 
 function ingredientAvailability(ingredient, scale = 1) {
 
@@ -1358,31 +1297,20 @@ function ingredientAvailability(ingredient, scale = 1) {
         available,
         missing: Math.max(0, required - available)
     };
-
 }
 
-
-/* ============================================================
-   TONIGHT
-============================================================ */
-
 function getTonightMainRecipe() {
-
     return state.recipes.find(
         recipe => recipe.id === state.tonight.mainRecipeId
     );
-
 }
-
 
 function getTonightSideRecipes() {
 
     return state.tonight.sides
         .map(id => state.recipes.find(r => r.id === id))
         .filter(Boolean);
-
 }
-
 
 function chooseTonightMeal(recipeId) {
 
@@ -1391,36 +1319,25 @@ function chooseTonightMeal(recipeId) {
     if (!recipe) return;
 
     state.tonight.mainRecipeId = recipeId;
-
-    state.tonight.servings =
-        Number(recipe.servings) || 4;
-
+    state.tonight.servings = Number(recipe.servings) || 4;
     state.tonight.sides = [];
 
     saveState();
-
     renderAll();
 
     showPage(
         "tonight",
         document.querySelector('[data-page="tonight"]')
     );
-
 }
-
 
 function setTonightServings(value) {
 
-    const servings = Math.max(1, Number(value) || 1);
-
-    state.tonight.servings = servings;
+    state.tonight.servings = Math.max(1, Number(value) || 1);
 
     saveState();
-
     renderAll();
-
 }
-
 
 function addSideToTonight(sideId) {
 
@@ -1430,28 +1347,20 @@ function addSideToTonight(sideId) {
 
     saveState();
     renderAll();
-
 }
-
 
 function removeSideFromTonight(sideId) {
 
-    state.tonight.sides =
-        state.tonight.sides.filter(id => id !== sideId);
+    state.tonight.sides = state.tonight.sides.filter(id => id !== sideId);
 
     saveState();
     renderAll();
-
 }
-
 
 function getRecipeCoverage(recipe, servings = null) {
 
-    const desiredServings =
-        servings || recipe.servings || 1;
-
-    const scale =
-        desiredServings / (recipe.servings || 1);
+    const desiredServings = servings || recipe.servings || 1;
+    const scale = desiredServings / (recipe.servings || 1);
 
     let requiredTotal = 0;
     let availableTotal = 0;
@@ -1459,12 +1368,9 @@ function getRecipeCoverage(recipe, servings = null) {
 
     recipe.ingredients.forEach(ingredient => {
 
-        const availability =
-            ingredientAvailability(ingredient, scale);
+        const availability = ingredientAvailability(ingredient, scale);
 
-        const required = availability.required;
-
-        if (required <= 0) return;
+        if (availability.required <= 0) return;
 
         requiredTotal++;
 
@@ -1474,66 +1380,39 @@ function getRecipeCoverage(recipe, servings = null) {
 
         availableTotal += Math.min(
             1,
-            availability.available / required
+            availability.available / availability.required
         );
-
     });
 
-    const percentage = requiredTotal
-        ? Math.round((availableTotal / requiredTotal) * 100)
-        : 100;
-
     return {
-        percentage,
+        percentage: requiredTotal
+            ? Math.round((availableTotal / requiredTotal) * 100)
+            : 100,
+
         completelyAvailable,
         total: requiredTotal
     };
-
 }
-
 
 function getSideSuggestions() {
 
-    const sides = state.recipes.filter(
-        recipe => recipe.type === "side"
-    );
-
-    return sides
-        .map(side => {
-
-            const coverage =
-                getRecipeCoverage(
-                    side,
-                    state.tonight.servings
-                );
-
-            return {
-                recipe: side,
-                coverage
-            };
-
-        })
-        .sort(
-            (a, b) =>
-                b.coverage.percentage -
-                a.coverage.percentage
-        );
-
+    return state.recipes
+        .filter(recipe => recipe.type === "side")
+        .map(recipe => ({
+            recipe,
+            coverage: getRecipeCoverage(recipe, state.tonight.servings)
+        }))
+        .sort((a, b) => b.coverage.percentage - a.coverage.percentage);
 }
-
 
 function renderTonight() {
 
     const main = getTonightMainRecipe();
-
-    const hero =
-        document.getElementById("tonightHero");
+    const hero = document.getElementById("tonightHero");
 
     if (!main) {
 
-        const meals = state.recipes.filter(
-            r => r.type === "meal"
-        );
+        const meals = state.recipes.filter(r => r.type === "meal");
 
         hero.innerHTML = `
             <div class="card hero">
@@ -1544,13 +1423,8 @@ function renderTonight() {
                 </p>
 
                 <div class="field">
-                    <select
-                        id="tonightMealPicker"
-                        onchange="chooseTonightMeal(this.value)"
-                    >
-                        <option value="">
-                            Select a meal...
-                        </option>
+                    <select onchange="chooseTonightMeal(this.value)">
+                        <option value="">Select a meal...</option>
 
                         ${meals.map(meal => `
                             <option value="${meal.id}">
@@ -1560,18 +1434,13 @@ function renderTonight() {
                     </select>
                 </div>
 
-                <button
-                    class="btn btn-purple"
-                    onclick="openCanMakeModal()"
-                >
+                <button class="btn btn-purple" onclick="openCanMakeModal()">
                     What Can We Make?
                 </button>
             </div>
         `;
 
-        document.getElementById(
-            "sideSuggestions"
-        ).innerHTML = `
+        document.getElementById("sideSuggestions").innerHTML = `
             <div class="empty-state">
                 Select tonight's meal first.
             </div>
@@ -1580,44 +1449,19 @@ function renderTonight() {
         return;
     }
 
-    const scale =
-        state.tonight.servings /
-        (main.servings || 1);
+    const scale = state.tonight.servings / (main.servings || 1);
 
-    const ingredientStatus =
-        main.ingredients.map(ingredient => {
+    const statuses = main.ingredients.map(ingredient => ({
+        ...ingredient,
+        ...ingredientAvailability(ingredient, scale)
+    }));
 
-            const info =
-                ingredientAvailability(
-                    ingredient,
-                    scale
-                );
+    const readyCount = statuses.filter(i => i.missing <= 0.001).length;
+    const missing = statuses.filter(i => i.missing > 0.001);
 
-            return {
-                ...ingredient,
-                ...info
-            };
-
-        });
-
-    const readyCount =
-        ingredientStatus.filter(
-            item => item.missing <= 0.001
-        ).length;
-
-    const missing =
-        ingredientStatus.filter(
-            item => item.missing > 0.001
-        );
-
-    const percentage =
-        main.ingredients.length
-            ? Math.round(
-                readyCount /
-                main.ingredients.length *
-                100
-            )
-            : 100;
+    const percentage = main.ingredients.length
+        ? Math.round((readyCount / main.ingredients.length) * 100)
+        : 100;
 
     const sides = getTonightSideRecipes();
 
@@ -1634,24 +1478,24 @@ function renderTonight() {
                     </div>
 
                     <div class="recipe-meta">
-                        ${main.cookTime || 0} min
-                        ·
-                        Serves ${state.tonight.servings}
+                        ${main.cookTime || 0} min · Serves ${state.tonight.servings}
                     </div>
                 </div>
 
                 <div class="button-row">
 
-                    <button
-                        class="btn btn-light"
-                        onclick="openRecipeView('${main.id}')"
-                    >
+                    <button class="btn btn-light" onclick="openRecipeView('${main.id}')">
                         View Recipe
                     </button>
 
                     <button
                         class="btn btn-light"
-                        onclick="state.tonight.mainRecipeId=null; state.tonight.sides=[]; saveState(); renderAll();"
+                        onclick="
+                            state.tonight.mainRecipeId=null;
+                            state.tonight.sides=[];
+                            saveState();
+                            renderAll();
+                        "
                     >
                         Change Meal
                     </button>
@@ -1666,12 +1510,7 @@ function renderTonight() {
 
                 <div class="quantity-control">
 
-                    <button
-                        onclick="setTonightServings(${Math.max(
-                            1,
-                            state.tonight.servings - 1
-                        )})"
-                    >
+                    <button onclick="setTonightServings(${Math.max(1, state.tonight.servings - 1)})">
                         −
                     </button>
 
@@ -1682,9 +1521,7 @@ function renderTonight() {
                         onchange="setTonightServings(this.value)"
                     >
 
-                    <button
-                        onclick="setTonightServings(${state.tonight.servings + 1})"
-                    >
+                    <button onclick="setTonightServings(${state.tonight.servings + 1})">
                         +
                     </button>
 
@@ -1696,8 +1533,7 @@ function renderTonight() {
 
                 <strong>
                     Inventory readiness:
-                    ${readyCount}/${main.ingredients.length}
-                    ingredients
+                    ${readyCount}/${main.ingredients.length} ingredients
                 </strong>
 
                 <div class="progress" style="margin-top:10px">
@@ -1708,20 +1544,18 @@ function renderTonight() {
                     missing.length
                     ?
                     `
-                        <p>
-                            <strong>Need:</strong>
-                            ${missing.map(item =>
-                                `${escapeHtml(item.name)}
-                                (${roundQty(item.missing)}
-                                ${escapeHtml(item.unit)})`
-                            ).join(", ")}
-                        </p>
+                    <p>
+                        <strong>Need:</strong>
+                        ${missing.map(item =>
+                            `${escapeHtml(item.name)} (${roundQty(item.missing)} ${escapeHtml(item.unit)})`
+                        ).join(", ")}
+                    </p>
                     `
                     :
                     `
-                        <p class="available-item">
-                            Everything needed for the main meal is in inventory.
-                        </p>
+                    <p class="available-item">
+                        Everything needed for the main meal is in inventory.
+                    </p>
                     `
                 }
 
@@ -1731,9 +1565,7 @@ function renderTonight() {
                 sides.length
                 ?
                 `
-                    <h3 style="margin-top:20px">
-                        Added Sides
-                    </h3>
+                    <h3 style="margin-top:20px">Added Sides</h3>
 
                     ${sides.map(side => `
                         <div class="side-card">
@@ -1768,17 +1600,11 @@ function renderTonight() {
 
             <div class="button-row" style="margin-top:20px">
 
-                <button
-                    class="btn btn-green btn-large"
-                    onclick="startCooking()"
-                >
+                <button class="btn btn-green btn-large" onclick="startCooking()">
                     START COOKING
                 </button>
 
-                <button
-                    class="btn btn-primary btn-large"
-                    onclick="addTonightToPlanToday()"
-                >
+                <button class="btn btn-primary btn-large" onclick="addTonightToPlanToday()">
                     Add to Weekly Plan
                 </button>
 
@@ -1788,28 +1614,18 @@ function renderTonight() {
     `;
 
     renderSideSuggestions();
-
 }
-
 
 function renderSideSuggestions() {
 
-    const container =
-        document.getElementById("sideSuggestions");
-
+    const container = document.getElementById("sideSuggestions");
     const main = getTonightMainRecipe();
 
     if (!main) return;
 
-    const suggestions =
-        getSideSuggestions()
-            .filter(
-                item =>
-                    !state.tonight.sides.includes(
-                        item.recipe.id
-                    )
-            )
-            .slice(0, 6);
+    const suggestions = getSideSuggestions()
+        .filter(item => !state.tonight.sides.includes(item.recipe.id))
+        .slice(0, 6);
 
     if (!suggestions.length) {
 
@@ -1822,245 +1638,179 @@ function renderSideSuggestions() {
         return;
     }
 
-    container.innerHTML =
-        suggestions.map(item => {
+    container.innerHTML = suggestions.map(item => {
 
-            const coverage =
-                item.coverage.percentage;
+        const coverage = item.coverage.percentage;
 
-            let badge = "badge-red";
+        let badge = "badge-red";
 
-            if (coverage >= 100) {
-                badge = "badge-green";
-            } else if (coverage >= 70) {
-                badge = "badge-yellow";
-            }
+        if (coverage >= 100) {
+            badge = "badge-green";
+        } else if (coverage >= 70) {
+            badge = "badge-yellow";
+        }
 
-            return `
-                <div class="side-card">
+        return `
+            <div class="side-card">
 
-                    <div class="section-title">
+                <div class="section-title">
 
-                        <div>
-                            <div class="side-title">
-                                ${escapeHtml(item.recipe.name)}
-                            </div>
-
-                            <div class="muted">
-                                ${item.recipe.cookTime || 0}
-                                min
-                            </div>
+                    <div>
+                        <div class="side-title">
+                            ${escapeHtml(item.recipe.name)}
                         </div>
 
-                        <span class="badge ${badge}">
-                            ${coverage}% available
-                        </span>
-
+                        <div class="muted">
+                            ${item.recipe.cookTime || 0} min
+                        </div>
                     </div>
 
-                    <button
-                        class="btn btn-primary"
-                        onclick="addSideToTonight('${item.recipe.id}')"
-                    >
-                        + Add Side
-                    </button>
+                    <span class="badge ${badge}">
+                        ${coverage}% available
+                    </span>
 
                 </div>
-            `;
 
-        }).join("");
+                <button
+                    class="btn btn-primary"
+                    onclick="addSideToTonight('${item.recipe.id}')"
+                >
+                    + Add Side
+                </button>
 
+            </div>
+        `;
+
+    }).join("");
 }
 
+function getMissingIngredientsForRecipe(recipe, servings) {
 
-/* ============================================================
-   WHAT CAN WE MAKE
-============================================================ */
+    const scale = servings / (recipe.servings || 1);
+
+    return recipe.ingredients
+        .map(ingredient => ({
+            ...ingredient,
+            ...ingredientAvailability(ingredient, scale)
+        }))
+        .filter(item => item.missing > 0.001);
+}
 
 function openCanMakeModal() {
 
-    const meals =
-        state.recipes
-            .filter(recipe => recipe.type === "meal")
-            .map(recipe => ({
-                recipe,
-                coverage:
-                    getRecipeCoverage(
-                        recipe,
-                        recipe.servings
-                    )
-            }))
-            .sort(
-                (a, b) =>
-                    b.coverage.percentage -
-                    a.coverage.percentage
-            );
+    const meals = state.recipes
+        .filter(recipe => recipe.type === "meal")
+        .map(recipe => ({
+            recipe,
+            coverage: getRecipeCoverage(recipe, recipe.servings)
+        }))
+        .sort((a, b) => b.coverage.percentage - a.coverage.percentage);
 
-    const container =
-        document.getElementById(
-            "canMakeResults"
+    const container = document.getElementById("canMakeResults");
+
+    container.innerHTML = meals.map(item => {
+
+        const missing = getMissingIngredientsForRecipe(
+            item.recipe,
+            item.recipe.servings
         );
 
-    container.innerHTML =
-        meals.map(item => {
+        let badge = "badge-red";
 
-            const missing =
-                getMissingIngredientsForRecipe(
-                    item.recipe,
-                    item.recipe.servings
-                );
+        if (item.coverage.percentage === 100) {
+            badge = "badge-green";
+        } else if (item.coverage.percentage >= 75) {
+            badge = "badge-yellow";
+        }
 
-            let badge = "badge-red";
+        return `
+            <div class="card">
 
-            if (item.coverage.percentage === 100) {
-                badge = "badge-green";
-            } else if (
-                item.coverage.percentage >= 75
-            ) {
-                badge = "badge-yellow";
-            }
+                <div class="section-title">
 
-            return `
-                <div class="card">
+                    <div>
 
-                    <div class="section-title">
+                        <h3>${escapeHtml(item.recipe.name)}</h3>
 
-                        <div>
-
-                            <h3>
-                                ${escapeHtml(item.recipe.name)}
-                            </h3>
-
-                            <div class="recipe-meta">
-                                ${item.recipe.cookTime || 0} min
-                                ·
-                                ${item.recipe.servings} servings
-                            </div>
-
+                        <div class="recipe-meta">
+                            ${item.recipe.cookTime || 0} min · ${item.recipe.servings} servings
                         </div>
 
-                        <span class="badge ${badge}">
-                            ${item.coverage.percentage}% ready
-                        </span>
-
                     </div>
 
-                    ${
-                        missing.length
-                        ?
-                        `
-                            <div class="muted">
-                                Missing:
-                                ${missing.map(i =>
-                                    `${escapeHtml(i.name)}
-                                    (${roundQty(i.missing)}
-                                    ${escapeHtml(i.unit)})`
-                                ).join(", ")}
-                            </div>
-                        `
-                        :
-                        `
-                            <div class="available-item">
-                                Everything is available.
-                            </div>
-                        `
-                    }
-
-                    <div class="button-row" style="margin-top:14px">
-
-                        <button
-                            class="btn btn-primary"
-                            onclick="chooseTonightMeal('${item.recipe.id}'); closeModal('canMakeModal');"
-                        >
-                            Make This Tonight
-                        </button>
-
-                        <button
-                            class="btn btn-light"
-                            onclick="openRecipeView('${item.recipe.id}')"
-                        >
-                            View Recipe
-                        </button>
-
-                    </div>
+                    <span class="badge ${badge}">
+                        ${item.coverage.percentage}% ready
+                    </span>
 
                 </div>
-            `;
 
-        }).join("");
+                ${
+                    missing.length
+                    ?
+                    `
+                    <div class="muted">
+                        Missing:
+                        ${missing.map(i =>
+                            `${escapeHtml(i.name)} (${roundQty(i.missing)} ${escapeHtml(i.unit)})`
+                        ).join(", ")}
+                    </div>
+                    `
+                    :
+                    `
+                    <div class="available-item">
+                        Everything is available.
+                    </div>
+                    `
+                }
+
+                <div class="button-row" style="margin-top:14px">
+
+                    <button
+                        class="btn btn-primary"
+                        onclick="chooseTonightMeal('${item.recipe.id}'); closeModal('canMakeModal');"
+                    >
+                        Make This Tonight
+                    </button>
+
+                    <button
+                        class="btn btn-light"
+                        onclick="openRecipeView('${item.recipe.id}')"
+                    >
+                        View Recipe
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+
+    }).join("");
 
     openModal("canMakeModal");
-
 }
-
-
-function getMissingIngredientsForRecipe(
-    recipe,
-    servings
-) {
-
-    const scale =
-        servings / (recipe.servings || 1);
-
-    return recipe.ingredients
-        .map(ingredient => {
-
-            const result =
-                ingredientAvailability(
-                    ingredient,
-                    scale
-                );
-
-            return {
-                ...ingredient,
-                ...result
-            };
-
-        })
-        .filter(item => item.missing > 0.001);
-
-}
-
-
-/* ============================================================
-   RECIPES
-============================================================ */
 
 function renderRecipes() {
 
-    const grid =
-        document.getElementById("recipeGrid");
+    const grid = document.getElementById("recipeGrid");
 
     if (!grid) return;
 
-    const query =
-        normalizeName(
-            document.getElementById(
-                "recipeSearch"
-            )?.value || ""
-        );
+    const query = normalizeName(
+        document.getElementById("recipeSearch")?.value || ""
+    );
 
-    const filter =
-        document.getElementById(
-            "recipeFilter"
-        )?.value || "all";
+    const filter = document.getElementById("recipeFilter")?.value || "all";
 
-    const recipes =
-        state.recipes.filter(recipe => {
+    const recipes = state.recipes.filter(recipe => {
 
-            const matchesQuery =
-                !query ||
-                normalizeName(recipe.name)
-                    .includes(query);
+        const matchesQuery =
+            !query || normalizeName(recipe.name).includes(query);
 
-            const matchesFilter =
-                filter === "all" ||
-                recipe.type === filter;
+        const matchesFilter =
+            filter === "all" || recipe.type === filter;
 
-            return matchesQuery &&
-                matchesFilter;
-
-        });
+        return matchesQuery && matchesFilter;
+    });
 
     if (!recipes.length) {
 
@@ -2073,149 +1823,129 @@ function renderRecipes() {
         return;
     }
 
-    grid.innerHTML =
-        recipes.map(recipe => {
+    grid.innerHTML = recipes.map(recipe => {
 
-            const coverage =
-                getRecipeCoverage(
-                    recipe,
-                    recipe.servings
-                );
+        const coverage = getRecipeCoverage(recipe, recipe.servings);
 
-            return `
-                <div class="card recipe-card">
+        return `
+            <div class="card recipe-card">
 
-                    <div class="recipe-title">
-                        ${escapeHtml(recipe.name)}
-                    </div>
+                <div class="recipe-title">
+                    ${escapeHtml(recipe.name)}
+                </div>
 
-                    <div class="recipe-meta">
-                        ${recipe.type === "side"
-                            ? "Side"
-                            : "Main Meal"}
-                        ·
-                        ${recipe.cookTime || 0} min
-                        ·
-                        Serves ${recipe.servings || 1}
-                    </div>
+                <div class="recipe-meta">
+                    ${recipe.type === "side" ? "Side" : "Main Meal"}
+                    ·
+                    ${recipe.cookTime || 0} min
+                    ·
+                    Serves ${recipe.servings || 1}
+                </div>
 
-                    <div style="margin-bottom:12px">
+                <div style="margin-bottom:12px">
 
-                        <span
-                            class="badge ${
-                                coverage.percentage === 100
+                    <span
+                        class="badge ${
+                            coverage.percentage === 100
                                 ? "badge-green"
                                 : coverage.percentage >= 70
                                 ? "badge-yellow"
                                 : "badge-red"
-                            }"
-                        >
-                            ${coverage.percentage}% in inventory
-                        </span>
-
-                    </div>
-
-                    ${
-                        recipe.notes
-                        ?
-                        `
-                            <p class="muted">
-                                ${escapeHtml(recipe.notes)}
-                            </p>
-                        `
-                        :
-                        ""
-                    }
-
-                    <div class="button-row">
-
-                        ${
-                            recipe.type === "meal"
-                            ?
-                            `
-                                <button
-                                    class="btn btn-primary"
-                                    onclick="chooseTonightMeal('${recipe.id}')"
-                                >
-                                    Make Tonight
-                                </button>
-                            `
-                            :
-                            `
-                                <button
-                                    class="btn btn-primary"
-                                    onclick="addSideToTonight('${recipe.id}')"
-                                >
-                                    Add Side
-                                </button>
-                            `
-                        }
-
-                        <button
-                            class="btn btn-light"
-                            onclick="openRecipeView('${recipe.id}')"
-                        >
-                            View
-                        </button>
-
-                        <button
-                            class="btn btn-light"
-                            onclick="openRecipeEditor('${recipe.id}')"
-                        >
-                            Edit
-                        </button>
-
-                    </div>
+                        }"
+                    >
+                        ${coverage.percentage}% in inventory
+                    </span>
 
                 </div>
-            `;
 
-        }).join("");
+                ${
+                    recipe.notes
+                    ?
+                    `
+                    <p class="muted">
+                        ${escapeHtml(recipe.notes)}
+                    </p>
+                    `
+                    :
+                    ""
+                }
 
+                <div class="button-row">
+
+                    ${
+                        recipe.type === "meal"
+                        ?
+                        `
+                        <button
+                            class="btn btn-primary"
+                            onclick="chooseTonightMeal('${recipe.id}')"
+                        >
+                            Make Tonight
+                        </button>
+                        `
+                        :
+                        `
+                        <button
+                            class="btn btn-primary"
+                            onclick="addSideToTonight('${recipe.id}')"
+                        >
+                            Add Side
+                        </button>
+                        `
+                    }
+
+                    <button
+                        class="btn btn-light"
+                        onclick="openRecipeView('${recipe.id}')"
+                    >
+                        View
+                    </button>
+
+                    <button
+                        class="btn btn-light"
+                        onclick="openRecipeEditor('${recipe.id}')"
+                    >
+                        Edit
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+
+    }).join("");
 }
-
 
 function openRecipeView(recipeId) {
 
-    const recipe =
-        state.recipes.find(
-            r => r.id === recipeId
-        );
+    const recipe = state.recipes.find(r => r.id === recipeId);
 
     if (!recipe) return;
 
-    document.getElementById(
-        "viewRecipeTitle"
-    ).textContent = recipe.name;
+    document.getElementById("viewRecipeTitle").textContent = recipe.name;
 
-    document.getElementById(
-        "viewRecipeContent"
-    ).innerHTML = `
+    document.getElementById("viewRecipeContent").innerHTML = `
 
         <div class="recipe-meta">
-            ${recipe.cookTime || 0} minutes
-            ·
-            Serves ${recipe.servings || 1}
+            ${recipe.cookTime || 0} minutes · Serves ${recipe.servings || 1}
         </div>
 
         ${
             recipe.notes
             ?
             `
-                <div class="summary-box">
-                    <strong>Notes</strong>
-                    <div style="margin-top:6px">
-                        ${escapeHtml(recipe.notes)}
-                    </div>
+            <div class="summary-box">
+                <strong>Notes</strong>
+                <div style="margin-top:6px">
+                    ${escapeHtml(recipe.notes)}
                 </div>
+            </div>
             `
             :
             ""
         }
 
-        <h3 style="margin-top:20px">
-            Ingredients
-        </h3>
+        <h3 style="margin-top:20px">Ingredients</h3>
 
         ${recipe.ingredients.map(
             ingredient => `
@@ -2227,9 +1957,7 @@ function openRecipeView(recipeId) {
             `
         ).join("")}
 
-        <h3 style="margin-top:20px">
-            Instructions
-        </h3>
+        <h3 style="margin-top:20px">Instructions</h3>
 
         <ol>
             ${recipe.steps.map(
@@ -2239,9 +1967,7 @@ function openRecipeView(recipeId) {
                         ${
                             step.minutes
                             ?
-                            `<span class="muted">
-                                (${step.minutes} min)
-                            </span>`
+                            `<span class="muted">(${step.minutes} min)</span>`
                             :
                             ""
                         }
@@ -2263,99 +1989,57 @@ function openRecipeView(recipeId) {
     `;
 
     openModal("viewRecipeModal");
-
 }
-
 
 function openRecipeEditor(recipeId = null) {
 
-    const recipe =
-        recipeId
-            ? state.recipes.find(
-                r => r.id === recipeId
-            )
-            : null;
+    const recipe = recipeId
+        ? state.recipes.find(r => r.id === recipeId)
+        : null;
 
-    document.getElementById(
-        "editingRecipeId"
-    ).value = recipe?.id || "";
+    document.getElementById("editingRecipeId").value = recipe?.id || "";
 
-    document.getElementById(
-        "recipeModalTitle"
-    ).textContent =
+    document.getElementById("recipeModalTitle").textContent =
         recipe ? "Edit Recipe" : "Add Recipe";
 
-    document.getElementById(
-        "recipeName"
-    ).value = recipe?.name || "";
+    document.getElementById("recipeName").value = recipe?.name || "";
+    document.getElementById("recipeType").value = recipe?.type || "meal";
+    document.getElementById("recipeServings").value = recipe?.servings || 4;
+    document.getElementById("recipeCookTime").value = recipe?.cookTime || 30;
+    document.getElementById("recipeNotes").value = recipe?.notes || "";
 
-    document.getElementById(
-        "recipeType"
-    ).value = recipe?.type || "meal";
-
-    document.getElementById(
-        "recipeServings"
-    ).value = recipe?.servings || 4;
-
-    document.getElementById(
-        "recipeCookTime"
-    ).value = recipe?.cookTime || 30;
-
-    document.getElementById(
-        "recipeNotes"
-    ).value = recipe?.notes || "";
-
-    const ingredientEditor =
-        document.getElementById(
-            "ingredientEditor"
-        );
-
+    const ingredientEditor = document.getElementById("ingredientEditor");
     ingredientEditor.innerHTML = "";
 
-    const ingredients =
-        recipe?.ingredients?.length
-            ? recipe.ingredients
-            : [
-                {
-                    name: "",
-                    qty: 1,
-                    unit: ""
-                }
-            ];
+    const ingredients = recipe?.ingredients?.length
+        ? recipe.ingredients
+        : [{ name: "", qty: 1, unit: "" }];
 
-    ingredients.forEach(
-        ingredient =>
-            addIngredientEditorRow(
-                ingredient
-            )
+    ingredients.forEach(ingredient =>
+        addIngredientEditorRow(ingredient)
     );
 
-    const stepEditor =
-        document.getElementById(
-            "stepEditor"
-        );
-
+    const stepEditor = document.getElementById("stepEditor");
     stepEditor.innerHTML = "";
 
-    const steps =
-        recipe?.steps?.length
-            ? recipe.steps
-            : [
-                {
-                    text: "",
-                    minutes: 5
-                }
-            ];
+    const steps = recipe?.steps?.length
+        ? recipe.steps
+        : [{ text: "", minutes: 5 }];
 
-    steps.forEach(
-        step =>
-            addStepEditorRow(step)
+    steps.forEach(step =>
+        addStepEditorRow(step)
     );
 
+    const deleteSection = document.getElementById("deleteRecipeSection");
+
+    if (recipe) {
+        deleteSection.style.display = "block";
+    } else {
+        deleteSection.style.display = "none";
+    }
+
     openModal("recipeModal");
-
 }
-
 
 function addIngredientEditorRow(
     ingredient = {
@@ -2365,8 +2049,7 @@ function addIngredientEditorRow(
     }
 ) {
 
-    const row =
-        document.createElement("div");
+    const row = document.createElement("div");
 
     row.className = "ingredient-row";
 
@@ -2399,12 +2082,8 @@ function addIngredientEditorRow(
         </button>
     `;
 
-    document.getElementById(
-        "ingredientEditor"
-    ).appendChild(row);
-
+    document.getElementById("ingredientEditor").appendChild(row);
 }
-
 
 function addStepEditorRow(
     step = {
@@ -2413,8 +2092,7 @@ function addStepEditorRow(
     }
 ) {
 
-    const row =
-        document.createElement("div");
+    const row = document.createElement("div");
 
     row.className = "step-row";
 
@@ -2441,131 +2119,63 @@ function addStepEditorRow(
         </button>
     `;
 
-    document.getElementById(
-        "stepEditor"
-    ).appendChild(row);
-
+    document.getElementById("stepEditor").appendChild(row);
 }
-
 
 function saveRecipe() {
 
-    const id =
-        document.getElementById(
-            "editingRecipeId"
-        ).value || uid();
+    const id = document.getElementById("editingRecipeId").value || uid();
 
-    const name =
-        document.getElementById(
-            "recipeName"
-        ).value.trim();
+    const name = document.getElementById("recipeName").value.trim();
 
     if (!name) {
         alert("Recipe name is required.");
         return;
     }
 
-    const ingredientRows =
-        [
-            ...document.querySelectorAll(
-                "#ingredientEditor .ingredient-row"
-            )
-        ];
+    const ingredients = [
+        ...document.querySelectorAll("#ingredientEditor .ingredient-row")
+    ]
+    .map(row => ({
+        name: row.querySelector(".ingredient-name").value.trim(),
+        qty: Number(row.querySelector(".ingredient-qty").value) || 0,
+        unit: row.querySelector(".ingredient-unit").value.trim()
+    }))
+    .filter(ingredient => ingredient.name);
 
-    const ingredients =
-        ingredientRows
-            .map(row => ({
-                name:
-                    row.querySelector(
-                        ".ingredient-name"
-                    ).value.trim(),
-
-                qty:
-                    Number(
-                        row.querySelector(
-                            ".ingredient-qty"
-                        ).value
-                    ) || 0,
-
-                unit:
-                    row.querySelector(
-                        ".ingredient-unit"
-                    ).value.trim()
-            }))
-            .filter(
-                ingredient =>
-                    ingredient.name
-            );
-
-    const stepRows =
-        [
-            ...document.querySelectorAll(
-                "#stepEditor .step-row"
-            )
-        ];
-
-    const steps =
-        stepRows
-            .map(row => ({
-                text:
-                    row.querySelector(
-                        ".step-text"
-                    ).value.trim(),
-
-                minutes:
-                    Number(
-                        row.querySelector(
-                            ".step-minutes"
-                        ).value
-                    ) || 0
-            }))
-            .filter(step => step.text);
+    const steps = [
+        ...document.querySelectorAll("#stepEditor .step-row")
+    ]
+    .map(row => ({
+        text: row.querySelector(".step-text").value.trim(),
+        minutes: Number(row.querySelector(".step-minutes").value) || 0
+    }))
+    .filter(step => step.text);
 
     const recipe = {
 
         id,
-
         name,
 
-        type:
-            document.getElementById(
-                "recipeType"
-            ).value,
+        type: document.getElementById("recipeType").value,
 
-        servings:
-            Math.max(
-                1,
-                Number(
-                    document.getElementById(
-                        "recipeServings"
-                    ).value
-                ) || 1
-            ),
+        servings: Math.max(
+            1,
+            Number(document.getElementById("recipeServings").value) || 1
+        ),
 
-        cookTime:
-            Math.max(
-                0,
-                Number(
-                    document.getElementById(
-                        "recipeCookTime"
-                    ).value
-                ) || 0
-            ),
+        cookTime: Math.max(
+            0,
+            Number(document.getElementById("recipeCookTime").value) || 0
+        ),
 
-        notes:
-            document.getElementById(
-                "recipeNotes"
-            ).value.trim(),
+        notes: document.getElementById("recipeNotes").value.trim(),
 
         ingredients,
-
         steps
     };
 
-    const index =
-        state.recipes.findIndex(
-            r => r.id === id
-        );
+    const index = state.recipes.findIndex(r => r.id === id);
 
     if (index >= 0) {
         state.recipes[index] = recipe;
@@ -2578,105 +2188,97 @@ function saveRecipe() {
     closeModal("recipeModal");
 
     renderAll();
-
 }
 
+/* FULL RECIPE DELETE */
 
-function deleteRecipe(recipeId) {
+function deleteRecipeFromEditor() {
 
-    const recipe =
-        state.recipes.find(
-            r => r.id === recipeId
-        );
+    const recipeId = document.getElementById("editingRecipeId").value;
 
-    if (!recipe) return;
-
-    if (
-        !confirm(
-            `Delete "${recipe.name}"?`
-        )
-    ) {
+    if (!recipeId) {
         return;
     }
 
-    state.recipes =
-        state.recipes.filter(
-            r => r.id !== recipeId
-        );
+    const recipe = state.recipes.find(r => r.id === recipeId);
 
-    if (
-        state.tonight.mainRecipeId ===
-        recipeId
-    ) {
-        state.tonight.mainRecipeId = null;
+    if (!recipe) {
+        return;
     }
 
-    state.tonight.sides =
-        state.tonight.sides.filter(
-            id => id !== recipeId
-        );
+    const confirmed = confirm(
+        `Are you sure you want to delete "${recipe.name}"?\n\nThis cannot be undone.`
+    );
 
-    Object.keys(state.plan)
-        .forEach(day => {
+    if (!confirmed) {
+        return;
+    }
 
-            if (
-                state.plan[day]?.recipeId ===
-                recipeId
-            ) {
-                delete state.plan[day];
-            }
+    /* Remove recipe itself */
 
-        });
+    state.recipes = state.recipes.filter(
+        r => r.id !== recipeId
+    );
+
+    /* Remove as tonight's main meal */
+
+    if (state.tonight.mainRecipeId === recipeId) {
+        state.tonight.mainRecipeId = null;
+        state.tonight.sides = [];
+    }
+
+    /* Remove as a side */
+
+    state.tonight.sides = state.tonight.sides.filter(
+        id => id !== recipeId
+    );
+
+    /* Remove from weekly plan */
+
+    Object.keys(state.plan).forEach(day => {
+
+        if (state.plan[day]?.recipeId === recipeId) {
+            delete state.plan[day];
+        }
+
+    });
+
+    /* Reset shopping values */
+
+    state.shoppingOverrides = {};
+    state.shoppingChecked = {};
 
     saveState();
+
+    closeModal("recipeModal");
+
     renderAll();
-
 }
-
-
-/* ============================================================
-   INVENTORY
-============================================================ */
 
 function addInventoryItem() {
 
-    const name =
-        document.getElementById(
-            "newInventoryName"
-        ).value.trim();
+    const name = document.getElementById("newInventoryName").value.trim();
 
     if (!name) {
         alert("Enter an item name.");
         return;
     }
 
-    const qty =
-        Number(
-            document.getElementById(
-                "newInventoryQty"
-            ).value
-        ) || 0;
+    const qty = Number(
+        document.getElementById("newInventoryQty").value
+    ) || 0;
 
     const unit =
-        document.getElementById(
-            "newInventoryUnit"
-        ).value.trim() || "each";
+        document.getElementById("newInventoryUnit").value.trim() || "each";
 
     const location =
-        document.getElementById(
-            "newInventoryLocation"
-        ).value;
+        document.getElementById("newInventoryLocation").value;
 
-    const existing =
-        findInventoryItem(name, unit);
+    const existing = findInventoryItem(name, unit);
 
     if (existing) {
-
-        existing.qty =
-            Number(existing.qty) + qty;
-
+        existing.qty = Number(existing.qty) + qty;
     } else {
-
         state.inventory.push({
             id: uid(),
             name,
@@ -2684,101 +2286,60 @@ function addInventoryItem() {
             unit,
             location
         });
-
     }
 
-    document.getElementById(
-        "newInventoryName"
-    ).value = "";
-
-    document.getElementById(
-        "newInventoryQty"
-    ).value = 1;
-
-    document.getElementById(
-        "newInventoryUnit"
-    ).value = "";
+    document.getElementById("newInventoryName").value = "";
+    document.getElementById("newInventoryQty").value = 1;
+    document.getElementById("newInventoryUnit").value = "";
 
     saveState();
     renderAll();
-
 }
 
+function updateInventory(id, field, value) {
 
-function updateInventory(
-    id,
-    field,
-    value
-) {
-
-    const item =
-        state.inventory.find(
-            item => item.id === id
-        );
+    const item = state.inventory.find(item => item.id === id);
 
     if (!item) return;
 
     if (field === "qty") {
-        item[field] = Math.max(
-            0,
-            Number(value) || 0
-        );
+        item[field] = Math.max(0, Number(value) || 0);
     } else {
         item[field] = value;
     }
 
     saveState();
     renderAll();
-
 }
 
+function adjustInventoryQty(id, amount) {
 
-function adjustInventoryQty(
-    id,
-    amount
-) {
-
-    const item =
-        state.inventory.find(
-            item => item.id === id
-        );
+    const item = state.inventory.find(item => item.id === id);
 
     if (!item) return;
 
-    item.qty =
-        Math.max(
-            0,
-            roundQty(
-                Number(item.qty) +
-                amount
-            )
-        );
+    item.qty = Math.max(
+        0,
+        roundQty(Number(item.qty) + amount)
+    );
 
     saveState();
     renderAll();
-
 }
-
 
 function deleteInventoryItem(id) {
 
-    state.inventory =
-        state.inventory.filter(
-            item => item.id !== id
-        );
+    state.inventory = state.inventory.filter(
+        item => item.id !== id
+    );
 
     saveState();
     renderAll();
-
 }
-
 
 function renderInventory() {
 
-    const list =
-        document.getElementById(
-            "inventoryList"
-        );
+    const list = document.getElementById("inventoryList");
 
     if (!list) return;
 
@@ -2793,86 +2354,71 @@ function renderInventory() {
         return;
     }
 
-    const sorted =
-        [...state.inventory].sort(
-            (a, b) =>
-                a.name.localeCompare(b.name)
-        );
+    const sorted = [...state.inventory].sort(
+        (a, b) => a.name.localeCompare(b.name)
+    );
 
-    list.innerHTML =
-        sorted.map(item => `
-            <div class="inventory-row">
+    list.innerHTML = sorted.map(item => `
+        <div class="inventory-row">
 
-                <input
-                    value="${escapeHtml(item.name)}"
-                    onchange="updateInventory('${item.id}', 'name', this.value)"
-                >
+            <input
+                value="${escapeHtml(item.name)}"
+                onchange="updateInventory('${item.id}', 'name', this.value)"
+            >
 
-                <div class="quantity-control">
+            <div class="quantity-control">
 
-                    <button
-                        onclick="adjustInventoryQty('${item.id}', -1)"
-                    >
-                        −
-                    </button>
-
-                    <input
-                        type="number"
-                        step="0.01"
-                        value="${item.qty}"
-                        onchange="updateInventory('${item.id}', 'qty', this.value)"
-                    >
-
-                    <button
-                        onclick="adjustInventoryQty('${item.id}', 1)"
-                    >
-                        +
-                    </button>
-
-                </div>
+                <button onclick="adjustInventoryQty('${item.id}', -1)">
+                    −
+                </button>
 
                 <input
-                    value="${escapeHtml(item.unit)}"
-                    onchange="updateInventory('${item.id}', 'unit', this.value)"
+                    type="number"
+                    step="0.01"
+                    value="${item.qty}"
+                    onchange="updateInventory('${item.id}', 'qty', this.value)"
                 >
 
-                <select
-                    onchange="updateInventory('${item.id}', 'location', this.value)"
-                >
-
-                    ${[
-                        "Pantry",
-                        "Refrigerator",
-                        "Freezer",
-                        "Other"
-                    ].map(location => `
-                        <option
-                            ${item.location === location
-                                ? "selected"
-                                : ""}
-                        >
-                            ${location}
-                        </option>
-                    `).join("")}
-
-                </select>
-
-                <button
-                    class="btn btn-red"
-                    onclick="deleteInventoryItem('${item.id}')"
-                >
-                    Delete
+                <button onclick="adjustInventoryQty('${item.id}', 1)">
+                    +
                 </button>
 
             </div>
-        `).join("");
 
+            <input
+                value="${escapeHtml(item.unit)}"
+                onchange="updateInventory('${item.id}', 'unit', this.value)"
+            >
+
+            <select
+                onchange="updateInventory('${item.id}', 'location', this.value)"
+            >
+
+                ${[
+                    "Pantry",
+                    "Refrigerator",
+                    "Freezer",
+                    "Other"
+                ].map(location => `
+                    <option
+                        ${item.location === location ? "selected" : ""}
+                    >
+                        ${location}
+                    </option>
+                `).join("")}
+
+            </select>
+
+            <button
+                class="btn btn-red"
+                onclick="deleteInventoryItem('${item.id}')"
+            >
+                Delete
+            </button>
+
+        </div>
+    `).join("");
 }
-
-
-/* ============================================================
-   WEEKLY PLAN
-============================================================ */
 
 const DAYS = [
     "Monday",
@@ -2884,132 +2430,102 @@ const DAYS = [
     "Sunday"
 ];
 
-
 function renderPlan() {
 
-    const container =
-        document.getElementById(
-            "weeklyPlan"
-        );
+    const container = document.getElementById("weeklyPlan");
 
     if (!container) return;
 
-    const meals =
-        state.recipes.filter(
-            recipe => recipe.type === "meal"
-        );
+    const meals = state.recipes.filter(
+        recipe => recipe.type === "meal"
+    );
 
-    container.innerHTML =
-        DAYS.map(day => {
+    container.innerHTML = DAYS.map(day => {
 
-            const planned =
-                state.plan[day];
+        const planned = state.plan[day];
 
-            const recipe =
-                planned
-                    ? state.recipes.find(
-                        r =>
-                            r.id ===
-                            planned.recipeId
-                    )
-                    : null;
+        const recipe = planned
+            ? state.recipes.find(r => r.id === planned.recipeId)
+            : null;
 
-            return `
-                <div class="card day-card">
+        return `
+            <div class="card day-card">
 
-                    <div class="day-name">
-                        ${day}
-                    </div>
-
-                    <select
-                        onchange="setPlanMeal('${day}', this.value)"
-                    >
-
-                        <option value="">
-                            No meal planned
-                        </option>
-
-                        ${meals.map(meal => `
-                            <option
-                                value="${meal.id}"
-                                ${
-                                    recipe?.id === meal.id
-                                    ? "selected"
-                                    : ""
-                                }
-                            >
-                                ${escapeHtml(meal.name)}
-                            </option>
-                        `).join("")}
-
-                    </select>
-
-                    ${
-                        recipe
-                        ?
-                        `
-                            <div class="plan-meal">
-
-                                <strong>
-                                    ${escapeHtml(recipe.name)}
-                                </strong>
-
-                                <div
-                                    class="field"
-                                    style="margin-top:10px"
-                                >
-                                    <label>
-                                        Servings
-                                    </label>
-
-                                    <input
-                                        type="number"
-                                        min="1"
-                                        value="${
-                                            planned.servings ||
-                                            recipe.servings
-                                        }"
-                                        onchange="setPlanServings('${day}', this.value)"
-                                    >
-
-                                </div>
-
-                                <div class="button-row">
-
-                                    <button
-                                        class="btn btn-primary"
-                                        onclick="chooseTonightMeal('${recipe.id}')"
-                                    >
-                                        Make Tonight
-                                    </button>
-
-                                    <button
-                                        class="btn btn-light"
-                                        onclick="openRecipeView('${recipe.id}')"
-                                    >
-                                        Recipe
-                                    </button>
-
-                                </div>
-
-                            </div>
-                        `
-                        :
-                        ""
-                    }
-
+                <div class="day-name">
+                    ${day}
                 </div>
-            `;
 
-        }).join("");
+                <select onchange="setPlanMeal('${day}', this.value)">
 
+                    <option value="">
+                        No meal planned
+                    </option>
+
+                    ${meals.map(meal => `
+                        <option
+                            value="${meal.id}"
+                            ${recipe?.id === meal.id ? "selected" : ""}
+                        >
+                            ${escapeHtml(meal.name)}
+                        </option>
+                    `).join("")}
+
+                </select>
+
+                ${
+                    recipe
+                    ?
+                    `
+                    <div class="plan-meal">
+
+                        <strong>
+                            ${escapeHtml(recipe.name)}
+                        </strong>
+
+                        <div class="field" style="margin-top:10px">
+
+                            <label>Servings</label>
+
+                            <input
+                                type="number"
+                                min="1"
+                                value="${planned.servings || recipe.servings}"
+                                onchange="setPlanServings('${day}', this.value)"
+                            >
+
+                        </div>
+
+                        <div class="button-row">
+
+                            <button
+                                class="btn btn-primary"
+                                onclick="chooseTonightMeal('${recipe.id}')"
+                            >
+                                Make Tonight
+                            </button>
+
+                            <button
+                                class="btn btn-light"
+                                onclick="openRecipeView('${recipe.id}')"
+                            >
+                                Recipe
+                            </button>
+
+                        </div>
+
+                    </div>
+                    `
+                    :
+                    ""
+                }
+
+            </div>
+        `;
+
+    }).join("");
 }
 
-
-function setPlanMeal(
-    day,
-    recipeId
-) {
+function setPlanMeal(day, recipeId) {
 
     if (!recipeId) {
 
@@ -3017,17 +2533,14 @@ function setPlanMeal(
 
     } else {
 
-        const recipe =
-            state.recipes.find(
-                r => r.id === recipeId
-            );
+        const recipe = state.recipes.find(
+            r => r.id === recipeId
+        );
 
         state.plan[day] = {
             recipeId,
-            servings:
-                recipe?.servings || 4
+            servings: recipe?.servings || 4
         };
-
     }
 
     state.shoppingOverrides = {};
@@ -3035,38 +2548,26 @@ function setPlanMeal(
 
     saveState();
     renderAll();
-
 }
 
-
-function setPlanServings(
-    day,
-    servings
-) {
+function setPlanServings(day, servings) {
 
     if (!state.plan[day]) return;
 
-    state.plan[day].servings =
-        Math.max(
-            1,
-            Number(servings) || 1
-        );
+    state.plan[day].servings = Math.max(
+        1,
+        Number(servings) || 1
+    );
 
     state.shoppingOverrides = {};
 
     saveState();
     renderAll();
-
 }
-
 
 function clearPlan() {
 
-    if (
-        !confirm(
-            "Clear the entire weekly meal plan?"
-        )
-    ) {
+    if (!confirm("Clear the entire weekly meal plan?")) {
         return;
     }
 
@@ -3076,19 +2577,15 @@ function clearPlan() {
 
     saveState();
     renderAll();
-
 }
-
 
 function addTonightToPlanToday() {
 
-    const main =
-        getTonightMainRecipe();
+    const main = getTonightMainRecipe();
 
     if (!main) return;
 
-    const now =
-        new Date();
+    const now = new Date();
 
     const dayNames = [
         "Sunday",
@@ -3100,13 +2597,11 @@ function addTonightToPlanToday() {
         "Saturday"
     ];
 
-    const day =
-        dayNames[now.getDay()];
+    const day = dayNames[now.getDay()];
 
     state.plan[day] = {
         recipeId: main.id,
-        servings:
-            state.tonight.servings
+        servings: state.tonight.servings
     };
 
     state.shoppingOverrides = {};
@@ -3114,212 +2609,131 @@ function addTonightToPlanToday() {
     saveState();
     renderAll();
 
-    alert(
-        `${main.name} added to ${day}.`
-    );
-
+    alert(`${main.name} added to ${day}.`);
 }
-
-
-/* ============================================================
-   SHOPPING LIST
-============================================================ */
 
 function buildRequiredIngredients() {
 
     const totals = {};
 
-    function addRecipe(
-        recipe,
-        servings
-    ) {
+    function addRecipe(recipe, servings) {
 
         if (!recipe) return;
 
-        const scale =
-            servings /
-            (recipe.servings || 1);
+        const scale = servings / (recipe.servings || 1);
 
-        recipe.ingredients.forEach(
-            ingredient => {
+        recipe.ingredients.forEach(ingredient => {
 
-                const key =
-                    normalizeName(
-                        ingredient.name
-                    ) +
-                    "|" +
-                    normalizeName(
-                        ingredient.unit
-                    );
+            const key =
+                normalizeName(ingredient.name) +
+                "|" +
+                normalizeName(ingredient.unit);
 
-                if (!totals[key]) {
+            if (!totals[key]) {
 
-                    totals[key] = {
-                        name:
-                            ingredient.name,
-
-                        unit:
-                            ingredient.unit,
-
-                        qty: 0
-                    };
-
-                }
-
-                totals[key].qty +=
-                    Number(ingredient.qty) *
-                    scale;
-
+                totals[key] = {
+                    name: ingredient.name,
+                    unit: ingredient.unit,
+                    qty: 0
+                };
             }
-        );
 
+            totals[key].qty += Number(ingredient.qty) * scale;
+        });
     }
 
-    Object.values(state.plan)
-        .forEach(planned => {
+    Object.values(state.plan).forEach(planned => {
 
-            const recipe =
-                state.recipes.find(
-                    r =>
-                        r.id ===
-                        planned.recipeId
-                );
+        const recipe = state.recipes.find(
+            r => r.id === planned.recipeId
+        );
 
-            addRecipe(
-                recipe,
-                planned.servings ||
-                recipe?.servings ||
-                1
-            );
+        addRecipe(
+            recipe,
+            planned.servings || recipe?.servings || 1
+        );
+    });
 
-        });
-
-    /*
-       Include tonight's meal if it is not already represented
-       in the weekly plan with the same recipe.
-    */
-
-    const tonightMain =
-        getTonightMainRecipe();
+    const tonightMain = getTonightMainRecipe();
 
     const tonightAlreadyPlanned =
         tonightMain &&
-        Object.values(state.plan)
-            .some(
-                planned =>
-                    planned.recipeId ===
-                    tonightMain.id
-            );
+        Object.values(state.plan).some(
+            planned => planned.recipeId === tonightMain.id
+        );
 
-    if (
-        tonightMain &&
-        !tonightAlreadyPlanned
-    ) {
+    if (tonightMain && !tonightAlreadyPlanned) {
 
         addRecipe(
             tonightMain,
             state.tonight.servings
         );
-
     }
 
-    getTonightSideRecipes()
-        .forEach(side => {
+    getTonightSideRecipes().forEach(side => {
 
-            addRecipe(
-                side,
-                state.tonight.servings
-            );
-
-        });
+        addRecipe(
+            side,
+            state.tonight.servings
+        );
+    });
 
     return totals;
-
 }
-
 
 function calculateShoppingList() {
 
-    const required =
-        buildRequiredIngredients();
+    const required = buildRequiredIngredients();
 
     return Object.entries(required)
         .map(([key, item]) => {
 
-            const inventoryQty =
-                getInventoryQuantity(
-                    item.name,
-                    item.unit
-                );
+            const inventoryQty = getInventoryQuantity(
+                item.name,
+                item.unit
+            );
 
-            const automaticallyNeeded =
-                Math.max(
-                    0,
-                    item.qty -
-                    inventoryQty
-                );
+            const automaticallyNeeded = Math.max(
+                0,
+                item.qty - inventoryQty
+            );
 
             const finalQty =
-                Object.prototype
-                    .hasOwnProperty.call(
-                        state.shoppingOverrides,
-                        key
-                    )
-                    ?
-                    Number(
-                        state.shoppingOverrides[
-                            key
-                        ]
-                    )
-                    :
-                    automaticallyNeeded;
+                Object.prototype.hasOwnProperty.call(
+                    state.shoppingOverrides,
+                    key
+                )
+                ? Number(state.shoppingOverrides[key])
+                : automaticallyNeeded;
 
             return {
                 key,
                 name: item.name,
                 unit: item.unit,
-                required:
-                    roundQty(item.qty),
-                inventory:
-                    roundQty(inventoryQty),
-                automatic:
-                    roundQty(
-                        automaticallyNeeded
-                    ),
-                qty:
-                    roundQty(finalQty)
+                required: roundQty(item.qty),
+                inventory: roundQty(inventoryQty),
+                automatic: roundQty(automaticallyNeeded),
+                qty: roundQty(finalQty)
             };
-
         })
         .filter(item => item.qty > 0.001)
-        .sort(
-            (a, b) =>
-                a.name.localeCompare(b.name)
-        );
-
+        .sort((a, b) => a.name.localeCompare(b.name));
 }
-
 
 function renderShopping() {
 
-    const container =
-        document.getElementById(
-            "shoppingList"
-        );
+    const container = document.getElementById("shoppingList");
 
     if (!container) return;
 
-    const items =
-        calculateShoppingList();
+    const items = calculateShoppingList();
 
     if (!items.length) {
 
         container.innerHTML = `
             <div class="empty-state">
 
-                <h3>
-                    Nothing to buy.
-                </h3>
+                <h3>Nothing to buy.</h3>
 
                 <p>
                     Add meals to your weekly plan or select tonight's dinner.
@@ -3331,94 +2745,70 @@ function renderShopping() {
         return;
     }
 
-    container.innerHTML =
-        items.map(item => `
-            <div class="shopping-row">
+    container.innerHTML = items.map(item => `
+        <div class="shopping-row">
 
-                <input
-                    type="checkbox"
-                    ${
-                        state.shoppingChecked[
-                            item.key
-                        ]
-                        ? "checked"
-                        : ""
-                    }
-                    onchange="toggleShoppingChecked('${item.key}', this.checked)"
-                >
+            <input
+                type="checkbox"
+                ${state.shoppingChecked[item.key] ? "checked" : ""}
+                onchange="toggleShoppingChecked('${item.key}', this.checked)"
+            >
 
-                <div>
-
-                    <strong>
-                        ${escapeHtml(item.name)}
-                    </strong>
-
-                    <div class="muted">
-                        Recipes need:
-                        ${item.required}
-                        ${escapeHtml(item.unit)}
-
-                        ·
-
-                        Inventory:
-                        ${item.inventory}
-                        ${escapeHtml(item.unit)}
-                    </div>
-
-                </div>
-
-                <input
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    value="${item.qty}"
-                    onchange="setShoppingOverride('${item.key}', this.value)"
-                >
+            <div>
 
                 <strong>
-                    ${escapeHtml(item.unit)}
+                    ${escapeHtml(item.name)}
                 </strong>
 
-                <span class="badge badge-green">
-                    Auto:
-                    ${item.automatic}
-                </span>
+                <div class="muted">
+                    Recipes need:
+                    ${item.required}
+                    ${escapeHtml(item.unit)}
+                    ·
+                    Inventory:
+                    ${item.inventory}
+                    ${escapeHtml(item.unit)}
+                </div>
 
             </div>
-        `).join("");
 
+            <input
+                type="number"
+                min="0"
+                step="0.01"
+                value="${item.qty}"
+                onchange="setShoppingOverride('${item.key}', this.value)"
+            >
+
+            <strong>
+                ${escapeHtml(item.unit)}
+            </strong>
+
+            <span class="badge badge-green">
+                Auto: ${item.automatic}
+            </span>
+
+        </div>
+    `).join("");
 }
 
+function setShoppingOverride(key, value) {
 
-function setShoppingOverride(
-    key,
-    value
-) {
-
-    state.shoppingOverrides[key] =
-        Math.max(
-            0,
-            Number(value) || 0
-        );
+    state.shoppingOverrides[key] = Math.max(
+        0,
+        Number(value) || 0
+    );
 
     saveState();
     renderShopping();
-
 }
 
+function toggleShoppingChecked(key, checked) {
 
-function toggleShoppingChecked(
-    key,
-    checked
-) {
-
-    state.shoppingChecked[key] =
-        checked;
+    state.shoppingChecked[key] = checked;
 
     saveState();
-
 }
-
 
 function clearShoppingOverrides() {
 
@@ -3427,47 +2817,35 @@ function clearShoppingOverrides() {
     saveState();
 
     renderShopping();
-
 }
-
 
 function addPurchasedToInventory() {
 
-    const list =
-        calculateShoppingList();
+    const list = calculateShoppingList();
 
-    const purchased =
-        list.filter(
-            item =>
-                state.shoppingChecked[
-                    item.key
-                ]
-        );
+    const purchased = list.filter(
+        item => state.shoppingChecked[item.key]
+    );
 
     if (!purchased.length) {
 
-        alert(
-            "Check the items you purchased first."
-        );
+        alert("Check the items you purchased first.");
 
         return;
     }
 
     purchased.forEach(item => {
 
-        const existing =
-            findInventoryItem(
-                item.name,
-                item.unit
-            );
+        const existing = findInventoryItem(
+            item.name,
+            item.unit
+        );
 
         if (existing) {
 
-            existing.qty =
-                roundQty(
-                    Number(existing.qty) +
-                    Number(item.qty)
-                );
+            existing.qty = roundQty(
+                Number(existing.qty) + Number(item.qty)
+            );
 
         } else {
 
@@ -3476,25 +2854,15 @@ function addPurchasedToInventory() {
                 name: item.name,
                 qty: item.qty,
                 unit: item.unit,
-                location:
-                    guessInventoryLocation(
-                        item.name
-                    )
+                location: guessInventoryLocation(item.name)
             });
-
         }
-
     });
 
     purchased.forEach(item => {
 
-        delete state.shoppingChecked[
-            item.key
-        ];
-
-        delete state.shoppingOverrides[
-            item.key
-        ];
+        delete state.shoppingChecked[item.key];
+        delete state.shoppingOverrides[item.key];
 
     });
 
@@ -3503,25 +2871,14 @@ function addPurchasedToInventory() {
 
     alert(
         `${purchased.length} purchased item${
-            purchased.length === 1
-                ? ""
-                : "s"
+            purchased.length === 1 ? "" : "s"
         } added to inventory.`
     );
-
 }
 
+function guessInventoryLocation(itemName) {
 
-function guessInventoryLocation(
-    itemName
-) {
-
-    const name =
-        normalizeName(itemName);
-
-    const freezerTerms = [
-        "frozen"
-    ];
+    const name = normalizeName(itemName);
 
     const fridgeTerms = [
         "milk",
@@ -3541,58 +2898,35 @@ function guessInventoryLocation(
     ];
 
     if (
-        freezerTerms.some(term =>
-            name.includes(term)
-        )
-    ) {
-        return "Freezer";
-    }
-
-    if (
-        fridgeTerms.some(term =>
-            name.includes(term)
-        )
+        fridgeTerms.some(term => name.includes(term))
     ) {
         return "Refrigerator";
     }
 
     return "Pantry";
-
 }
-
-
-/* ============================================================
-   COOKING MODE
-============================================================ */
 
 function startCooking() {
 
-    const main =
-        getTonightMainRecipe();
+    const main = getTonightMainRecipe();
 
     if (!main) return;
 
-    const sides =
-        getTonightSideRecipes();
+    const sides = getTonightSideRecipes();
 
-    const allRecipes =
-        [main, ...sides];
+    const allRecipes = [main, ...sides];
 
-    const maxTime =
-        Math.max(
-            ...allRecipes.map(
-                recipe =>
-                    Number(recipe.cookTime) ||
-                    recipe.steps.reduce(
-                        (total, step) =>
-                            total +
-                            (Number(
-                                step.minutes
-                            ) || 0),
-                        0
-                    )
-            )
-        );
+    const maxTime = Math.max(
+        ...allRecipes.map(
+            recipe =>
+                Number(recipe.cookTime) ||
+                recipe.steps.reduce(
+                    (total, step) =>
+                        total + (Number(step.minutes) || 0),
+                    0
+                )
+        )
+    );
 
     const timeline = [];
 
@@ -3602,56 +2936,32 @@ function startCooking() {
             Number(recipe.cookTime) ||
             recipe.steps.reduce(
                 (total, step) =>
-                    total +
-                    (Number(
-                        step.minutes
-                    ) || 0),
+                    total + (Number(step.minutes) || 0),
                 0
             );
 
-        /*
-           Start shorter sides later so the meal
-           finishes around the same time.
-        */
-
-        let minute =
-            Math.max(
-                0,
-                maxTime -
-                recipeDuration
-            );
-
-        recipe.steps.forEach(
-            (step, index) => {
-
-                timeline.push({
-                    minute,
-                    recipeName:
-                        recipe.name,
-                    step:
-                        step.text,
-                    stepNumber:
-                        index + 1
-                });
-
-                minute +=
-                    Number(
-                        step.minutes
-                    ) || 0;
-
-            }
+        let minute = Math.max(
+            0,
+            maxTime - recipeDuration
         );
+
+        recipe.steps.forEach((step, index) => {
+
+            timeline.push({
+                minute,
+                recipeName: recipe.name,
+                step: step.text,
+                stepNumber: index + 1
+            });
+
+            minute += Number(step.minutes) || 0;
+        });
 
     });
 
-    timeline.sort(
-        (a, b) =>
-            a.minute - b.minute
-    );
+    timeline.sort((a, b) => a.minute - b.minute);
 
-    document.getElementById(
-        "cookContent"
-    ).innerHTML = `
+    document.getElementById("cookContent").innerHTML = `
 
         <div class="summary-box">
 
@@ -3661,11 +2971,7 @@ function startCooking() {
                     sides.length
                     ?
                     " + " +
-                    sides
-                        .map(s =>
-                            escapeHtml(s.name)
-                        )
-                        .join(" + ")
+                    sides.map(s => escapeHtml(s.name)).join(" + ")
                     :
                     ""
                 }
@@ -3681,17 +2987,15 @@ function startCooking() {
             main.notes
             ?
             `
-                <div class="summary-box" style="margin-top:12px">
+            <div class="summary-box" style="margin-top:12px">
 
-                    <strong>
-                        Meal Notes
-                    </strong>
+                <strong>Meal Notes</strong>
 
-                    <div style="margin-top:5px">
-                        ${escapeHtml(main.notes)}
-                    </div>
-
+                <div style="margin-top:5px">
+                    ${escapeHtml(main.notes)}
                 </div>
+
+            </div>
             `
             :
             ""
@@ -3705,11 +3009,7 @@ function startCooking() {
             <div class="cook-step">
 
                 <div class="cook-time">
-                    ${
-                        item.minute === 0
-                        ? "START"
-                        : `+${item.minute} min`
-                    }
+                    ${item.minute === 0 ? "START" : `+${item.minute} min`}
                 </div>
 
                 <strong>
@@ -3722,134 +3022,91 @@ function startCooking() {
 
             </div>
         `).join("")}
-
     `;
 
     openModal("cookModal");
-
 }
-
-
-/* ============================================================
-   BACKUP / RESTORE
-============================================================ */
 
 function exportData() {
 
-    const json =
-        JSON.stringify(
-            state,
-            null,
-            2
-        );
+    const json = JSON.stringify(
+        state,
+        null,
+        2
+    );
 
-    const blob =
-        new Blob(
-            [json],
-            {
-                type:
-                    "application/json"
-            }
-        );
+    const blob = new Blob(
+        [json],
+        {
+            type: "application/json"
+        }
+    );
 
-    const url =
-        URL.createObjectURL(blob);
+    const url = URL.createObjectURL(blob);
 
-    const a =
-        document.createElement("a");
+    const a = document.createElement("a");
 
     a.href = url;
-
-    a.download =
-        "meal-planner-backup.json";
-
+    a.download = "meal-planner-backup.json";
     a.click();
 
     URL.revokeObjectURL(url);
-
 }
-
 
 function importData(event) {
 
-    const file =
-        event.target.files[0];
+    const file = event.target.files[0];
 
     if (!file) return;
 
-    const reader =
-        new FileReader();
+    const reader = new FileReader();
 
     reader.onload = function(e) {
 
         try {
 
-            const imported =
-                JSON.parse(
-                    e.target.result
-                );
+            const imported = JSON.parse(e.target.result);
 
             if (
-                !Array.isArray(
-                    imported.recipes
-                ) ||
-                !Array.isArray(
-                    imported.inventory
-                )
+                !Array.isArray(imported.recipes) ||
+                !Array.isArray(imported.inventory)
             ) {
-                throw new Error(
-                    "Invalid backup"
-                );
+                throw new Error("Invalid backup");
             }
 
             state = imported;
 
-            state.tonight =
-                state.tonight || {
-                    mainRecipeId: null,
-                    servings: 5,
-                    sides: []
-                };
+            state.tonight = state.tonight || {
+                mainRecipeId: null,
+                servings: 5,
+                sides: []
+            };
 
-            state.plan =
-                state.plan || {};
+            state.plan = state.plan || {};
 
             state.shoppingOverrides =
-                state.shoppingOverrides ||
-                {};
+                state.shoppingOverrides || {};
 
             state.shoppingChecked =
-                state.shoppingChecked ||
-                {};
+                state.shoppingChecked || {};
 
             saveState();
-
             renderAll();
 
-            alert(
-                "Meal planner restored successfully."
-            );
+            alert("Meal planner restored successfully.");
 
         } catch (error) {
 
             alert(
                 "That file does not appear to be a valid meal planner backup."
             );
-
         }
-
     };
 
     reader.readAsText(file);
 
     event.target.value = "";
-
 }
-
-
-/* ============================================================
-   RENDER EVERYTHING
-============================================================ */
 
 function renderAll() {
 
@@ -3858,13 +3115,7 @@ function renderAll() {
     renderInventory();
     renderShopping();
     renderPlan();
-
 }
-
-
-/* ============================================================
-   INITIALIZE
-============================================================ */
 
 renderAll();
 
