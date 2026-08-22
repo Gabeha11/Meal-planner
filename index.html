@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#234e70">
 <title>Family Meal Picker</title>
 
 <style>
-:root {
+:root{
   --blue:#234e70;
   --light:#f4f7fb;
   --white:#ffffff;
@@ -21,80 +22,87 @@
   --red-bg:#fdebea;
 }
 
-* {
+*{
   box-sizing:border-box;
 }
 
-body {
+html{
+  -webkit-text-size-adjust:100%;
+}
+
+body{
   margin:0;
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
   background:var(--light);
   color:var(--text);
 }
 
-header {
+header{
   position:sticky;
   top:0;
   z-index:10;
-  background:white;
+  background:rgba(255,255,255,.96);
   border-bottom:1px solid var(--border);
   padding:14px 16px;
+  backdrop-filter:blur(10px);
 }
 
-.header-inner {
-  max-width:1000px;
+.header-inner{
+  max-width:1050px;
   margin:auto;
   display:flex;
   align-items:center;
   justify-content:space-between;
+  gap:12px;
 }
 
-h1 {
+h1{
   font-size:21px;
   margin:0;
 }
 
-.subtitle {
+.subtitle{
   color:var(--muted);
   font-size:12px;
   margin-top:3px;
 }
 
-main {
-  max-width:1000px;
+main{
+  max-width:1050px;
   margin:auto;
-  padding:18px 14px 95px;
+  padding:18px 14px calc(95px + env(safe-area-inset-bottom));
 }
 
-.screen {
+.screen{
   display:none;
 }
 
-.screen.active {
+.screen.active{
   display:block;
 }
 
-.card {
+.card{
   background:white;
   border:1px solid var(--border);
   border-radius:16px;
   padding:16px;
   margin-bottom:14px;
+  box-shadow:0 6px 20px rgba(20,30,50,.05);
 }
 
-h2 {
-  margin-top:0;
+h2{
+  margin:0 0 12px;
 }
 
-h3 {
+h3{
   margin:0 0 8px;
 }
 
-p {
+p{
   color:var(--muted);
 }
 
-button {
+button{
   border:0;
   background:var(--blue);
   color:white;
@@ -102,20 +110,23 @@ button {
   border-radius:10px;
   font-weight:700;
   cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
 }
 
-button.secondary {
+button.secondary{
   background:#edf1f5;
   color:var(--text);
 }
 
-.actions {
+.actions{
   display:flex;
   gap:8px;
   flex-wrap:wrap;
 }
 
-input, select {
+input,
+select{
   width:100%;
   border:1px solid var(--border);
   border-radius:10px;
@@ -124,83 +135,84 @@ input, select {
   background:white;
 }
 
-.filters {
+.filters{
   display:grid;
   grid-template-columns:repeat(4,1fr);
   gap:8px;
   margin-bottom:14px;
 }
 
-.meals {
+.meals{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:12px;
 }
 
-.meal {
+.meal{
   background:white;
   border:1px solid var(--border);
   border-radius:14px;
   padding:14px;
 }
 
-.meal-title {
+.meal-title{
   font-weight:800;
   font-size:17px;
 }
 
-.small {
+.small{
   font-size:12px;
   color:var(--muted);
 }
 
-.badge {
+.badge{
   display:inline-block;
   border-radius:20px;
   padding:5px 8px;
   margin:7px 4px 7px 0;
   font-size:12px;
   font-weight:700;
+  background:#eef2f7;
 }
 
-.good {
+.good{
   background:var(--green-bg);
   color:var(--green);
 }
 
-.almost {
+.almost{
   background:var(--yellow-bg);
   color:var(--yellow);
 }
 
-.bad {
+.bad{
   background:var(--red-bg);
   color:var(--red);
 }
 
 .inventory-row,
 .shopping-row,
-.plan-row {
+.plan-row{
   display:grid;
   align-items:center;
   gap:10px;
   border-bottom:1px solid var(--border);
-  padding:9px 0;
+  padding:10px 0;
 }
 
-.inventory-row {
-  grid-template-columns:1fr 180px;
+.inventory-row{
+  grid-template-columns:1fr 190px;
 }
 
-.shopping-row {
+.shopping-row{
   grid-template-columns:30px 1fr auto;
 }
 
-.plan-row {
-  grid-template-columns:70px 1fr;
+.plan-row{
+  grid-template-columns:85px 1fr;
 }
 
-.segment {
+.segment{
   display:flex;
   gap:3px;
   padding:3px;
@@ -208,30 +220,46 @@ input, select {
   border-radius:9px;
 }
 
-.segment button {
+.inventory-choice{
   flex:1;
-  background:transparent;
+  text-align:center;
+  padding:9px 4px;
+  border-radius:8px;
   color:var(--muted);
-  padding:7px 4px;
   font-size:11px;
+  font-weight:700;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;
 }
 
-.segment button.selected-have {
+.inventory-choice input{
+  position:absolute;
+  opacity:0;
+  width:1px;
+  height:1px;
+  pointer-events:none;
+}
+
+.inventory-choice.selected-have{
   background:white;
   color:var(--green);
+  box-shadow:0 1px 5px rgba(0,0,0,.08);
 }
 
-.segment button.selected-low {
+.inventory-choice.selected-low{
   background:white;
   color:var(--yellow);
+  box-shadow:0 1px 5px rgba(0,0,0,.08);
 }
 
-.segment button.selected-out {
+.inventory-choice.selected-out{
   background:white;
   color:var(--red);
+  box-shadow:0 1px 5px rgba(0,0,0,.08);
 }
 
-.bottom-nav {
+.bottom-nav{
   position:fixed;
   bottom:0;
   left:0;
@@ -241,9 +269,10 @@ input, select {
   display:grid;
   grid-template-columns:repeat(5,1fr);
   z-index:20;
+  padding-bottom:env(safe-area-inset-bottom);
 }
 
-.bottom-nav button {
+.bottom-nav button{
   border-radius:0;
   background:white;
   color:var(--muted);
@@ -251,18 +280,18 @@ input, select {
   font-size:11px;
 }
 
-.bottom-nav button.active {
+.bottom-nav button.active{
   color:var(--blue);
   background:#f5f8fb;
 }
 
-.nav-icon {
+.nav-icon{
   display:block;
   font-size:20px;
   margin-bottom:2px;
 }
 
-.result {
+.result{
   margin-top:14px;
   padding:15px;
   border-radius:14px;
@@ -270,54 +299,68 @@ input, select {
   border:1px solid var(--border);
 }
 
-.big-meal {
+.big-meal{
   font-size:25px;
   font-weight:800;
   margin:5px 0;
 }
 
-.category-heading {
+.category-heading{
   margin-top:18px;
   text-transform:uppercase;
   font-size:12px;
   font-weight:800;
   color:var(--muted);
+  letter-spacing:.04em;
 }
 
-.stats {
+.stats{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:8px;
 }
 
-.stat {
+.stat{
   background:#f8fafc;
   padding:12px;
   border-radius:12px;
   text-align:center;
 }
 
-.stat strong {
+.stat strong{
   display:block;
   font-size:24px;
 }
 
-.checked {
+.checked{
   text-decoration:line-through;
   color:#999;
 }
 
-@media(max-width:760px) {
-  .meals {
+.notice{
+  padding:12px;
+  border-radius:12px;
+  background:#eef6ff;
+  color:#36536e;
+  font-size:13px;
+  margin-bottom:14px;
+}
+
+@media(max-width:760px){
+  .meals{
     grid-template-columns:1fr;
   }
 
-  .filters {
+  .filters{
     grid-template-columns:1fr 1fr;
   }
 
-  .inventory-row {
-    grid-template-columns:1fr 145px;
+  .inventory-row{
+    grid-template-columns:1fr 155px;
+  }
+
+  .plan-row{
+    grid-template-columns:70px 1fr;
   }
 }
 </style>
@@ -332,7 +375,7 @@ input, select {
       <div class="subtitle">Use what you have • choose meals • build your shopping list</div>
     </div>
 
-    <button class="secondary" onclick="showScreen('shopping')">
+    <button type="button" class="secondary" id="headerShoppingButton">
       🛒 <span id="shoppingCountHeader">0</span>
     </button>
   </div>
@@ -340,16 +383,15 @@ input, select {
 
 <main>
 
-<!-- HOME -->
 <section id="home" class="screen active">
 
   <div class="card">
     <h2>What should we eat?</h2>
 
     <div class="actions">
-      <button onclick="pickBestMeal()">Use What We Have</button>
-      <button class="secondary" onclick="surpriseMe()">Surprise Me</button>
-      <button class="secondary" onclick="autoPlan()">Pick 5 Dinners</button>
+      <button type="button" id="useWhatWeHaveButton">Use What We Have</button>
+      <button type="button" class="secondary" id="surpriseButton">Surprise Me</button>
+      <button type="button" class="secondary" id="pickFiveButton">Pick 5 Dinners</button>
     </div>
 
     <div id="bestMealResult"></div>
@@ -383,32 +425,26 @@ input, select {
 
 </section>
 
-
-<!-- MEALS -->
 <section id="meals" class="screen">
 
   <h2>Find a Meal</h2>
 
   <div class="filters">
 
-    <input
-      id="mealSearch"
-      placeholder="Search meals..."
-      oninput="renderMeals()"
-    >
+    <input id="mealSearch" placeholder="Search meals...">
 
-    <select id="categoryFilter" onchange="renderMeals()">
+    <select id="categoryFilter">
       <option value="All">All Categories</option>
     </select>
 
-    <select id="availabilityFilter" onchange="renderMeals()">
+    <select id="availabilityFilter">
       <option value="All">Any Availability</option>
       <option value="Ready">Ready to Make</option>
       <option value="Almost">Missing 1–2</option>
       <option value="Shopping">Needs Shopping</option>
     </select>
 
-    <select id="difficultyFilter" onchange="renderMeals()">
+    <select id="difficultyFilter">
       <option value="All">Any Difficulty</option>
       <option value="Easy">Easy</option>
       <option value="Medium">Medium</option>
@@ -420,16 +456,14 @@ input, select {
 
 </section>
 
-
-<!-- WEEK -->
 <section id="week" class="screen">
 
   <div class="card">
     <h2>Weekly Meal Plan</h2>
 
     <div class="actions">
-      <button onclick="autoPlan()">Auto Pick 5</button>
-      <button class="secondary" onclick="clearWeek()">Clear Week</button>
+      <button type="button" id="autoPickWeekButton">Auto Pick 5</button>
+      <button type="button" class="secondary" id="clearWeekButton">Clear Week</button>
     </div>
 
     <div id="weeklyPlan"></div>
@@ -439,36 +473,28 @@ input, select {
     <h3>Shopping</h3>
     <p id="weekSummary"></p>
 
-    <button onclick="buildShoppingListFromWeek()">
+    <button type="button" id="buildWeekShoppingButton">
       Add Missing Ingredients to Shopping List
     </button>
   </div>
 
 </section>
 
-
-<!-- INVENTORY -->
 <section id="inventory" class="screen">
 
   <h2>What We Have</h2>
 
-  <p>
-    Mark each ingredient as <b>Have</b>, <b>Low</b>, or <b>Out</b>.
-    Low and Out will be treated as things you may need to buy.
-  </p>
+  <div class="notice">
+    Mark ingredients as <b>Have</b>, <b>Low</b>, or <b>Out</b>.
+    Low and Out count as things you may need to buy.
+  </div>
 
-  <input
-    id="inventorySearch"
-    placeholder="Search inventory..."
-    oninput="renderInventory()"
-  >
+  <input id="inventorySearch" placeholder="Search inventory...">
 
   <div id="inventoryList" class="card"></div>
 
 </section>
 
-
-<!-- SHOPPING -->
 <section id="shopping" class="screen">
 
   <div class="card">
@@ -476,16 +502,9 @@ input, select {
     <h2>Shopping List</h2>
 
     <div class="actions">
-      <input
-        id="manualShoppingItem"
-        placeholder="Add milk, bread, etc."
-      >
-
-      <button onclick="addManualShoppingItem()">Add Item</button>
-
-      <button class="secondary" onclick="clearCheckedItems()">
-        Clear Checked
-      </button>
+      <input id="manualShoppingItem" placeholder="Add milk, bread, etc.">
+      <button type="button" id="addManualShoppingButton">Add Item</button>
+      <button type="button" class="secondary" id="clearCheckedButton">Clear Checked</button>
     </div>
 
     <div id="shoppingList"></div>
@@ -496,827 +515,129 @@ input, select {
 
 </main>
 
-
-<!-- NAVIGATION -->
-
 <div class="bottom-nav">
 
-  <button id="nav-home" class="active" onclick="showScreen('home')">
+  <button type="button" id="nav-home" class="active" data-screen="home">
     <span class="nav-icon">🏠</span>
     Home
   </button>
 
-  <button id="nav-meals" onclick="showScreen('meals')">
+  <button type="button" id="nav-meals" data-screen="meals">
     <span class="nav-icon">🍽️</span>
     Meals
   </button>
 
-  <button id="nav-week" onclick="showScreen('week')">
+  <button type="button" id="nav-week" data-screen="week">
     <span class="nav-icon">📅</span>
     Week
   </button>
 
-  <button id="nav-inventory" onclick="showScreen('inventory')">
+  <button type="button" id="nav-inventory" data-screen="inventory">
     <span class="nav-icon">🥫</span>
     Inventory
   </button>
 
-  <button id="nav-shopping" onclick="showScreen('shopping')">
+  <button type="button" id="nav-shopping" data-screen="shopping">
     <span class="nav-icon">🛒</span>
     Shopping
   </button>
 
 </div>
 
-
 <script>
 
-/* =========================================================
-   MEAL DATABASE
-========================================================= */
+/* ===========================
+   RECIPE DATABASE
+=========================== */
 
 const recipes = [
 
-{
-category:"Ground Beef",
-name:"Stuffed Bell Peppers",
-difficulty:"Medium",
-minutes:50,
-ingredients:[
-"Ground Beef",
-"Bell Peppers",
-"Rice",
-"Onion",
-"Garlic",
-"Tomato Sauce"
-]
-},
+{category:"Ground Beef",name:"Stuffed Bell Peppers",difficulty:"Medium",minutes:50,ingredients:["Ground Beef","Bell Peppers","Rice","Onion","Garlic","Tomato Sauce"]},
+{category:"Ground Beef",name:"Chili",difficulty:"Easy",minutes:45,ingredients:["Ground Beef","Beans","Onion","Garlic","Tomato Sauce","Tomato Paste"]},
+{category:"Ground Beef",name:"Spaghetti",difficulty:"Easy",minutes:30,ingredients:["Ground Beef","Pasta","Tomato Sauce","Onion","Garlic"]},
+{category:"Ground Beef",name:"Burgers",difficulty:"Easy",minutes:25,ingredients:["Ground Beef","Burger Buns","Cheese","Lettuce","Tomato","Onion"]},
+{category:"Ground Beef",name:"Lasagna",difficulty:"Medium",minutes:75,ingredients:["Ground Beef","Lasagna Noodles","Tomato Sauce","Ricotta","Mozzarella","Onion","Garlic"]},
+{category:"Ground Beef",name:"Goulash",difficulty:"Easy",minutes:35,ingredients:["Ground Beef","Pasta","Tomato Sauce","Onion","Garlic"]},
+{category:"Ground Beef",name:"Meatballs",difficulty:"Medium",minutes:40,ingredients:["Ground Beef","Eggs","Breadcrumbs","Onion","Garlic"]},
+{category:"Ground Beef",name:"Shepherd's Pie",difficulty:"Medium",minutes:55,ingredients:["Ground Beef","Potatoes","Onion","Carrots","Green Beans","Butter"]},
+{category:"Ground Beef",name:"Meatloaf",difficulty:"Medium",minutes:60,ingredients:["Ground Beef","Eggs","Breadcrumbs","Onion","Tomato Sauce"]},
+{category:"Ground Beef",name:"Sloppy Joes",difficulty:"Easy",minutes:30,ingredients:["Ground Beef","Burger Buns","Onion","Tomato Sauce"]},
+{category:"Ground Beef",name:"Enchiladas",difficulty:"Medium",minutes:45,ingredients:["Ground Beef","Tortillas","Cheese","Onion","Enchilada Sauce"]},
+{category:"Ground Beef",name:"Tacos",difficulty:"Easy",minutes:25,ingredients:["Ground Beef","Tortillas","Cheese","Lettuce","Tomato","Onion"]},
 
-{
-category:"Ground Beef",
-name:"Chili",
-difficulty:"Easy",
-minutes:45,
-ingredients:[
-"Ground Beef",
-"Beans",
-"Onion",
-"Garlic",
-"Tomato Sauce",
-"Tomato Paste"
-]
-},
+{category:"Chicken",name:"Fajita Bowls",difficulty:"Easy",minutes:30,ingredients:["Chicken","Rice","Bell Peppers","Onion","Lime"]},
+{category:"Chicken",name:"Garlic Parmesan Cream Chicken",difficulty:"Medium",minutes:35,ingredients:["Chicken","Garlic","Butter","Heavy Cream","Parmesan"]},
+{category:"Chicken",name:"Chicken Parmesan",difficulty:"Medium",minutes:45,ingredients:["Chicken","Breadcrumbs","Eggs","Tomato Sauce","Mozzarella","Parmesan"]},
+{category:"Chicken",name:"Chicken Pot Pie",difficulty:"Medium",minutes:60,ingredients:["Chicken","Potatoes","Carrots","Peas","Onion","Pie Crust","Chicken Bouillon"]},
+{category:"Chicken",name:"Chicken Noodle Soup",difficulty:"Easy",minutes:40,ingredients:["Chicken","Egg Noodles","Carrots","Celery","Onion","Garlic","Chicken Bouillon"]},
+{category:"Chicken",name:"Chicken and Dumplings",difficulty:"Medium",minutes:55,ingredients:["Chicken","Flour","Milk","Butter","Chicken Bouillon"]},
+{category:"Chicken",name:"Chicken Broccoli Soup",difficulty:"Easy",minutes:35,ingredients:["Chicken","Broccoli","Onion","Garlic","Chicken Bouillon","Heavy Cream"]},
+{category:"Chicken",name:"Chicken Alfredo",difficulty:"Easy",minutes:30,ingredients:["Chicken","Pasta","Garlic","Butter","Heavy Cream","Parmesan"]},
+{category:"Chicken",name:"White Wings",difficulty:"Medium",minutes:40,ingredients:["Chicken","Bacon","Jalapenos","Cream Cheese"]},
+{category:"Chicken",name:"Enchiladas",difficulty:"Medium",minutes:45,ingredients:["Chicken","Tortillas","Cheese","Onion","Enchilada Sauce"]},
+{category:"Chicken",name:"Tortilla Soup",difficulty:"Easy",minutes:40,ingredients:["Chicken","Beans","Corn","Onion","Garlic","Tomato Sauce","Chicken Bouillon","Tortilla Chips"]},
+{category:"Chicken",name:"Chicken Salad",difficulty:"Easy",minutes:20,ingredients:["Chicken","Mayonnaise","Celery","Grapes"]},
+{category:"Chicken",name:"Pesto Chicken Pasta",difficulty:"Easy",minutes:30,ingredients:["Chicken","Pasta","Pesto","Garlic","Parmesan"]},
+{category:"Chicken",name:"Drumsticks",difficulty:"Easy",minutes:45,ingredients:["Chicken Drumsticks","Oil","Seasoning"]},
+{category:"Chicken",name:"Stir Fry",difficulty:"Easy",minutes:30,ingredients:["Chicken","Rice","Broccoli","Bell Peppers","Onion","Garlic","Soy Sauce"]},
+{category:"Chicken",name:"Curry",difficulty:"Medium",minutes:40,ingredients:["Chicken","Rice","Onion","Garlic","Coconut Milk","Curry Powder"]},
 
-{
-category:"Ground Beef",
-name:"Spaghetti",
-difficulty:"Easy",
-minutes:30,
-ingredients:[
-"Ground Beef",
-"Pasta",
-"Tomato Sauce",
-"Onion",
-"Garlic"
-]
-},
+{category:"Pork",name:"Pork Belly",difficulty:"Medium",minutes:60,ingredients:["Pork Belly","Garlic","Soy Sauce","Brown Sugar"]},
+{category:"Pork",name:"Ribs",difficulty:"Medium",minutes:150,ingredients:["Pork Ribs","BBQ Sauce","Brown Sugar","Seasoning"]},
+{category:"Pork",name:"Boneless Ribs",difficulty:"Easy",minutes:55,ingredients:["Boneless Pork Ribs","BBQ Sauce","Seasoning"]},
+{category:"Pork",name:"Meatballs",difficulty:"Medium",minutes:40,ingredients:["Ground Pork","Eggs","Breadcrumbs","Onion","Garlic"]},
+{category:"Pork",name:"Ramen",difficulty:"Easy",minutes:30,ingredients:["Pork","Ramen Noodles","Soy Sauce","Garlic","Onion","Eggs"]},
+{category:"Pork",name:"Tenderloin",difficulty:"Medium",minutes:50,ingredients:["Pork Tenderloin","Garlic","Oil","Seasoning"]},
+{category:"Pork",name:"Pork Chops",difficulty:"Easy",minutes:30,ingredients:["Pork Chops","Oil","Seasoning"]},
+{category:"Pork",name:"Enchiladas",difficulty:"Medium",minutes:45,ingredients:["Pork","Tortillas","Cheese","Onion","Enchilada Sauce"]},
+{category:"Pork",name:"Curry",difficulty:"Medium",minutes:40,ingredients:["Pork","Rice","Onion","Garlic","Coconut Milk","Curry Powder"]},
 
-{
-category:"Ground Beef",
-name:"Burgers",
-difficulty:"Easy",
-minutes:25,
-ingredients:[
-"Ground Beef",
-"Burger Buns",
-"Cheese",
-"Lettuce",
-"Tomato",
-"Onion"
-]
-},
+{category:"Lamb",name:"Leg of Lamb",difficulty:"Medium",minutes:120,ingredients:["Leg of Lamb","Garlic","Oil","Seasoning"]},
+{category:"Lamb",name:"Lamb Chops",difficulty:"Medium",minutes:35,ingredients:["Lamb Chops","Garlic","Oil","Seasoning"]},
+{category:"Lamb",name:"Lamb Roast",difficulty:"Medium",minutes:120,ingredients:["Lamb Roast","Garlic","Onion","Oil","Seasoning"]},
 
-{
-category:"Ground Beef",
-name:"Lasagna",
-difficulty:"Medium",
-minutes:75,
-ingredients:[
-"Ground Beef",
-"Lasagna Noodles",
-"Tomato Sauce",
-"Ricotta",
-"Mozzarella",
-"Onion",
-"Garlic"
-]
-},
+{category:"Beef",name:"Steak",difficulty:"Easy",minutes:25,ingredients:["Steak","Butter","Garlic","Seasoning"]},
+{category:"Beef",name:"Stir Fry",difficulty:"Easy",minutes:30,ingredients:["Beef Strips","Rice","Broccoli","Bell Peppers","Onion","Garlic","Soy Sauce"]},
+{category:"Beef",name:"Pressure Cooker Beef",difficulty:"Easy",minutes:55,ingredients:["Beef Roast","Onion","Garlic","Beef Bouillon"]},
+{category:"Beef",name:"Fajita Bowls",difficulty:"Easy",minutes:30,ingredients:["Beef Strips","Rice","Bell Peppers","Onion","Lime"]},
+{category:"Beef",name:"Beef and Noodles",difficulty:"Easy",minutes:35,ingredients:["Beef Strips","Egg Noodles","Onion","Beef Bouillon"]},
+{category:"Beef",name:"Roast",difficulty:"Medium",minutes:150,ingredients:["Beef Roast","Potatoes","Onion","Garlic","Carrots","Beef Bouillon"]},
+{category:"Beef",name:"French Dips",difficulty:"Easy",minutes:40,ingredients:["Roast Beef","Hoagie Rolls","Onion","Beef Bouillon","Cheese"]},
 
-{
-category:"Ground Beef",
-name:"Goulash",
-difficulty:"Easy",
-minutes:35,
-ingredients:[
-"Ground Beef",
-"Pasta",
-"Tomato Sauce",
-"Onion",
-"Garlic"
-]
-},
-
-{
-category:"Ground Beef",
-name:"Meatballs",
-difficulty:"Medium",
-minutes:40,
-ingredients:[
-"Ground Beef",
-"Eggs",
-"Breadcrumbs",
-"Onion",
-"Garlic"
-]
-},
-
-{
-category:"Ground Beef",
-name:"Shepherd's Pie",
-difficulty:"Medium",
-minutes:55,
-ingredients:[
-"Ground Beef",
-"Potatoes",
-"Onion",
-"Carrots",
-"Green Beans",
-"Butter"
-]
-},
-
-{
-category:"Ground Beef",
-name:"Meatloaf",
-difficulty:"Medium",
-minutes:60,
-ingredients:[
-"Ground Beef",
-"Eggs",
-"Breadcrumbs",
-"Onion",
-"Tomato Sauce"
-]
-},
-
-{
-category:"Ground Beef",
-name:"Sloppy Joes",
-difficulty:"Easy",
-minutes:30,
-ingredients:[
-"Ground Beef",
-"Burger Buns",
-"Onion",
-"Tomato Sauce"
-]
-},
-
-{
-category:"Ground Beef",
-name:"Enchiladas",
-difficulty:"Medium",
-minutes:45,
-ingredients:[
-"Ground Beef",
-"Tortillas",
-"Cheese",
-"Onion",
-"Enchilada Sauce"
-]
-},
-
-{
-category:"Ground Beef",
-name:"Tacos",
-difficulty:"Easy",
-minutes:25,
-ingredients:[
-"Ground Beef",
-"Tortillas",
-"Cheese",
-"Lettuce",
-"Tomato",
-"Onion"
-]
-},
-
-
-/* CHICKEN */
-
-{
-category:"Chicken",
-name:"Fajita Bowls",
-difficulty:"Easy",
-minutes:30,
-ingredients:[
-"Chicken",
-"Rice",
-"Bell Peppers",
-"Onion",
-"Lime"
-]
-},
-
-{
-category:"Chicken",
-name:"Garlic Parmesan Cream Chicken",
-difficulty:"Medium",
-minutes:35,
-ingredients:[
-"Chicken",
-"Garlic",
-"Butter",
-"Heavy Cream",
-"Parmesan"
-]
-},
-
-{
-category:"Chicken",
-name:"Chicken Parmesan",
-difficulty:"Medium",
-minutes:45,
-ingredients:[
-"Chicken",
-"Breadcrumbs",
-"Eggs",
-"Tomato Sauce",
-"Mozzarella",
-"Parmesan"
-]
-},
-
-{
-category:"Chicken",
-name:"Chicken Pot Pie",
-difficulty:"Medium",
-minutes:60,
-ingredients:[
-"Chicken",
-"Potatoes",
-"Carrots",
-"Peas",
-"Onion",
-"Pie Crust",
-"Chicken Bouillon"
-]
-},
-
-{
-category:"Chicken",
-name:"Chicken Noodle Soup",
-difficulty:"Easy",
-minutes:40,
-ingredients:[
-"Chicken",
-"Egg Noodles",
-"Carrots",
-"Celery",
-"Onion",
-"Garlic",
-"Chicken Bouillon"
-]
-},
-
-{
-category:"Chicken",
-name:"Chicken and Dumplings",
-difficulty:"Medium",
-minutes:55,
-ingredients:[
-"Chicken",
-"Flour",
-"Milk",
-"Butter",
-"Chicken Bouillon"
-]
-},
-
-{
-category:"Chicken",
-name:"Chicken Broccoli Soup",
-difficulty:"Easy",
-minutes:35,
-ingredients:[
-"Chicken",
-"Broccoli",
-"Onion",
-"Garlic",
-"Chicken Bouillon",
-"Heavy Cream"
-]
-},
-
-{
-category:"Chicken",
-name:"Chicken Alfredo",
-difficulty:"Easy",
-minutes:30,
-ingredients:[
-"Chicken",
-"Pasta",
-"Garlic",
-"Butter",
-"Heavy Cream",
-"Parmesan"
-]
-},
-
-{
-category:"Chicken",
-name:"White Wings",
-difficulty:"Medium",
-minutes:40,
-ingredients:[
-"Chicken",
-"Bacon",
-"Jalapenos",
-"Cream Cheese"
-]
-},
-
-{
-category:"Chicken",
-name:"Enchiladas",
-difficulty:"Medium",
-minutes:45,
-ingredients:[
-"Chicken",
-"Tortillas",
-"Cheese",
-"Onion",
-"Enchilada Sauce"
-]
-},
-
-{
-category:"Chicken",
-name:"Tortilla Soup",
-difficulty:"Easy",
-minutes:40,
-ingredients:[
-"Chicken",
-"Beans",
-"Corn",
-"Onion",
-"Garlic",
-"Tomato Sauce",
-"Chicken Bouillon",
-"Tortilla Chips"
-]
-},
-
-{
-category:"Chicken",
-name:"Chicken Salad",
-difficulty:"Easy",
-minutes:20,
-ingredients:[
-"Chicken",
-"Mayonnaise",
-"Celery",
-"Grapes"
-]
-},
-
-{
-category:"Chicken",
-name:"Pesto Chicken Pasta",
-difficulty:"Easy",
-minutes:30,
-ingredients:[
-"Chicken",
-"Pasta",
-"Pesto",
-"Garlic",
-"Parmesan"
-]
-},
-
-{
-category:"Chicken",
-name:"Drumsticks",
-difficulty:"Easy",
-minutes:45,
-ingredients:[
-"Chicken Drumsticks",
-"Oil",
-"Seasoning"
-]
-},
-
-{
-category:"Chicken",
-name:"Stir Fry",
-difficulty:"Easy",
-minutes:30,
-ingredients:[
-"Chicken",
-"Rice",
-"Broccoli",
-"Bell Peppers",
-"Onion",
-"Garlic",
-"Soy Sauce"
-]
-},
-
-{
-category:"Chicken",
-name:"Curry",
-difficulty:"Medium",
-minutes:40,
-ingredients:[
-"Chicken",
-"Rice",
-"Onion",
-"Garlic",
-"Coconut Milk",
-"Curry Powder"
-]
-},
-
-
-/* PORK */
-
-{
-category:"Pork",
-name:"Pork Belly",
-difficulty:"Medium",
-minutes:60,
-ingredients:[
-"Pork Belly",
-"Garlic",
-"Soy Sauce",
-"Brown Sugar"
-]
-},
-
-{
-category:"Pork",
-name:"Ribs",
-difficulty:"Medium",
-minutes:150,
-ingredients:[
-"Pork Ribs",
-"BBQ Sauce",
-"Brown Sugar",
-"Seasoning"
-]
-},
-
-{
-category:"Pork",
-name:"Boneless Ribs",
-difficulty:"Easy",
-minutes:55,
-ingredients:[
-"Boneless Pork Ribs",
-"BBQ Sauce",
-"Seasoning"
-]
-},
-
-{
-category:"Pork",
-name:"Meatballs",
-difficulty:"Medium",
-minutes:40,
-ingredients:[
-"Ground Pork",
-"Eggs",
-"Breadcrumbs",
-"Onion",
-"Garlic"
-]
-},
-
-{
-category:"Pork",
-name:"Ramen",
-difficulty:"Easy",
-minutes:30,
-ingredients:[
-"Pork",
-"Ramen Noodles",
-"Soy Sauce",
-"Garlic",
-"Onion",
-"Eggs"
-]
-},
-
-{
-category:"Pork",
-name:"Tenderloin",
-difficulty:"Medium",
-minutes:50,
-ingredients:[
-"Pork Tenderloin",
-"Garlic",
-"Oil",
-"Seasoning"
-]
-},
-
-{
-category:"Pork",
-name:"Pork Chops",
-difficulty:"Easy",
-minutes:30,
-ingredients:[
-"Pork Chops",
-"Oil",
-"Seasoning"
-]
-},
-
-{
-category:"Pork",
-name:"Enchiladas",
-difficulty:"Medium",
-minutes:45,
-ingredients:[
-"Pork",
-"Tortillas",
-"Cheese",
-"Onion",
-"Enchilada Sauce"
-]
-},
-
-{
-category:"Pork",
-name:"Curry",
-difficulty:"Medium",
-minutes:40,
-ingredients:[
-"Pork",
-"Rice",
-"Onion",
-"Garlic",
-"Coconut Milk",
-"Curry Powder"
-]
-},
-
-
-/* LAMB */
-
-{
-category:"Lamb",
-name:"Leg of Lamb",
-difficulty:"Medium",
-minutes:120,
-ingredients:[
-"Leg of Lamb",
-"Garlic",
-"Oil",
-"Seasoning"
-]
-},
-
-{
-category:"Lamb",
-name:"Lamb Chops",
-difficulty:"Medium",
-minutes:35,
-ingredients:[
-"Lamb Chops",
-"Garlic",
-"Oil",
-"Seasoning"
-]
-},
-
-{
-category:"Lamb",
-name:"Lamb Roast",
-difficulty:"Medium",
-minutes:120,
-ingredients:[
-"Lamb Roast",
-"Garlic",
-"Onion",
-"Oil",
-"Seasoning"
-]
-},
-
-
-/* BEEF */
-
-{
-category:"Beef",
-name:"Steak",
-difficulty:"Easy",
-minutes:25,
-ingredients:[
-"Steak",
-"Butter",
-"Garlic",
-"Seasoning"
-]
-},
-
-{
-category:"Beef",
-name:"Stir Fry",
-difficulty:"Easy",
-minutes:30,
-ingredients:[
-"Beef Strips",
-"Rice",
-"Broccoli",
-"Bell Peppers",
-"Onion",
-"Garlic",
-"Soy Sauce"
-]
-},
-
-{
-category:"Beef",
-name:"Pressure Cooker Beef",
-difficulty:"Easy",
-minutes:55,
-ingredients:[
-"Beef Roast",
-"Onion",
-"Garlic",
-"Beef Bouillon"
-]
-},
-
-{
-category:"Beef",
-name:"Fajita Bowls",
-difficulty:"Easy",
-minutes:30,
-ingredients:[
-"Beef Strips",
-"Rice",
-"Bell Peppers",
-"Onion",
-"Lime"
-]
-},
-
-{
-category:"Beef",
-name:"Beef and Noodles",
-difficulty:"Easy",
-minutes:35,
-ingredients:[
-"Beef Strips",
-"Egg Noodles",
-"Onion",
-"Beef Bouillon"
-]
-},
-
-{
-category:"Beef",
-name:"Roast",
-difficulty:"Medium",
-minutes:150,
-ingredients:[
-"Beef Roast",
-"Potatoes",
-"Onion",
-"Garlic",
-"Carrots",
-"Beef Bouillon"
-]
-},
-
-{
-category:"Beef",
-name:"French Dips",
-difficulty:"Easy",
-minutes:40,
-ingredients:[
-"Roast Beef",
-"Hoagie Rolls",
-"Onion",
-"Beef Bouillon",
-"Cheese"
-]
-},
-
-
-/* OTHER */
-
-{
-category:"Other",
-name:"Salad",
-difficulty:"Easy",
-minutes:15,
-ingredients:[
-"Lettuce",
-"Tomato",
-"Cucumber",
-"Cheese",
-"Dressing"
-]
-},
-
-{
-category:"Other",
-name:"Sushi Bowls",
-difficulty:"Medium",
-minutes:35,
-ingredients:[
-"Rice",
-"Cucumber",
-"Avocado",
-"Soy Sauce",
-"Sushi Protein"
-]
-},
-
-{
-category:"Other",
-name:"Zucchini Boats",
-difficulty:"Medium",
-minutes:45,
-ingredients:[
-"Zucchini",
-"Ground Beef",
-"Onion",
-"Garlic",
-"Tomato Sauce",
-"Cheese"
-]
-},
-
-{
-category:"Other",
-name:"Pizza",
-difficulty:"Easy",
-minutes:30,
-ingredients:[
-"Pizza Dough",
-"Tomato Sauce",
-"Mozzarella",
-"Pizza Toppings"
-]
-},
-
-{
-category:"Other",
-name:"Turkey Deconstructed Cabbage Rolls",
-difficulty:"Medium",
-minutes:50,
-ingredients:[
-"Ground Turkey",
-"Cabbage",
-"Rice",
-"Onion",
-"Tomato Sauce"
-]
-},
-
-{
-category:"Other",
-name:"Grilled Cheese",
-difficulty:"Easy",
-minutes:15,
-ingredients:[
-"Bread",
-"Cheese",
-"Butter"
-]
-}
+{category:"Other",name:"Salad",difficulty:"Easy",minutes:15,ingredients:["Lettuce","Tomato","Cucumber","Cheese","Dressing"]},
+{category:"Other",name:"Sushi Bowls",difficulty:"Medium",minutes:35,ingredients:["Rice","Cucumber","Avocado","Soy Sauce","Sushi Protein"]},
+{category:"Other",name:"Zucchini Boats",difficulty:"Medium",minutes:45,ingredients:["Zucchini","Ground Beef","Onion","Garlic","Tomato Sauce","Cheese"]},
+{category:"Other",name:"Pizza",difficulty:"Easy",minutes:30,ingredients:["Pizza Dough","Tomato Sauce","Mozzarella","Pizza Toppings"]},
+{category:"Other",name:"Turkey Deconstructed Cabbage Rolls",difficulty:"Medium",minutes:50,ingredients:["Ground Turkey","Cabbage","Rice","Onion","Tomato Sauce"]},
+{category:"Other",name:"Grilled Cheese",difficulty:"Easy",minutes:15,ingredients:["Bread","Cheese","Butter"]}
 
 ];
 
 
-/* =========================================================
-   APP DATA
-========================================================= */
+/* ===========================
+   APP STATE
+=========================== */
 
-const storageKey = "familyMealPickerData";
+const storageKey = "familyMealPickerDataV3";
+
+const days = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday"
+];
 
 const ingredients = [
   ...new Set(
     recipes.flatMap(recipe => recipe.ingredients)
   )
-].sort();
+].sort((a,b) => a.localeCompare(b));
 
 
-function makeDefaultState() {
+function makeDefaultState(){
 
   const inventory = {};
 
@@ -1324,22 +645,15 @@ function makeDefaultState() {
     inventory[item] = "out";
   });
 
-  [
-    "Salt",
-    "Seasoning",
-    "Oil",
-    "Garlic",
-    "Onion",
-    "Butter",
-    "Rice"
-  ].forEach(item => {
-    if (inventory[item] !== undefined) {
-      inventory[item] = "have";
-    }
-  });
+  ["Seasoning","Oil","Garlic","Onion","Butter","Rice"]
+    .forEach(item => {
+      if(inventory[item] !== undefined){
+        inventory[item] = "have";
+      }
+    });
 
   return {
-    inventory:inventory,
+    inventory,
     week:{},
     shopping:[],
     checked:{}
@@ -1347,15 +661,15 @@ function makeDefaultState() {
 }
 
 
-function loadState() {
+function loadState(){
 
-  const saved = localStorage.getItem(storageKey);
+  try{
 
-  if (!saved) {
-    return makeDefaultState();
-  }
+    const saved = localStorage.getItem(storageKey);
 
-  try {
+    if(!saved){
+      return makeDefaultState();
+    }
 
     const loaded = JSON.parse(saved);
     const defaults = makeDefaultState();
@@ -1366,93 +680,148 @@ function loadState() {
         ...(loaded.inventory || {})
       },
       week:loaded.week || {},
-      shopping:loaded.shopping || [],
+      shopping:Array.isArray(loaded.shopping) ? loaded.shopping : [],
       checked:loaded.checked || {}
     };
 
-  } catch(error) {
+  }catch(error){
 
     return makeDefaultState();
 
   }
-
 }
 
 
 let state = loadState();
 
 
-function saveState() {
+function saveState(){
 
-  localStorage.setItem(
-    storageKey,
-    JSON.stringify(state)
-  );
+  try{
+    localStorage.setItem(
+      storageKey,
+      JSON.stringify(state)
+    );
+  }catch(error){
+    console.error(error);
+  }
 
   updateEverything();
-
 }
 
 
-/* =========================================================
-   INVENTORY / MATCHING
-========================================================= */
+/* ===========================
+   MATCHING
+=========================== */
 
-function inventoryStatus(item) {
-
+function inventoryStatus(item){
   return state.inventory[item] || "out";
-
 }
 
 
-function missingIngredients(recipe) {
+function missingIngredients(recipe){
 
-  return recipe.ingredients.filter(item =>
-    inventoryStatus(item) !== "have"
+  return recipe.ingredients.filter(
+    item => inventoryStatus(item) !== "have"
   );
-
 }
 
 
-function mealAvailability(recipe) {
+function mealAvailability(recipe){
 
   const count = missingIngredients(recipe).length;
 
-  if (count === 0) {
+  if(count === 0){
     return "Ready";
   }
 
-  if (count <= 2) {
+  if(count <= 2){
     return "Almost";
   }
 
   return "Shopping";
-
 }
 
 
-function mealScore(recipe) {
+function mealScore(recipe){
 
-  const missing = missingIngredients(recipe).length;
-
-  let score = missing * 10;
+  let score =
+    missingIngredients(recipe).length * 10;
 
   score += recipe.minutes / 100;
 
-  if (recipe.difficulty === "Easy") {
-    score -= 0.5;
+  if(recipe.difficulty === "Easy"){
+    score -= .5;
   }
 
   return score;
-
 }
 
 
-/* =========================================================
-   HOME
-========================================================= */
+/* ===========================
+   HELPERS
+=========================== */
 
-function updateStats() {
+function escapeHtml(value){
+
+  return String(value)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+
+function safeId(value){
+
+  return String(value)
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g,"-")
+    .replace(/^-+|-+$/g,"");
+}
+
+
+/* ===========================
+   NAVIGATION
+=========================== */
+
+function showScreen(name){
+
+  document.querySelectorAll(".screen")
+    .forEach(screen => {
+      screen.classList.remove("active");
+    });
+
+  document.getElementById(name)
+    .classList.add("active");
+
+  document.querySelectorAll(".bottom-nav button")
+    .forEach(button => {
+      button.classList.remove("active");
+    });
+
+  const nav =
+    document.getElementById("nav-" + name);
+
+  if(nav){
+    nav.classList.add("active");
+  }
+
+  updateEverything();
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+}
+
+
+/* ===========================
+   HOME
+=========================== */
+
+function updateStats(){
 
   let ready = 0;
   let almost = 0;
@@ -1460,59 +829,56 @@ function updateStats() {
 
   recipes.forEach(recipe => {
 
-    const status = mealAvailability(recipe);
+    const status =
+      mealAvailability(recipe);
 
-    if (status === "Ready") {
+    if(status === "Ready"){
       ready++;
-    }
-
-    if (status === "Almost") {
+    }else if(status === "Almost"){
       almost++;
-    }
-
-    if (status === "Shopping") {
+    }else{
       shopping++;
     }
-
   });
 
   document.getElementById("readyStat").textContent = ready;
   document.getElementById("almostStat").textContent = almost;
   document.getElementById("shoppingStat").textContent = shopping;
-
 }
 
 
-function mealCard(recipe) {
+function mealCard(recipe){
 
-  const missing = missingIngredients(recipe);
-  const status = mealAvailability(recipe);
+  const missing =
+    missingIngredients(recipe);
+
+  const status =
+    mealAvailability(recipe);
+
+  const index =
+    recipes.indexOf(recipe);
 
   let badgeClass = "bad";
 
-  if (status === "Ready") {
+  if(status === "Ready"){
     badgeClass = "good";
-  }
-
-  if (status === "Almost") {
+  }else if(status === "Almost"){
     badgeClass = "almost";
   }
-
-  const recipeIndex = recipes.indexOf(recipe);
 
   return `
     <div class="meal">
 
       <div class="meal-title">
-        ${recipe.name}
+        ${escapeHtml(recipe.name)}
       </div>
 
       <div class="small">
-        ${recipe.category}
+        ${escapeHtml(recipe.category)}
       </div>
 
       <span class="badge">
-        ${recipe.difficulty}
+        ${escapeHtml(recipe.difficulty)}
       </span>
 
       <span class="badge">
@@ -1530,20 +896,26 @@ function mealCard(recipe) {
       <p class="small">
         ${
           missing.length
-          ? "<b>Need:</b> " + missing.join(", ")
+          ? "<b>Need:</b> " + missing.map(escapeHtml).join(", ")
           : "You have everything needed."
         }
       </p>
 
       <div class="actions">
 
-        <button onclick="addMealToWeek(${recipeIndex})">
+        <button
+          type="button"
+          data-action="plan-recipe"
+          data-index="${index}"
+        >
           Plan It
         </button>
 
         <button
+          type="button"
           class="secondary"
-          onclick="addRecipeToShopping(${recipeIndex})"
+          data-action="shop-recipe"
+          data-index="${index}"
         >
           Add Missing
         </button>
@@ -1552,61 +924,72 @@ function mealCard(recipe) {
 
     </div>
   `;
-
 }
 
 
-function renderBestMatches() {
+function renderBestMatches(){
 
   const best = [...recipes]
-    .sort((a,b) => mealScore(a) - mealScore(b))
+    .sort((a,b) =>
+      mealScore(a) - mealScore(b)
+    )
     .slice(0,6);
 
   document.getElementById("bestMatches").innerHTML =
     best.map(mealCard).join("");
-
 }
 
 
-function pickBestMeal() {
+function pickBestMeal(){
 
-  const sorted = [...recipes]
-    .sort((a,b) => mealScore(a) - mealScore(b));
+  const meal =
+    [...recipes]
+      .sort((a,b) =>
+        mealScore(a) - mealScore(b)
+      )[0];
 
-  const meal = sorted[0];
+  const missing =
+    missingIngredients(meal);
 
-  const missing = missingIngredients(meal);
+  const index =
+    recipes.indexOf(meal);
 
   document.getElementById("bestMealResult").innerHTML = `
     <div class="result">
 
       <div class="big-meal">
-        ${meal.name}
+        ${escapeHtml(meal.name)}
       </div>
 
       <div>
-        ${meal.category} •
-        ${meal.difficulty} •
+        ${escapeHtml(meal.category)} •
+        ${escapeHtml(meal.difficulty)} •
         about ${meal.minutes} minutes
       </div>
 
       <p>
         ${
           missing.length
-          ? "<b>You need:</b> " + missing.join(", ")
+          ? "<b>You need:</b> " + missing.map(escapeHtml).join(", ")
           : "<b>You already have everything needed.</b>"
         }
       </p>
 
       <div class="actions">
 
-        <button onclick="addMealToWeek(${recipes.indexOf(meal)})">
+        <button
+          type="button"
+          data-action="plan-recipe"
+          data-index="${index}"
+        >
           Add to Week
         </button>
 
         <button
+          type="button"
           class="secondary"
-          onclick="addRecipeToShopping(${recipes.indexOf(meal)})"
+          data-action="shop-recipe"
+          data-index="${index}"
         >
           Add Missing to Shopping
         </button>
@@ -1615,192 +998,217 @@ function pickBestMeal() {
 
     </div>
   `;
-
 }
 
 
-function surpriseMe() {
+function surpriseMe(){
 
-  let possibilities = recipes.filter(recipe =>
-    missingIngredients(recipe).length <= 2
-  );
+  let possibilities =
+    recipes.filter(recipe =>
+      missingIngredients(recipe).length <= 2
+    );
 
-  if (!possibilities.length) {
+  if(!possibilities.length){
     possibilities = recipes;
   }
 
   const meal =
     possibilities[
-      Math.floor(Math.random() * possibilities.length)
+      Math.floor(
+        Math.random() *
+        possibilities.length
+      )
     ];
 
-  const missing = missingIngredients(meal);
+  const missing =
+    missingIngredients(meal);
+
+  const index =
+    recipes.indexOf(meal);
 
   document.getElementById("bestMealResult").innerHTML = `
     <div class="result">
 
       <div class="big-meal">
-        ${meal.name}
+        ${escapeHtml(meal.name)}
       </div>
 
       <div>
-        ${meal.category} •
-        ${meal.difficulty} •
+        ${escapeHtml(meal.category)} •
+        ${escapeHtml(meal.difficulty)} •
         ${meal.minutes} minutes
       </div>
 
       <p>
         ${
           missing.length
-          ? "Missing: " + missing.join(", ")
-          : "You have everything needed."
+          ? "<b>Missing:</b> " + missing.map(escapeHtml).join(", ")
+          : "<b>You have everything needed.</b>"
         }
       </p>
 
+      <div class="actions">
+
+        <button
+          type="button"
+          data-action="plan-recipe"
+          data-index="${index}"
+        >
+          Add to Week
+        </button>
+
+        <button
+          type="button"
+          class="secondary"
+          data-action="shop-recipe"
+          data-index="${index}"
+        >
+          Add Missing
+        </button>
+
+      </div>
+
     </div>
   `;
-
 }
 
 
-/* =========================================================
-   MEAL SEARCH
-========================================================= */
+/* ===========================
+   MEALS
+=========================== */
 
-function renderMeals() {
+function renderMeals(){
 
   const search =
     document
       .getElementById("mealSearch")
       .value
+      .trim()
       .toLowerCase();
 
   const category =
-    document.getElementById("categoryFilter").value;
+    document
+      .getElementById("categoryFilter")
+      .value;
 
   const availability =
-    document.getElementById("availabilityFilter").value;
+    document
+      .getElementById("availabilityFilter")
+      .value;
 
   const difficulty =
-    document.getElementById("difficultyFilter").value;
+    document
+      .getElementById("difficultyFilter")
+      .value;
 
 
-  let filtered = recipes.filter(recipe => {
+  let filtered =
+    recipes.filter(recipe => {
 
-    const searchable =
-      (
-        recipe.name + " " +
-        recipe.category + " " +
-        recipe.ingredients.join(" ")
-      ).toLowerCase();
+      const searchable =
+        (
+          recipe.name + " " +
+          recipe.category + " " +
+          recipe.ingredients.join(" ")
+        ).toLowerCase();
 
-    if (
-      search &&
-      !searchable.includes(search)
-    ) {
-      return false;
-    }
+      if(
+        search &&
+        !searchable.includes(search)
+      ){
+        return false;
+      }
 
-    if (
-      category !== "All" &&
-      recipe.category !== category
-    ) {
-      return false;
-    }
+      if(
+        category !== "All" &&
+        recipe.category !== category
+      ){
+        return false;
+      }
 
-    if (
-      availability !== "All" &&
-      mealAvailability(recipe) !== availability
-    ) {
-      return false;
-    }
+      if(
+        availability !== "All" &&
+        mealAvailability(recipe) !== availability
+      ){
+        return false;
+      }
 
-    if (
-      difficulty !== "All" &&
-      recipe.difficulty !== difficulty
-    ) {
-      return false;
-    }
+      if(
+        difficulty !== "All" &&
+        recipe.difficulty !== difficulty
+      ){
+        return false;
+      }
 
-    return true;
-
-  });
+      return true;
+    });
 
 
   filtered.sort(
-    (a,b) => mealScore(a) - mealScore(b)
+    (a,b) =>
+      mealScore(a) - mealScore(b)
   );
 
 
   document.getElementById("mealList").innerHTML =
-    filtered.map(mealCard).join("");
-
+    filtered.length
+    ? filtered.map(mealCard).join("")
+    : `<div class="card">No meals match those filters.</div>`;
 }
 
 
-/* =========================================================
+/* ===========================
    INVENTORY
-========================================================= */
+=========================== */
 
-function setInventory(item,status) {
-
-  state.inventory[item] = status;
-
-  saveState();
-
-}
-
-
-function inventoryButton(item,status,label) {
+function inventoryChoice(item,status,label){
 
   const selected =
     inventoryStatus(item) === status;
 
-  let selectedClass = "";
-
-  if (selected) {
-
-    if (status === "have") {
-      selectedClass = "selected-have";
-    }
-
-    if (status === "low") {
-      selectedClass = "selected-low";
-    }
-
-    if (status === "out") {
-      selectedClass = "selected-out";
-    }
-
-  }
+  const id =
+    "inv-" +
+    safeId(item) +
+    "-" +
+    status;
 
   return `
-    <button
-      class="${selectedClass}"
-      onclick="setInventory(
-        ${JSON.stringify(item)},
-        '${status}'
-      )"
+    <label
+      class="inventory-choice ${
+        selected
+        ? "selected-" + status
+        : ""
+      }"
+      for="${id}"
     >
+      <input
+        id="${id}"
+        type="radio"
+        name="inventory-${safeId(item)}"
+        value="${status}"
+        data-inventory-item="${escapeHtml(item)}"
+        ${selected ? "checked" : ""}
+      >
       ${label}
-    </button>
+    </label>
   `;
-
 }
 
 
-function renderInventory() {
+function renderInventory(){
 
   const search =
     document
       .getElementById("inventorySearch")
       .value
+      .trim()
       .toLowerCase();
 
 
-  const filtered = ingredients.filter(item =>
-    item.toLowerCase().includes(search)
-  );
+  const filtered =
+    ingredients.filter(item =>
+      item.toLowerCase().includes(search)
+    );
 
 
   const proteinWords = [
@@ -1860,96 +1268,83 @@ function renderInventory() {
 
   filtered.forEach(item => {
 
-    if (
+    if(
       proteinWords.some(word =>
         item.includes(word)
       )
-    ) {
+    ){
 
       groups.Protein.push(item);
 
-    } else if (produce.includes(item)) {
+    }else if(
+      produce.includes(item)
+    ){
 
       groups.Produce.push(item);
 
-    } else if (dairy.includes(item)) {
+    }else if(
+      dairy.includes(item)
+    ){
 
       groups.Dairy.push(item);
 
-    } else {
+    }else{
 
       groups.Pantry.push(item);
-
     }
-
   });
 
 
   let html = "";
 
 
-  Object.keys(groups).forEach(group => {
+  Object.entries(groups)
+    .forEach(([group,items]) => {
 
-    if (!groups[group].length) {
-      return;
-    }
-
-    html += `
-      <div class="category-heading">
-        ${group}
-      </div>
-    `;
-
-
-    groups[group].forEach(item => {
+      if(!items.length){
+        return;
+      }
 
       html += `
-        <div class="inventory-row">
-
-          <div>
-            ${item}
-          </div>
-
-          <div class="segment">
-
-            ${inventoryButton(item,"have","Have")}
-
-            ${inventoryButton(item,"low","Low")}
-
-            ${inventoryButton(item,"out","Out")}
-
-          </div>
-
+        <div class="category-heading">
+          ${group}
         </div>
       `;
 
-    });
 
-  });
+      items.forEach(item => {
+
+        html += `
+          <div class="inventory-row">
+
+            <div>
+              ${escapeHtml(item)}
+            </div>
+
+            <div class="segment">
+
+              ${inventoryChoice(item,"have","Have")}
+              ${inventoryChoice(item,"low","Low")}
+              ${inventoryChoice(item,"out","Out")}
+
+            </div>
+
+          </div>
+        `;
+      });
+    });
 
 
   document.getElementById("inventoryList").innerHTML =
     html;
-
 }
 
 
-/* =========================================================
-   WEEKLY PLANNER
-========================================================= */
+/* ===========================
+   WEEK
+=========================== */
 
-const days = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday"
-];
-
-
-function renderWeek() {
+function renderWeek(){
 
   let html = "";
 
@@ -1975,11 +1370,14 @@ function renderWeek() {
         : "";
 
       options += `
-        <option value="${index}" ${selected}>
-          ${recipe.name} (${recipe.category})
+        <option
+          value="${index}"
+          ${selected}
+        >
+          ${escapeHtml(recipe.name)}
+          (${escapeHtml(recipe.category)})
         </option>
       `;
-
     });
 
 
@@ -1988,16 +1386,15 @@ function renderWeek() {
 
         <b>${day}</b>
 
-        <select onchange="setDayMeal(
-          '${day}',
-          this.value
-        )">
+        <select
+          data-action="set-day"
+          data-day="${day}"
+        >
           ${options}
         </select>
 
       </div>
     `;
-
   });
 
 
@@ -2007,8 +1404,14 @@ function renderWeek() {
 
   const selectedRecipes =
     Object.values(state.week)
-      .filter(value => value !== "")
-      .map(index => recipes[index]);
+      .filter(value =>
+        value !== "" &&
+        value !== undefined &&
+        recipes[value]
+      )
+      .map(index =>
+        recipes[index]
+      );
 
 
   const missing =
@@ -2026,28 +1429,23 @@ function renderWeek() {
     " meals planned. " +
     missing.length +
     " unique shopping items currently needed.";
-
 }
 
 
-function setDayMeal(day,value) {
+function setDayMeal(day,value){
 
-  if (value === "") {
-
+  if(value === ""){
     delete state.week[day];
-
-  } else {
-
-    state.week[day] = Number(value);
-
+  }else{
+    state.week[day] =
+      Number(value);
   }
 
   saveState();
-
 }
 
 
-function addMealToWeek(recipeIndex) {
+function addMealToWeek(recipeIndex){
 
   const emptyDay =
     days.find(day =>
@@ -2055,75 +1453,69 @@ function addMealToWeek(recipeIndex) {
     );
 
 
-  if (emptyDay) {
+  if(emptyDay){
 
-    state.week[emptyDay] = recipeIndex;
+    state.week[emptyDay] =
+      recipeIndex;
 
-  } else {
+  }else{
 
-    state.week["Monday"] = recipeIndex;
-
+    state.week["Monday"] =
+      recipeIndex;
   }
 
 
   saveState();
 
   showScreen("week");
-
 }
 
 
-function autoPlan() {
+function autoPlan(){
 
   const sorted =
-    [...recipes].sort(
-      (a,b) => mealScore(a) - mealScore(b)
-    );
+    [...recipes]
+      .sort((a,b) =>
+        mealScore(a) - mealScore(b)
+      );
 
 
   const choices = [];
-
   const categoryCounts = {};
 
 
-  for (const recipe of sorted) {
+  for(const recipe of sorted){
 
-    if (choices.length === 5) {
+    if(choices.length >= 5){
       break;
     }
 
     const count =
       categoryCounts[recipe.category] || 0;
 
-
-    if (count >= 2) {
+    if(count >= 2){
       continue;
     }
-
 
     choices.push(
       recipes.indexOf(recipe)
     );
 
-
     categoryCounts[recipe.category] =
       count + 1;
-
   }
 
 
-  const weekdays = [
+  [
     "Monday",
     "Tuesday",
     "Wednesday",
     "Thursday",
     "Friday"
-  ];
+  ].forEach((day,index) => {
 
-
-  weekdays.forEach((day,index) => {
-
-    state.week[day] = choices[index];
+    state.week[day] =
+      choices[index];
 
   });
 
@@ -2131,52 +1523,48 @@ function autoPlan() {
   saveState();
 
   showScreen("week");
-
 }
 
 
-function clearWeek() {
+function clearWeek(){
 
   state.week = {};
 
   saveState();
-
 }
 
 
-/* =========================================================
-   SHOPPING LIST
-========================================================= */
+/* ===========================
+   SHOPPING
+=========================== */
 
-function addShoppingItem(item) {
+function addShoppingItem(item){
 
-  if (!state.shopping.includes(item)) {
-
+  if(!state.shopping.includes(item)){
     state.shopping.push(item);
-
   }
-
 }
 
 
-function addRecipeToShopping(recipeIndex) {
+function addRecipeToShopping(recipeIndex){
 
   const recipe =
     recipes[recipeIndex];
 
+  if(!recipe){
+    return;
+  }
 
   missingIngredients(recipe)
     .forEach(addShoppingItem);
 
-
   saveState();
 
   showScreen("shopping");
-
 }
 
 
-function buildShoppingListFromWeek() {
+function buildShoppingListFromWeek(){
 
   Object.values(state.week)
     .forEach(recipeIndex => {
@@ -2184,7 +1572,7 @@ function buildShoppingListFromWeek() {
       const recipe =
         recipes[recipeIndex];
 
-      if (!recipe) {
+      if(!recipe){
         return;
       }
 
@@ -2197,48 +1585,41 @@ function buildShoppingListFromWeek() {
   saveState();
 
   showScreen("shopping");
-
 }
 
 
-function addManualShoppingItem() {
+function addManualShoppingItem(){
 
   const input =
     document.getElementById(
       "manualShoppingItem"
     );
 
-
   const item =
     input.value.trim();
 
-
-  if (!item) {
+  if(!item){
     return;
   }
 
-
   addShoppingItem(item);
-
 
   input.value = "";
 
-
   saveState();
-
 }
 
 
-function toggleShoppingItem(item,checked) {
+function toggleShoppingItem(item,checked){
 
-  state.checked[item] = checked;
+  state.checked[item] =
+    checked;
 
   saveState();
-
 }
 
 
-function removeShoppingItem(item) {
+function removeShoppingItem(item){
 
   state.shopping =
     state.shopping.filter(
@@ -2246,16 +1627,13 @@ function removeShoppingItem(item) {
         shoppingItem !== item
     );
 
-
   delete state.checked[item];
 
-
   saveState();
-
 }
 
 
-function clearCheckedItems() {
+function clearCheckedItems(){
 
   state.shopping =
     state.shopping.filter(
@@ -2263,16 +1641,13 @@ function clearCheckedItems() {
         !state.checked[item]
     );
 
-
   state.checked = {};
 
-
   saveState();
-
 }
 
 
-function renderShopping() {
+function renderShopping(){
 
   const list =
     document.getElementById(
@@ -2280,24 +1655,46 @@ function renderShopping() {
     );
 
 
-  if (!state.shopping.length) {
+  if(!state.shopping.length){
 
     list.innerHTML = `
       <p>
         Shopping list is empty.
-        Add a meal or build the list from your weekly plan.
+        Add missing ingredients from a meal or build it from your weekly plan.
       </p>
     `;
 
-    return;
+    document.getElementById("shoppingCountHeader")
+      .textContent = "0";
 
+    return;
   }
+
+
+  const sortedItems =
+    [...state.shopping]
+      .sort((a,b) => {
+
+        const aChecked =
+          !!state.checked[a];
+
+        const bChecked =
+          !!state.checked[b];
+
+        if(
+          aChecked !== bChecked
+        ){
+          return aChecked ? 1 : -1;
+        }
+
+        return a.localeCompare(b);
+      });
 
 
   let html = "";
 
 
-  state.shopping.forEach(item => {
+  sortedItems.forEach(item => {
 
     const checked =
       !!state.checked[item];
@@ -2307,33 +1704,30 @@ function renderShopping() {
       <div class="shopping-row">
 
         <input
-          style="width:22px"
           type="checkbox"
+          style="width:22px"
+          data-action="toggle-shopping"
+          data-item="${escapeHtml(item)}"
           ${checked ? "checked" : ""}
-          onchange="toggleShoppingItem(
-            ${JSON.stringify(item)},
-            this.checked
-          )"
         >
 
         <span
           class="${checked ? "checked" : ""}"
         >
-          ${item}
+          ${escapeHtml(item)}
         </span>
 
         <button
+          type="button"
           class="secondary"
-          onclick="removeShoppingItem(
-            ${JSON.stringify(item)}
-          )"
+          data-action="remove-shopping"
+          data-item="${escapeHtml(item)}"
         >
           Remove
         </button>
 
       </div>
     `;
-
   });
 
 
@@ -2347,101 +1741,227 @@ function renderShopping() {
     ).length;
 
 
-  document
-    .getElementById(
-      "shoppingCountHeader"
-    )
+  document.getElementById("shoppingCountHeader")
     .textContent = remaining;
-
 }
 
 
-/* =========================================================
-   NAVIGATION
-========================================================= */
+/* ===========================
+   EVENTS
+=========================== */
 
-function showScreen(screenName) {
+document.addEventListener("click",event => {
 
-  document
-    .querySelectorAll(".screen")
-    .forEach(screen => {
+  const button =
+    event.target.closest("button");
 
-      screen.classList.remove("active");
-
-    });
-
-
-  document
-    .getElementById(screenName)
-    .classList.add("active");
-
-
-  document
-    .querySelectorAll(".bottom-nav button")
-    .forEach(button => {
-
-      button.classList.remove("active");
-
-    });
-
-
-  const navigation =
-    document.getElementById(
-      "nav-" + screenName
-    );
-
-
-  if (navigation) {
-
-    navigation.classList.add("active");
-
+  if(!button){
+    return;
   }
 
 
-  updateEverything();
+  if(button.dataset.screen){
+
+    showScreen(
+      button.dataset.screen
+    );
+
+    return;
+  }
 
 
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
+  const action =
+    button.dataset.action;
+
+
+  if(action === "plan-recipe"){
+
+    addMealToWeek(
+      Number(button.dataset.index)
+    );
+
+    return;
+  }
+
+
+  if(action === "shop-recipe"){
+
+    addRecipeToShopping(
+      Number(button.dataset.index)
+    );
+
+    return;
+  }
+
+
+  if(action === "remove-shopping"){
+
+    removeShoppingItem(
+      button.dataset.item
+    );
+
+    return;
+  }
+});
+
+
+document.addEventListener("change",event => {
+
+  const target =
+    event.target;
+
+
+  if(
+    target.matches(
+      "input[data-inventory-item]"
+    )
+  ){
+
+    const item =
+      target.getAttribute(
+        "data-inventory-item"
+      );
+
+    const status =
+      target.value;
+
+    state.inventory[item] =
+      status;
+
+    saveState();
+
+    return;
+  }
+
+
+  if(
+    target.dataset.action === "set-day"
+  ){
+
+    setDayMeal(
+      target.dataset.day,
+      target.value
+    );
+
+    return;
+  }
+
+
+  if(
+    target.dataset.action === "toggle-shopping"
+  ){
+
+    toggleShoppingItem(
+      target.dataset.item,
+      target.checked
+    );
+
+    return;
+  }
+});
+
+
+/* ===========================
+   STATIC CONTROLS
+=========================== */
+
+document.getElementById("headerShoppingButton")
+  .addEventListener("click",() => {
+    showScreen("shopping");
   });
 
-}
+
+document.getElementById("useWhatWeHaveButton")
+  .addEventListener("click",pickBestMeal);
 
 
-/* =========================================================
-   UPDATE APP
-========================================================= */
+document.getElementById("surpriseButton")
+  .addEventListener("click",surpriseMe);
 
-function updateEverything() {
+
+document.getElementById("pickFiveButton")
+  .addEventListener("click",autoPlan);
+
+
+document.getElementById("autoPickWeekButton")
+  .addEventListener("click",autoPlan);
+
+
+document.getElementById("clearWeekButton")
+  .addEventListener("click",clearWeek);
+
+
+document.getElementById("buildWeekShoppingButton")
+  .addEventListener("click",buildShoppingListFromWeek);
+
+
+document.getElementById("addManualShoppingButton")
+  .addEventListener("click",addManualShoppingItem);
+
+
+document.getElementById("clearCheckedButton")
+  .addEventListener("click",clearCheckedItems);
+
+
+document.getElementById("manualShoppingItem")
+  .addEventListener("keydown",event => {
+
+    if(event.key === "Enter"){
+      addManualShoppingItem();
+    }
+  });
+
+
+document.getElementById("mealSearch")
+  .addEventListener("input",renderMeals);
+
+
+document.getElementById("categoryFilter")
+  .addEventListener("change",renderMeals);
+
+
+document.getElementById("availabilityFilter")
+  .addEventListener("change",renderMeals);
+
+
+document.getElementById("difficultyFilter")
+  .addEventListener("change",renderMeals);
+
+
+document.getElementById("inventorySearch")
+  .addEventListener("input",renderInventory);
+
+
+/* ===========================
+   UPDATE
+=========================== */
+
+function updateEverything(){
 
   updateStats();
-
   renderBestMatches();
-
   renderMeals();
-
   renderInventory();
-
   renderWeek();
-
   renderShopping();
-
 }
 
 
-/* =========================================================
-   START APP
-========================================================= */
+/* ===========================
+   START
+=========================== */
 
-function initializeApp() {
+function initializeApp(){
 
   const categories =
-    [...new Set(
-      recipes.map(recipe =>
-        recipe.category
+    [
+      ...new Set(
+        recipes.map(
+          recipe =>
+            recipe.category
+        )
       )
-    )];
+    ];
 
 
   const categorySelect =
@@ -2453,21 +1973,25 @@ function initializeApp() {
   categories.forEach(category => {
 
     const option =
-      document.createElement("option");
+      document.createElement(
+        "option"
+      );
 
-    option.value = category;
+    option.value =
+      category;
 
-    option.textContent = category;
+    option.textContent =
+      category;
 
-    categorySelect.appendChild(option);
-
+    categorySelect.appendChild(
+      option
+    );
   });
 
 
   updateEverything();
 
   pickBestMeal();
-
 }
 
 
